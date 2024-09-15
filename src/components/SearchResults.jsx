@@ -94,7 +94,7 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
               </Button>
             </div>
             {isProSearchExpanded && (
-              <ul className="list-none pl-0 sm:pl-6">
+              <ul className="list-none pl-0">
                 {results.proSearch.map((item, index) => (
                   <li key={index} className="mb-2">
                     <Button
@@ -135,13 +135,13 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
                   <Button
                     key={index}
                     variant="outline"
-                    className="bg-[#3C3C3C] p-3 rounded text-left flex flex-col items-start h-auto w-full break-words"
+                    className="bg-[#3C3C3C] p-3 rounded text-left flex flex-col items-start h-auto w-full"
                     onClick={() => onSourceClick(source)}
                   >
                     <p className="font-medium w-full break-words">{source.title}</p>
-                    <p className="text-sm text-gray-400 flex items-center w-full break-words">
+                    <p className="text-sm text-gray-400 flex items-center w-full">
                       <span className="break-all mr-1">{source.source}</span>
-                      <ExternalLink className="flex-shrink-0 h-3 w-3" />
+                      <ExternalLink className="flex-shrink-0 h-3 w-3 ml-1" />
                     </p>
                   </Button>
                 ))}
