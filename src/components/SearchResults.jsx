@@ -21,9 +21,11 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
 
   useEffect(() => {
     const stepDuration = 2000; // 2 seconds per step
-    const initialDelay = 500; // Reduced initial delay to 500ms
+    const initialDelay = 50; // Reduced initial delay to 50ms (almost instant)
 
     const timer = setTimeout(() => {
+      setCurrentStep(1); // Immediately set to step 1 after the initial delay
+
       const stepTimer = setInterval(() => {
         setCurrentStep((prevStep) => {
           if (prevStep < 3) {
