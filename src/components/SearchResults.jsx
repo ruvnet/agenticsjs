@@ -16,8 +16,6 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-bold">{query}</h2>
-      
       <div className="bg-[#2D2D2D] rounded-lg p-4">
         <div className="flex justify-between items-center mb-2">
           <h3 className="text-lg font-semibold flex items-center">
@@ -27,8 +25,9 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
             variant="ghost"
             size="sm"
             onClick={() => setIsProSearchExpanded(!isProSearchExpanded)}
+            className="text-gray-400 hover:text-white"
           >
-            {isProSearchExpanded ? <ChevronUp /> : <ChevronDown />}
+            {isProSearchExpanded ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
           </Button>
         </div>
         <AnimatePresence>
@@ -39,7 +38,7 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
                   <li key={index} className="mb-2 flex items-start">
                     <Button
                       variant="link"
-                      className="text-[#4A72FF] p-0 h-auto font-normal"
+                      className="text-[#4A72FF] p-0 h-auto font-normal text-left"
                       onClick={() => onProSearchClick(item)}
                     >
                       <span className="mr-2">✓</span>
@@ -62,14 +61,15 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
             variant="ghost"
             size="sm"
             onClick={() => setIsSourcesExpanded(!isSourcesExpanded)}
+            className="text-gray-400 hover:text-white"
           >
-            {isSourcesExpanded ? <ChevronUp /> : <ChevronDown />}
+            {isSourcesExpanded ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
           </Button>
         </div>
         <AnimatePresence>
           {isSourcesExpanded && (
             <motion.div {...animationProps}>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {results.sources.map((source, index) => (
                   <Button
                     key={index}
