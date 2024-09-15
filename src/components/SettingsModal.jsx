@@ -2,7 +2,6 @@ import React from 'react';
 import { X, Moon, Sun, Globe, Zap, Palette, ToggleLeft, ToggleRight } from 'lucide-react';
 import { useUIConfig } from '../config/uiConfig';
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
@@ -16,12 +15,15 @@ import {
 const SettingsModal = ({ isOpen, onClose }) => {
   const { config, updateUIConfig } = useUIConfig();
 
+  // Ensure config is defined before accessing its properties
+  const safeConfig = config || {};
+
   const handleThemeChange = () => {
-    updateUIConfig({ theme: config.theme === 'dark' ? 'light' : 'dark' });
+    updateUIConfig({ theme: safeConfig.theme === 'dark' ? 'light' : 'dark' });
   };
 
   const handleAnimationToggle = () => {
-    updateUIConfig({ animations: { ...config.animations, enabled: !config.animations.enabled } });
+    updateUIConfig({ animations: { ...safeConfig.animations, enabled: !safeConfig.animations?.enabled } });
   };
 
   const handleLanguageChange = (value) => {
@@ -41,12 +43,12 @@ const SettingsModal = ({ isOpen, onClose }) => {
   };
 
   const handleShowSettingsIconToggle = () => {
-    updateUIConfig({ showSettingsIcon: !config.showSettingsIcon });
+    updateUIConfig({ showSettingsIcon: !safeConfig.showSettingsIcon });
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className={`sm:max-w-[425px] ${config.theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'}`}>
+      <DialogContent className={`sm:max-w-[425px] ${safeConfig.theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'}`}>
         <DialogHeader>
           <DialogTitle className="text-xl font-bold">Settings</DialogTitle>
           <DialogClose asChild>
@@ -59,11 +61,11 @@ const SettingsModal = ({ isOpen, onClose }) => {
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <span className="flex items-center">
-              {config.theme === 'dark' ? <Moon className="mr-2" /> : <Sun className="mr-2" />}
+              {safeConfig.theme === 'dark' ? <Moon className="mr-2" /> : <Sun className="mr-2" />}
               Theme
             </span>
             <Switch
-              checked={config.theme === 'dark'}
+              checked={safeConfig.theme === 'dark'}
               onCheckedChange={handleThemeChange}
             />
           </div>
@@ -73,7 +75,7 @@ const SettingsModal = ({ isOpen, onClose }) => {
               Animations
             </span>
             <Switch
-              checked={config.animations.enabled}
+              checked={safeConfig.animations?.enabled}
               onCheckedChange={handleAnimationToggle}
             />
           </div>
@@ -82,7 +84,7 @@ const SettingsModal = ({ isOpen, onClose }) => {
               <Globe className="mr-2" />
               Language
             </span>
-            <Select value={config.language} onValueChange={handleLanguageChange}>
+            <Select value={safeConfig.language} onValueChange={handleLanguageChange}>
               <SelectTrigger className="w-[120px]">
                 <SelectValue placeholder="Select language" />
               </SelectTrigger>
@@ -97,7 +99,7 @@ const SettingsModal = ({ isOpen, onClose }) => {
           </div>
           <div className="flex items-center justify-between">
             <span>Font Size</span>
-            <Select value={config.fontSize} onValueChange={handleFontSizeChange}>
+            <Select value={safeConfig.fontSize} onValueChange={handleFontSizeChange}>
               <SelectTrigger className="w-[120px]">
                 <SelectValue placeholder="Select size" />
               </SelectTrigger>
@@ -113,7 +115,7 @@ const SettingsModal = ({ isOpen, onClose }) => {
               <Palette className="mr-2" />
               Accent Color
             </span>
-            <Select value={config.accentColor} onValueChange={handleAccentColorChange}>
+            <Select value={safeConfig.accentColor} onValueChange={handleAccentColorChange}>
               <SelectTrigger className="w-[120px]">
                 <SelectValue placeholder="Select color" />
               </SelectTrigger>
@@ -128,7 +130,7 @@ const SettingsModal = ({ isOpen, onClose }) => {
           </div>
           <div className="flex items-center justify-between">
             <span>Search Bar Position</span>
-            <Select value={config.searchBarPosition} onValueChange={handleSearchBarPositionChange}>
+            <Select value={safeConfig.searchBarPosition} onValueChange={handleSearchBarPositionChange}>
               <SelectTrigger className="w-[120px]">
                 <SelectValue placeholder="Select position" />
               </SelectTrigger>
@@ -140,11 +142,11 @@ const SettingsModal = ({ isOpen, onClose }) => {
           </div>
           <div className="flex items-center justify-between">
             <span className="flex items-center">
-              {config.showSettingsIcon ? <ToggleRight className="mr-2" /> : <ToggleLeft className="mr-2" />}
+              {safeConfig.showSettingsIcon ? <ToggleRight className="mr-2" /> : <ToggleLeft className="mr-2" />}
               Show Settings Icon
             </span>
             <Switch
-              checked={config.showSettingsIcon}
+              checked={safeConfig.showSettingsIcon}
               onCheckedChange={handleShowSettingsIconToggle}
             />
           </div>
