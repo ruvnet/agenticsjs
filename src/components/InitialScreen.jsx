@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Search, Zap, Radio } from 'lucide-react';
 import SearchInput from './SearchInput';
+import { Button } from "@/components/ui/button";
 
 const GeometricIcon = () => (
   <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -73,16 +74,15 @@ const InitialScreen = ({ onSearch }) => {
         className="grid grid-cols-2 gap-4 w-full max-w-md"
       >
         {exampleQueries.map((query, index) => (
-          <motion.button
+          <Button
             key={index}
+            variant="outline"
             className="bg-[#2D2D2D] text-left p-3 rounded-lg flex items-center space-x-2 hover:bg-[#3C3C3C] transition-colors"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
             onClick={() => onSearch(query.text)}
           >
             <span>{query.icon}</span>
             <span className="text-sm text-gray-300 truncate">{query.text}</span>
-          </motion.button>
+          </Button>
         ))}
       </motion.div>
 
