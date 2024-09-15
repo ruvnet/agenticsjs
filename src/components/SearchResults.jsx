@@ -20,11 +20,11 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
   const answerRef = useRef(null);
 
   useEffect(() => {
-    const stepDuration = 50; // Reduced to 50ms for almost instant transition
-    const initialDelay = 50; // Initial delay remains at 50ms
+    const stepDuration = 2000; // 2 seconds per step
+    const initialDelay = 50; // Reduced initial delay to 50ms (almost instant)
 
     const timer = setTimeout(() => {
-      setCurrentStep(1);
+      setCurrentStep(1); // Immediately set to step 1 after the initial delay
 
       const stepTimer = setInterval(() => {
         setCurrentStep((prevStep) => {
@@ -45,14 +45,20 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
 
   useEffect(() => {
     if (currentStep === 1) {
-      setShowProSearch(true);
-      scrollToElement(proSearchRef.current, 100);
+      setTimeout(() => {
+        setShowProSearch(true);
+        scrollToElement(proSearchRef.current, 500);
+      }, 1000);
     } else if (currentStep === 2) {
-      setShowSources(true);
-      scrollToElement(sourcesRef.current, 100);
+      setTimeout(() => {
+        setShowSources(true);
+        scrollToElement(sourcesRef.current, 500);
+      }, 1000);
     } else if (currentStep === 3) {
-      setShowAnswer(true);
-      scrollToElement(answerRef.current, 100);
+      setTimeout(() => {
+        setShowAnswer(true);
+        scrollToElement(answerRef.current, 500);
+      }, 1000);
     }
   }, [currentStep]);
 
@@ -64,7 +70,7 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
     initial: { opacity: 0, height: 0 },
     animate: { opacity: 1, height: "auto" },
     exit: { opacity: 0, height: 0 },
-    transition: { duration: 0.2 }
+    transition: { duration: 0.3 }
   };
 
   return (
