@@ -21,18 +21,24 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
 
   useEffect(() => {
     const stepDuration = 2000; // 2 seconds per step
-    const timer = setInterval(() => {
-      setCurrentStep((prevStep) => {
-        if (prevStep < 3) {
-          return prevStep + 1;
-        } else {
-          clearInterval(timer);
-          return prevStep;
-        }
-      });
-    }, stepDuration);
+    const initialDelay = 500; // Reduced initial delay to 500ms
 
-    return () => clearInterval(timer);
+    const timer = setTimeout(() => {
+      const stepTimer = setInterval(() => {
+        setCurrentStep((prevStep) => {
+          if (prevStep < 3) {
+            return prevStep + 1;
+          } else {
+            clearInterval(stepTimer);
+            return prevStep;
+          }
+        });
+      }, stepDuration);
+
+      return () => clearInterval(stepTimer);
+    }, initialDelay);
+
+    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
