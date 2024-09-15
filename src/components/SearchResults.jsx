@@ -9,17 +9,18 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
   const [isProSearchExpanded, setIsProSearchExpanded] = useState(true);
   const [isSourcesExpanded, setIsSourcesExpanded] = useState(true);
   const [currentStep, setCurrentStep] = useState(0);
+  const [showProSearch, setShowProSearch] = useState(false);
+  const [showSources, setShowSources] = useState(false);
   const [showAnswer, setShowAnswer] = useState(false);
 
   useEffect(() => {
-    const stepDuration = 1000; // 1 second per step
+    const stepDuration = 2000; // 2 seconds per step
     const timer = setInterval(() => {
       setCurrentStep((prevStep) => {
         if (prevStep < 3) {
           return prevStep + 1;
         } else {
           clearInterval(timer);
-          setShowAnswer(true);
           return prevStep;
         }
       });
@@ -27,6 +28,16 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
 
     return () => clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    if (currentStep === 1) {
+      setTimeout(() => setShowProSearch(true), 1000);
+    } else if (currentStep === 2) {
+      setTimeout(() => setShowSources(true), 1000);
+    } else if (currentStep === 3) {
+      setTimeout(() => setShowAnswer(true), 1000);
+    }
+  }, [currentStep]);
 
   const animationProps = {
     initial: { opacity: 0, height: 0 },
@@ -39,23 +50,23 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
     <div className="space-y-4">
       <SearchSteps currentStep={currentStep} />
 
-      <div className="bg-[#2D2D2D] rounded-lg p-4">
-        <div className="flex justify-between items-center mb-2">
-          <h3 className="text-lg font-semibold flex items-center">
-            <span className="mr-2">⚙️</span> Pro Search
-          </h3>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setIsProSearchExpanded(!isProSearchExpanded)}
-            className="text-gray-400 hover:text-white"
-          >
-            {isProSearchExpanded ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
-          </Button>
-        </div>
-        <AnimatePresence>
-          {isProSearchExpanded && (
-            <motion.div {...animationProps}>
+      <AnimatePresence>
+        {showProSearch && (
+          <motion.div {...animationProps} className="bg-[#2D2D2D] rounded-lg p-4">
+            <div className="flex justify-between items-center mb-2">
+              <h3 className="text-lg font-semibold flex items-center">
+                <span className="mr-2">⚙️</span> Pro Search
+              </h3>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsProSearchExpanded(!isProSearchExpanded)}
+                className="text-gray-400 hover:text-white"
+              >
+                {isProSearchExpanded ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
+              </Button>
+            </div>
+            {isProSearchExpanded && (
               <ul className="list-none pl-6">
                 {results.proSearch.map((item, index) => (
                   <li key={index} className="mb-2 flex items-start">
@@ -70,28 +81,28 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
                   </li>
                 ))}
               </ul>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      <div className="bg-[#2D2D2D] rounded-lg p-4">
-        <div className="flex justify-between items-center mb-2">
-          <h3 className="text-lg font-semibold flex items-center">
-            <span className="mr-2">🔗</span> Sources
-          </h3>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setIsSourcesExpanded(!isSourcesExpanded)}
-            className="text-gray-400 hover:text-white"
-          >
-            {isSourcesExpanded ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
-          </Button>
-        </div>
-        <AnimatePresence>
-          {isSourcesExpanded && (
-            <motion.div {...animationProps}>
+      <AnimatePresence>
+        {showSources && (
+          <motion.div {...animationProps} className="bg-[#2D2D2D] rounded-lg p-4">
+            <div className="flex justify-between items-center mb-2">
+              <h3 className="text-lg font-semibold flex items-center">
+                <span className="mr-2">🔗</span> Sources
+              </h3>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsSourcesExpanded(!isSourcesExpanded)}
+                className="text-gray-400 hover:text-white"
+              >
+                {isSourcesExpanded ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
+              </Button>
+            </div>
+            {isSourcesExpanded && (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {results.sources.map((source, index) => (
                   <Button
@@ -108,21 +119,21 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
                   </Button>
                 ))}
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-
-      <div className="bg-[#2D2D2D] rounded-lg p-4">
-        <h3 className="text-lg font-semibold flex items-center mb-2">
-          <span className="mr-2">📝</span> Answer
-        </h3>
-        {showAnswer ? (
-          <StreamingText text={results.answer} />
-        ) : (
-          <p className="text-gray-400">Generating answer...</p>
+            )}
+          </motion.div>
         )}
-      </div>
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showAnswer && (
+          <motion.div {...animationProps} className="bg-[#2D2D2D] rounded-lg p-4">
+            <h3 className="text-lg font-semibold flex items-center mb-2">
+              <span className="mr-2">📝</span> Answer
+            </h3>
+            <StreamingText text={results.answer} />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
