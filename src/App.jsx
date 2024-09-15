@@ -15,20 +15,23 @@ const App = () => {
   const handleSearch = async (searchQuery) => {
     setQuery(searchQuery);
     setIsSearching(true);
-    // Simulate search process
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    setResults({
-      answer: "Here's a simulated answer to your query about multi-step perplexity style UI elements.",
-      proSearch: [
-        "Search for multi-step perplexity style UI elements built with npm or JavaScript",
-        "Compile details of benefits and drawbacks for each option found"
-      ],
-      sources: [
-        { title: "Pros and Cons of ReactJS & R...", source: "binmile" },
-        { title: "React JS Pros and Cons - Pag...", source: "pagepro" }
-      ]
-    });
-    setIsSearching(false);
+    setResults(null);
+
+    // Simulate multi-step search process
+    setTimeout(() => {
+      setResults({
+        answer: "Here's a simulated answer to your query about multi-step perplexity style UI elements with animated steps and streaming text output.",
+        proSearch: [
+          "Search for multi-step perplexity style UI elements built with React and Framer Motion",
+          "Compile details of benefits and drawbacks for each animation approach found"
+        ],
+        sources: [
+          { title: "Framer Motion Animation Techniques", source: "framer.com" },
+          { title: "React Animation Libraries Comparison", source: "reactjs.org" }
+        ]
+      });
+      setIsSearching(false);
+    }, 4000); // 4 seconds for the entire process
   };
 
   const handleProSearchClick = (item) => {

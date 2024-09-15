@@ -1,11 +1,32 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronDown, ChevronUp, ExternalLink } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
+import SearchSteps from './SearchSteps';
+import StreamingText from './StreamingText';
 
 const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
   const [isProSearchExpanded, setIsProSearchExpanded] = useState(true);
   const [isSourcesExpanded, setIsSourcesExpanded] = useState(true);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [showAnswer, setShowAnswer] = useState(false);
+
+  useEffect(() => {
+    const stepDuration = 1000; // 1 second per step
+    const timer = setInterval(() => {
+      setCurrentStep((prevStep) => {
+        if (prevStep < 3) {
+          return prevStep + 1;
+        } else {
+          clearInterval(timer);
+          setShowAnswer(true);
+          return prevStep;
+        }
+      });
+    }, stepDuration);
+
+    return () => clearInterval(timer);
+  }, []);
 
   const animationProps = {
     initial: { opacity: 0, height: 0 },
@@ -16,6 +37,8 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
 
   return (
     <div className="space-y-4">
+      <SearchSteps currentStep={currentStep} />
+
       <div className="bg-[#2D2D2D] rounded-lg p-4">
         <div className="flex justify-between items-center mb-2">
           <h3 className="text-lg font-semibold flex items-center">
@@ -94,7 +117,11 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
         <h3 className="text-lg font-semibold flex items-center mb-2">
           <span className="mr-2">📝</span> Answer
         </h3>
-        <p>{results.answer}</p>
+        {showAnswer ? (
+          <StreamingText text={results.answer} />
+        ) : (
+          <p className="text-gray-400">Generating answer...</p>
+        )}
       </div>
     </div>
   );
