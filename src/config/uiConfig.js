@@ -25,7 +25,8 @@ export const defaultConfig = {
       icon: '📝',
     },
   },
-  showSettingsTab: true,
+  showSettingsIcon: true,
+  plugins: [],
 };
 
 export const UIConfigContext = createContext(defaultConfig);
@@ -42,3 +43,24 @@ export const updateConfig = (config, updates) => {
     },
   };
 };
+
+// Plugin architecture
+export const createPlugin = (name, setup) => {
+  return {
+    name,
+    setup,
+  };
+};
+
+export const applyPlugin = (config, plugin) => {
+  return plugin.setup(config);
+};
+
+// SDK functions
+export const setTheme = (config, theme) => updateConfig(config, { theme });
+export const setAnimations = (config, animations) => updateConfig(config, { animations });
+export const setLanguage = (config, language) => updateConfig(config, { language });
+export const setComponentConfig = (config, componentName, componentConfig) =>
+  updateConfig(config, { components: { [componentName]: componentConfig } });
+export const toggleSettingsIcon = (config) => updateConfig(config, { showSettingsIcon: !config.showSettingsIcon });
+export const addPlugin = (config, plugin) => updateConfig(config, { plugins: [...config.plugins, plugin] });

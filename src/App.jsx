@@ -4,7 +4,8 @@ import SearchInput from './components/SearchInput';
 import SearchResults from './components/SearchResults';
 import InitialScreen from './components/InitialScreen';
 import TopNavigation from './components/TopNavigation';
-import SettingsTab from './components/SettingsTab';
+import SettingsModal from './components/SettingsModal';
+import DocumentationModal from './components/DocumentationModal';
 import UIConfigProvider from './components/UIConfigProvider';
 import { useUIConfig } from './config/uiConfig';
 import { Toaster } from "@/components/ui/sonner";
@@ -18,6 +19,8 @@ const AppContent = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [results, setResults] = useState(null);
   const [showInitialScreen, setShowInitialScreen] = useState(true);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isDocumentationOpen, setIsDocumentationOpen] = useState(false);
 
   const handleSearch = async (searchQuery) => {
     setQuery(searchQuery);
@@ -60,7 +63,13 @@ const AppContent = () => {
 
   return (
     <div className={`min-h-screen flex flex-col ${config.theme === 'dark' ? 'bg-[#1C1C1C] text-white' : 'bg-white text-black'}`}>
-      {!showInitialScreen && <TopNavigation onClose={handleCloseSearch} />}
+      {!showInitialScreen && (
+        <TopNavigation
+          onClose={handleCloseSearch}
+          onOpenSettings={() => setIsSettingsOpen(true)}
+          onOpenDocumentation={() => setIsDocumentationOpen(true)}
+        />
+      )}
       {showInitialScreen ? (
         <InitialScreen onSearch={handleSearch} />
       ) : (
@@ -81,7 +90,8 @@ const AppContent = () => {
           </div>
         </>
       )}
-      {config.showSettingsTab && <SettingsTab />}
+      <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+      <DocumentationModal isOpen={isDocumentationOpen} onClose={() => setIsDocumentationOpen(false)} />
     </div>
   );
 };
