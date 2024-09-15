@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ChevronDown, ChevronUp, ExternalLink } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import SearchSteps from './SearchSteps';
 import StreamingText from './StreamingText';
+import { scrollToElement } from '../utils/scrollUtils';
 
 const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
   const [isProSearchExpanded, setIsProSearchExpanded] = useState(true);
@@ -12,6 +13,11 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
   const [showProSearch, setShowProSearch] = useState(false);
   const [showSources, setShowSources] = useState(false);
   const [showAnswer, setShowAnswer] = useState(false);
+  const [isGeneratingComplete, setIsGeneratingComplete] = useState(false);
+
+  const proSearchRef = useRef(null);
+  const sourcesRef = useRef(null);
+  const answerRef = useRef(null);
 
   useEffect(() => {
     const stepDuration = 2000; // 2 seconds per step
@@ -31,13 +37,26 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
 
   useEffect(() => {
     if (currentStep === 1) {
-      setTimeout(() => setShowProSearch(true), 1000);
+      setTimeout(() => {
+        setShowProSearch(true);
+        scrollToElement(proSearchRef.current, 500);
+      }, 1000);
     } else if (currentStep === 2) {
-      setTimeout(() => setShowSources(true), 1000);
+      setTimeout(() => {
+        setShowSources(true);
+        scrollToElement(sourcesRef.current, 500);
+      }, 1000);
     } else if (currentStep === 3) {
-      setTimeout(() => setShowAnswer(true), 1000);
+      setTimeout(() => {
+        setShowAnswer(true);
+        scrollToElement(answerRef.current, 500);
+      }, 1000);
     }
   }, [currentStep]);
+
+  const handleStreamingComplete = () => {
+    setIsGeneratingComplete(true);
+  };
 
   const animationProps = {
     initial: { opacity: 0, height: 0 },
@@ -48,11 +67,11 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
 
   return (
     <div className="space-y-4">
-      <SearchSteps currentStep={currentStep} />
+      <SearchSteps currentStep={currentStep} isGeneratingComplete={isGeneratingComplete} />
 
       <AnimatePresence>
         {showProSearch && (
-          <motion.div {...animationProps} className="bg-[#2D2D2D] rounded-lg p-4">
+          <motion.div {...animationProps} className="bg-[#2D2D2D] rounded-lg p-4" ref={proSearchRef}>
             <div className="flex justify-between items-center mb-2">
               <h3 className="text-lg font-semibold flex items-center">
                 <span className="mr-2">⚙️</span> Pro Search
@@ -88,7 +107,7 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
 
       <AnimatePresence>
         {showSources && (
-          <motion.div {...animationProps} className="bg-[#2D2D2D] rounded-lg p-4">
+          <motion.div {...animationProps} className="bg-[#2D2D2D] rounded-lg p-4" ref={sourcesRef}>
             <div className="flex justify-between items-center mb-2">
               <h3 className="text-lg font-semibold flex items-center">
                 <span className="mr-2">🔗</span> Sources
@@ -126,11 +145,11 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
 
       <AnimatePresence>
         {showAnswer && (
-          <motion.div {...animationProps} className="bg-[#2D2D2D] rounded-lg p-4">
+          <motion.div {...animationProps} className="bg-[#2D2D2D] rounded-lg p-4" ref={answerRef}>
             <h3 className="text-lg font-semibold flex items-center mb-2">
               <span className="mr-2">📝</span> Answer
             </h3>
-            <StreamingText text={results.answer} />
+            <StreamingText text={results.answer} onComplete={handleStreamingComplete} />
           </motion.div>
         )}
       </AnimatePresence>

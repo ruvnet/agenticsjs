@@ -8,7 +8,7 @@ const steps = [
   { id: 'generate', text: 'Generating response' },
 ];
 
-const SearchSteps = ({ currentStep }) => {
+const SearchSteps = ({ currentStep, isGeneratingComplete }) => {
   return (
     <div className="flex flex-col space-y-2 mb-4">
       {steps.map((step, index) => (
@@ -23,13 +23,14 @@ const SearchSteps = ({ currentStep }) => {
         >
           <motion.div
             className={`w-6 h-6 rounded-full flex items-center justify-center ${
-              index < currentStep ? 'bg-green-500' : index === currentStep ? 'bg-blue-500' : 'bg-gray-500'
+              index < currentStep || (index === 3 && isGeneratingComplete) ? 'bg-green-500' : 
+              index === currentStep ? 'bg-blue-500' : 'bg-gray-500'
             }`}
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ duration: 0.3, delay: index * 0.1 }}
           >
-            {index < currentStep ? (
+            {index < currentStep || (index === 3 && isGeneratingComplete) ? (
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
               </svg>
