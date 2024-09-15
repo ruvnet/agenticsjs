@@ -3,6 +3,30 @@ import { motion } from 'framer-motion';
 import { Search, Zap, Radio } from 'lucide-react';
 import SearchInput from './SearchInput';
 
+const GeometricIcon = () => (
+  <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <motion.path
+      d="M50 10L90 90H10L50 10Z"
+      stroke="#4A72FF"
+      strokeWidth="4"
+      initial={{ pathLength: 0, opacity: 0 }}
+      animate={{ pathLength: 1, opacity: 1 }}
+      transition={{ duration: 2, ease: "easeInOut" }}
+    />
+    <motion.circle
+      cx="50"
+      cy="50"
+      r="30"
+      stroke="#4A72FF"
+      strokeWidth="4"
+      fill="none"
+      initial={{ scale: 0, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      transition={{ duration: 1, delay: 1, ease: "easeOut" }}
+    />
+  </svg>
+);
+
 const InitialScreen = ({ onSearch }) => {
   const exampleQueries = [
     { icon: '🍌', text: 'How to preserve bananas?' },
@@ -16,9 +40,17 @@ const InitialScreen = ({ onSearch }) => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-[#1C1C1C]">
       <motion.div
+        initial={{ opacity: 0, y: -50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1, delay: 0.5 }}
+        className="mb-4"
+      >
+        <GeometricIcon />
+      </motion.div>
+      <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.5, delay: 1.5 }}
         className="text-center mb-8"
       >
         <h1 className="text-4xl font-bold mb-2 text-white">Agentic UI</h1>
@@ -28,7 +60,7 @@ const InitialScreen = ({ onSearch }) => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
+        transition={{ duration: 0.5, delay: 2 }}
         className="w-full max-w-md mb-8"
       >
         <SearchInput onSearch={onSearch} isSearching={false} />
@@ -37,7 +69,7 @@ const InitialScreen = ({ onSearch }) => {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
+        transition={{ duration: 0.5, delay: 2.2 }}
         className="grid grid-cols-2 gap-4 w-full max-w-md"
       >
         {exampleQueries.map((query, index) => (
@@ -57,7 +89,7 @@ const InitialScreen = ({ onSearch }) => {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.6 }}
+        transition={{ duration: 0.5, delay: 2.4 }}
         className="mt-8 flex space-x-8"
       >
         <div className="flex items-center text-gray-400">
