@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Mic } from "lucide-react";
+import { Mic, Plus } from "lucide-react";
 
 const SearchInput = ({ onSearch, isSearching }) => {
   const [query, setQuery] = useState('');
@@ -16,11 +16,17 @@ const SearchInput = ({ onSearch, isSearching }) => {
       <div className="relative flex-grow mr-2">
         <Input
           type="text"
-          placeholder="Ask follow up..."
+          placeholder="Ask anything..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="w-full bg-[#3C3C3C] text-white border-none rounded-full pl-4 pr-12 py-3"
+          className="w-full bg-[#3C3C3C] text-white border-none rounded-full pl-10 pr-12 py-3"
         />
+        <Button
+          type="button"
+          className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-transparent hover:bg-transparent p-1"
+        >
+          <Plus className="h-5 w-5 text-gray-400" />
+        </Button>
         <Button
           type="submit"
           disabled={isSearching}

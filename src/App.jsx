@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import SearchInput from './components/SearchInput';
 import SearchResults from './components/SearchResults';
+import InitialScreen from './components/InitialScreen';
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 
@@ -11,23 +12,25 @@ const App = () => {
   const [query, setQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const [results, setResults] = useState(null);
+  const [showInitialScreen, setShowInitialScreen] = useState(true);
 
   const handleSearch = async (searchQuery) => {
     setQuery(searchQuery);
     setIsSearching(true);
     setResults(null);
+    setShowInitialScreen(false);
 
     // Simulate multi-step search process
     setTimeout(() => {
       setResults({
-        answer: "Here's a simulated answer to your query about multi-step perplexity style UI elements with animated steps and streaming text output.",
+        answer: "Here's a simulated answer to your query about " + searchQuery,
         proSearch: [
-          "Search for multi-step perplexity style UI elements built with React and Framer Motion",
-          "Compile details of benefits and drawbacks for each animation approach found"
+          "Search for " + searchQuery + " using advanced techniques",
+          "Analyze " + searchQuery + " in various contexts"
         ],
         sources: [
-          { title: "Framer Motion Animation Techniques", source: "framer.com" },
-          { title: "React Animation Libraries Comparison", source: "reactjs.org" }
+          { title: searchQuery + " - Comprehensive Guide", source: "example.com" },
+          { title: "Latest Research on " + searchQuery, source: "research.org" }
         ]
       });
       setIsSearching(false);
@@ -47,20 +50,26 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <div className="min-h-screen bg-[#1C1C1C] text-white flex flex-col">
-        <div className="flex-grow overflow-y-auto p-4 pb-24">
-          <h1 className="text-2xl font-bold mb-4">{query || "Ask anything..."}</h1>
-          {results && (
-            <SearchResults
-              results={results}
-              query={query}
-              onProSearchClick={handleProSearchClick}
-              onSourceClick={handleSourceClick}
-            />
-          )}
-        </div>
-        <div className="fixed bottom-0 left-0 right-0 p-4 bg-[#2D2D2D]">
-          <SearchInput onSearch={handleSearch} isSearching={isSearching} />
-        </div>
+        {showInitialScreen ? (
+          <InitialScreen onSearch={handleSearch} />
+        ) : (
+          <>
+            <div className="flex-grow overflow-y-auto p-4 pb-24">
+              <h1 className="text-2xl font-bold mb-4">{query || "Ask anything..."}</h1>
+              {results && (
+                <SearchResults
+                  results={results}
+                  query={query}
+                  onProSearchClick={handleProSearchClick}
+                  onSourceClick={handleSourceClick}
+                />
+              )}
+            </div>
+            <div className="fixed bottom-0 left-0 right-0 p-4 bg-[#2D2D2D]">
+              <SearchInput onSearch={handleSearch} isSearching={isSearching} />
+            </div>
+          </>
+        )}
       </div>
       <Toaster />
     </QueryClientProvider>
