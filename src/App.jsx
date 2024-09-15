@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import SearchInput from './components/SearchInput';
 import SearchResults from './components/SearchResults';
 import InitialScreen from './components/InitialScreen';
+import TopNavigation from './components/TopNavigation';
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 
@@ -13,12 +14,14 @@ const App = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [results, setResults] = useState(null);
   const [showInitialScreen, setShowInitialScreen] = useState(true);
+  const [showSearchInput, setShowSearchInput] = useState(true);
 
   const handleSearch = async (searchQuery) => {
     setQuery(searchQuery);
     setIsSearching(true);
     setResults(null);
     setShowInitialScreen(false);
+    setShowSearchInput(true);
 
     // Simulate multi-step search process
     setTimeout(() => {
@@ -34,6 +37,7 @@ const App = () => {
         ]
       });
       setIsSearching(false);
+      setShowSearchInput(false);
     }, 4000); // 4 seconds for the entire process
   };
 
@@ -47,9 +51,17 @@ const App = () => {
     // Here you would typically open the source in a new tab or modal
   };
 
+  const handleCloseSearch = () => {
+    setShowInitialScreen(true);
+    setResults(null);
+    setQuery('');
+    setShowSearchInput(true);
+  };
+
   return (
     <QueryClientProvider client={queryClient}>
       <div className="min-h-screen bg-[#1C1C1C] text-white flex flex-col">
+        {!showInitialScreen && <TopNavigation onClose={handleCloseSearch} />}
         {showInitialScreen ? (
           <InitialScreen onSearch={handleSearch} />
         ) : (
@@ -65,9 +77,11 @@ const App = () => {
                 />
               )}
             </div>
-            <div className="fixed bottom-0 left-0 right-0 p-4 bg-[#2D2D2D]">
-              <SearchInput onSearch={handleSearch} isSearching={isSearching} />
-            </div>
+            {showSearchInput && (
+              <div className="fixed bottom-0 left-0 right-0 p-4 bg-[#2D2D2D]">
+                <SearchInput onSearch={handleSearch} isSearching={isSearching} />
+              </div>
+            )}
           </>
         )}
       </div>
