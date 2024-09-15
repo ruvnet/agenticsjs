@@ -99,11 +99,11 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
                   <li key={index} className="mb-2 flex items-start">
                     <Button
                       variant="link"
-                      className="text-[#4A72FF] p-0 h-auto font-normal text-left break-words"
+                      className="text-[#4A72FF] p-0 h-auto font-normal text-left"
                       onClick={() => onProSearchClick(item)}
                     >
-                      <span className="mr-2 flex-shrink-0">✓</span>
-                      <span className="break-words">{item}</span>
+                      <span className="mr-2">✓</span>
+                      <span>{item}</span>
                     </Button>
                   </li>
                 ))}
@@ -130,18 +130,18 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
               </Button>
             </div>
             {isSourcesExpanded && (
-              <div className="grid grid-cols-1 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {results.sources.map((source, index) => (
                   <Button
                     key={index}
                     variant="outline"
-                    className="bg-[#3C3C3C] p-3 rounded text-left flex flex-col items-start h-auto w-full break-words"
+                    className="bg-[#3C3C3C] p-3 rounded text-left flex flex-col items-start h-auto"
                     onClick={() => onSourceClick(source)}
                   >
-                    <p className="font-medium break-words w-full">{source.title}</p>
-                    <p className="text-sm text-gray-400 flex items-center break-words w-full">
-                      <span className="break-all mr-1">{source.source}</span>
-                      <ExternalLink className="ml-1 h-3 w-3 flex-shrink-0" />
+                    <p className="font-medium">{source.title}</p>
+                    <p className="text-sm text-gray-400 flex items-center">
+                      {source.source}
+                      <ExternalLink className="ml-1 h-3 w-3" />
                     </p>
                   </Button>
                 ))}
