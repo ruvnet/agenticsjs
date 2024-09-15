@@ -62,7 +62,7 @@ const AppContent = () => {
   };
 
   return (
-    <div className={`min-h-screen flex flex-col ${config.theme === 'dark' ? 'bg-[#1C1C1C] text-white' : 'bg-white text-black'}`}>
+    <div className={`min-h-screen flex flex-col ${config?.theme === 'dark' ? 'bg-[#1C1C1C] text-white' : 'bg-white text-black'}`}>
       {!showInitialScreen && (
         <TopNavigation
           onClose={handleCloseSearch}
@@ -75,7 +75,7 @@ const AppContent = () => {
       ) : (
         <>
           <div className="flex-grow overflow-y-auto p-4 pb-24">
-            <h1 className="text-2xl font-bold mb-4">{query || config.components.searchInput.placeholder}</h1>
+            <h1 className="text-2xl font-bold mb-4">{query || config?.components?.searchInput?.placeholder}</h1>
             {results && (
               <SearchResults
                 results={results}
@@ -85,7 +85,7 @@ const AppContent = () => {
               />
             )}
           </div>
-          <div className={`fixed bottom-0 left-0 right-0 p-4 ${config.theme === 'dark' ? 'bg-[#2D2D2D]' : 'bg-gray-100'}`}>
+          <div className={`fixed bottom-0 left-0 right-0 p-4 ${config?.theme === 'dark' ? 'bg-[#2D2D2D]' : 'bg-gray-100'}`}>
             <SearchInput onSearch={handleSearch} isSearching={isSearching} />
           </div>
         </>
