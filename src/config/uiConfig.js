@@ -7,6 +7,9 @@ export const defaultConfig = {
     duration: 300,
   },
   language: 'en',
+  fontSize: 'medium',
+  accentColor: 'blue',
+  searchBarPosition: 'bottom',
   components: {
     searchInput: {
       placeholder: 'Ask anything...',
@@ -60,6 +63,9 @@ export const applyPlugin = (config, plugin) => {
 export const setTheme = (config, theme) => updateConfig(config, { theme });
 export const setAnimations = (config, animations) => updateConfig(config, { animations });
 export const setLanguage = (config, language) => updateConfig(config, { language });
+export const setFontSize = (config, fontSize) => updateConfig(config, { fontSize });
+export const setAccentColor = (config, accentColor) => updateConfig(config, { accentColor });
+export const setSearchBarPosition = (config, searchBarPosition) => updateConfig(config, { searchBarPosition });
 export const setComponentConfig = (config, componentName, componentConfig) =>
   updateConfig(config, { components: { [componentName]: componentConfig } });
 export const toggleSettingsIcon = (config) => updateConfig(config, { showSettingsIcon: !config.showSettingsIcon });
