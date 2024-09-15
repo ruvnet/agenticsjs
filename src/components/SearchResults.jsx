@@ -1,10 +1,18 @@
 import { useState } from 'react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp, ExternalLink } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import { motion, AnimatePresence } from "framer-motion";
 
-const SearchResults = ({ results, query }) => {
+const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
   const [isProSearchExpanded, setIsProSearchExpanded] = useState(true);
   const [isSourcesExpanded, setIsSourcesExpanded] = useState(true);
+
+  const animationProps = {
+    initial: { opacity: 0, height: 0 },
+    animate: { opacity: 1, height: "auto" },
+    exit: { opacity: 0, height: 0 },
+    transition: { duration: 0.3 }
+  };
 
   return (
     <div className="space-y-4">
@@ -23,16 +31,26 @@ const SearchResults = ({ results, query }) => {
             {isProSearchExpanded ? <ChevronUp /> : <ChevronDown />}
           </Button>
         </div>
-        {isProSearchExpanded && (
-          <ul className="list-none pl-6">
-            {results.proSearch.map((item, index) => (
-              <li key={index} className="mb-2 flex items-start">
-                <span className="mr-2">✓</span>
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
-        )}
+        <AnimatePresence>
+          {isProSearchExpanded && (
+            <motion.div {...animationProps}>
+              <ul className="list-none pl-6">
+                {results.proSearch.map((item, index) => (
+                  <li key={index} className="mb-2 flex items-start">
+                    <Button
+                      variant="link"
+                      className="text-[#4A72FF] p-0 h-auto font-normal"
+                      onClick={() => onProSearchClick(item)}
+                    >
+                      <span className="mr-2">✓</span>
+                      <span>{item}</span>
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       <div className="bg-[#2D2D2D] rounded-lg p-4">
@@ -48,16 +66,28 @@ const SearchResults = ({ results, query }) => {
             {isSourcesExpanded ? <ChevronUp /> : <ChevronDown />}
           </Button>
         </div>
-        {isSourcesExpanded && (
-          <div className="grid grid-cols-2 gap-4">
-            {results.sources.map((source, index) => (
-              <div key={index} className="bg-[#3C3C3C] p-3 rounded">
-                <p className="font-medium">{source.title}</p>
-                <p className="text-sm text-gray-400">{source.source}</p>
+        <AnimatePresence>
+          {isSourcesExpanded && (
+            <motion.div {...animationProps}>
+              <div className="grid grid-cols-2 gap-4">
+                {results.sources.map((source, index) => (
+                  <Button
+                    key={index}
+                    variant="outline"
+                    className="bg-[#3C3C3C] p-3 rounded text-left flex flex-col items-start h-auto"
+                    onClick={() => onSourceClick(source)}
+                  >
+                    <p className="font-medium">{source.title}</p>
+                    <p className="text-sm text-gray-400 flex items-center">
+                      {source.source}
+                      <ExternalLink className="ml-1 h-3 w-3" />
+                    </p>
+                  </Button>
+                ))}
               </div>
-            ))}
-          </div>
-        )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       <div className="bg-[#2D2D2D] rounded-lg p-4">
