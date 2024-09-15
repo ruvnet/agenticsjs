@@ -14,14 +14,12 @@ const App = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [results, setResults] = useState(null);
   const [showInitialScreen, setShowInitialScreen] = useState(true);
-  const [showSearchInput, setShowSearchInput] = useState(true);
 
   const handleSearch = async (searchQuery) => {
     setQuery(searchQuery);
     setIsSearching(true);
     setResults(null);
     setShowInitialScreen(false);
-    setShowSearchInput(true);
 
     // Simulate multi-step search process
     setTimeout(() => {
@@ -37,7 +35,6 @@ const App = () => {
         ]
       });
       setIsSearching(false);
-      setShowSearchInput(false);
     }, 4000); // 4 seconds for the entire process
   };
 
@@ -55,7 +52,6 @@ const App = () => {
     setShowInitialScreen(true);
     setResults(null);
     setQuery('');
-    setShowSearchInput(true);
   };
 
   return (
@@ -77,11 +73,9 @@ const App = () => {
                 />
               )}
             </div>
-            {showSearchInput && (
-              <div className="fixed bottom-0 left-0 right-0 p-4 bg-[#2D2D2D]">
-                <SearchInput onSearch={handleSearch} isSearching={isSearching} />
-              </div>
-            )}
+            <div className="fixed bottom-0 left-0 right-0 p-4 bg-[#2D2D2D] shadow-lg">
+              <SearchInput onSearch={handleSearch} isSearching={isSearching} />
+            </div>
           </>
         )}
       </div>
