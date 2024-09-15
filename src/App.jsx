@@ -4,12 +4,16 @@ import SearchInput from './components/SearchInput';
 import SearchResults from './components/SearchResults';
 import InitialScreen from './components/InitialScreen';
 import TopNavigation from './components/TopNavigation';
+import SettingsTab from './components/SettingsTab';
+import UIConfigProvider from './components/UIConfigProvider';
+import { useUIConfig } from './config/uiConfig';
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 
 const queryClient = new QueryClient();
 
-const App = () => {
+const AppContent = () => {
+  const { config } = useUIConfig();
   const [query, setQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const [results, setResults] = useState(null);
@@ -55,31 +59,40 @@ const App = () => {
   };
 
   return (
+    <div className={`min-h-screen flex flex-col ${config.theme === 'dark' ? 'bg-[#1C1C1C] text-white' : 'bg-white text-black'}`}>
+      {!showInitialScreen && <TopNavigation onClose={handleCloseSearch} />}
+      {showInitialScreen ? (
+        <InitialScreen onSearch={handleSearch} />
+      ) : (
+        <>
+          <div className="flex-grow overflow-y-auto p-4 pb-24">
+            <h1 className="text-2xl font-bold mb-4">{query || config.components.searchInput.placeholder}</h1>
+            {results && (
+              <SearchResults
+                results={results}
+                query={query}
+                onProSearchClick={handleProSearchClick}
+                onSourceClick={handleSourceClick}
+              />
+            )}
+          </div>
+          <div className={`fixed bottom-0 left-0 right-0 p-4 ${config.theme === 'dark' ? 'bg-[#2D2D2D]' : 'bg-gray-100'}`}>
+            <SearchInput onSearch={handleSearch} isSearching={isSearching} />
+          </div>
+        </>
+      )}
+      {config.showSettingsTab && <SettingsTab />}
+    </div>
+  );
+};
+
+const App = () => {
+  return (
     <QueryClientProvider client={queryClient}>
-      <div className="min-h-screen bg-[#1C1C1C] text-white flex flex-col">
-        {!showInitialScreen && <TopNavigation onClose={handleCloseSearch} />}
-        {showInitialScreen ? (
-          <InitialScreen onSearch={handleSearch} />
-        ) : (
-          <>
-            <div className="flex-grow overflow-y-auto p-4 pb-24">
-              <h1 className="text-2xl font-bold mb-4">{query || "Ask anything..."}</h1>
-              {results && (
-                <SearchResults
-                  results={results}
-                  query={query}
-                  onProSearchClick={handleProSearchClick}
-                  onSourceClick={handleSourceClick}
-                />
-              )}
-            </div>
-            <div className="fixed bottom-0 left-0 right-0 p-4 bg-[#2D2D2D] shadow-lg">
-              <SearchInput onSearch={handleSearch} isSearching={isSearching} />
-            </div>
-          </>
-        )}
-      </div>
-      <Toaster />
+      <UIConfigProvider>
+        <AppContent />
+        <Toaster />
+      </UIConfigProvider>
     </QueryClientProvider>
   );
 };

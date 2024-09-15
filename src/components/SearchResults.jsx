@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ChevronDown, ChevronUp, ExternalLink } from 'lucide-react';
+import { useUIConfig } from '../config/uiConfig';
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import SearchSteps from './SearchSteps';
@@ -7,6 +8,7 @@ import StreamingText from './StreamingText';
 import { scrollToElement } from '../utils/scrollUtils';
 
 const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
+  const { config } = useUIConfig();
   const [isProSearchExpanded, setIsProSearchExpanded] = useState(true);
   const [isSourcesExpanded, setIsSourcesExpanded] = useState(true);
   const [currentStep, setCurrentStep] = useState(0);
@@ -70,7 +72,7 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
     initial: { opacity: 0, height: 0 },
     animate: { opacity: 1, height: "auto" },
     exit: { opacity: 0, height: 0 },
-    transition: { duration: 0.3 }
+    transition: { duration: config.animations.enabled ? config.animations.duration / 1000 : 0 }
   };
 
   return (
@@ -79,16 +81,16 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
 
       <AnimatePresence>
         {showProSearch && (
-          <motion.div {...animationProps} className="bg-[#2D2D2D] dark:bg-[#3C3C3C] rounded-lg p-4" ref={proSearchRef}>
+          <motion.div {...animationProps} className={`${config.theme === 'dark' ? 'bg-[#2D2D2D]' : 'bg-gray-100'} rounded-lg p-4`} ref={proSearchRef}>
             <div className="flex justify-between items-center mb-2">
               <h3 className="text-lg font-semibold flex items-center">
-                <span className="mr-2">⚙️</span> Pro Search
+                <span className="mr-2">{config.components.proSearch.icon}</span> {config.components.proSearch.title}
               </h3>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsProSearchExpanded(!isProSearchExpanded)}
-                className="text-gray-400 hover:text-white dark:text-gray-300 dark:hover:text-white"
+                className={`${config.theme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`}
               >
                 {isProSearchExpanded ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
               </Button>
@@ -99,7 +101,7 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
                   <li key={index} className="mb-2">
                     <Button
                       variant="link"
-                      className="text-[#4A72FF] p-0 h-auto font-normal text-left break-words whitespace-normal"
+                      className={`${config.theme === 'dark' ? 'text-[#4A72FF]' : 'text-blue-600'} p-0 h-auto font-normal text-left break-words whitespace-normal`}
                       onClick={() => onProSearchClick(item)}
                     >
                       <span className="mr-2 inline-block">✓</span>
@@ -115,16 +117,16 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
 
       <AnimatePresence>
         {showSources && (
-          <motion.div {...animationProps} className="bg-[#2D2D2D] dark:bg-[#3C3C3C] rounded-lg p-4" ref={sourcesRef}>
+          <motion.div {...animationProps} className={`${config.theme === 'dark' ? 'bg-[#2D2D2D]' : 'bg-gray-100'} rounded-lg p-4`} ref={sourcesRef}>
             <div className="flex justify-between items-center mb-2">
               <h3 className="text-lg font-semibold flex items-center">
-                <span className="mr-2">🔗</span> Sources
+                <span className="mr-2">{config.components.sources.icon}</span> {config.components.sources.title}
               </h3>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsSourcesExpanded(!isSourcesExpanded)}
-                className="text-gray-400 hover:text-white dark:text-gray-300 dark:hover:text-white"
+                className={`${config.theme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`}
               >
                 {isSourcesExpanded ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
               </Button>
@@ -135,11 +137,11 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
                   <Button
                     key={index}
                     variant="outline"
-                    className="bg-[#3C3C3C] dark:bg-[#4C4C4C] p-3 rounded text-left flex flex-col items-start h-auto w-full"
+                    className={`${config.theme === 'dark' ? 'bg-[#3C3C3C]' : 'bg-white'} p-3 rounded text-left flex flex-col items-start h-auto w-full`}
                     onClick={() => onSourceClick(source)}
                   >
                     <p className="font-medium w-full break-words">{source.title}</p>
-                    <p className="text-sm text-gray-400 flex items-center w-full">
+                    <p className={`text-sm ${config.theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} flex items-center w-full`}>
                       <span className="break-all mr-1">{source.source}</span>
                       <ExternalLink className="flex-shrink-0 h-3 w-3 ml-1" />
                     </p>
@@ -153,9 +155,9 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
 
       <AnimatePresence>
         {showAnswer && (
-          <motion.div {...animationProps} className="bg-[#2D2D2D] dark:bg-[#3C3C3C] rounded-lg p-4" ref={answerRef}>
+          <motion.div {...animationProps} className={`${config.theme === 'dark' ? 'bg-[#2D2D2D]' : 'bg-gray-100'} rounded-lg p-4`} ref={answerRef}>
             <h3 className="text-lg font-semibold flex items-center mb-2">
-              <span className="mr-2">📝</span> Answer
+              <span className="mr-2">{config.components.answer.icon}</span> {config.components.answer.title}
             </h3>
             <StreamingText text={results.answer} onComplete={handleStreamingComplete} />
           </motion.div>
