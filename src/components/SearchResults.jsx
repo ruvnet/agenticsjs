@@ -79,7 +79,7 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
 
       <AnimatePresence>
         {showProSearch && (
-          <motion.div {...animationProps} className="bg-[#2D2D2D] rounded-lg p-4" ref={proSearchRef}>
+          <motion.div {...animationProps} className="bg-[#2D2D2D] dark:bg-[#3C3C3C] rounded-lg p-4" ref={proSearchRef}>
             <div className="flex justify-between items-center mb-2">
               <h3 className="text-lg font-semibold flex items-center">
                 <span className="mr-2">⚙️</span> Pro Search
@@ -88,7 +88,7 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsProSearchExpanded(!isProSearchExpanded)}
-                className="text-gray-400 hover:text-white"
+                className="text-gray-400 hover:text-white dark:text-gray-300 dark:hover:text-white"
               >
                 {isProSearchExpanded ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
               </Button>
@@ -115,7 +115,7 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
 
       <AnimatePresence>
         {showSources && (
-          <motion.div {...animationProps} className="bg-[#2D2D2D] rounded-lg p-4" ref={sourcesRef}>
+          <motion.div {...animationProps} className="bg-[#2D2D2D] dark:bg-[#3C3C3C] rounded-lg p-4" ref={sourcesRef}>
             <div className="flex justify-between items-center mb-2">
               <h3 className="text-lg font-semibold flex items-center">
                 <span className="mr-2">🔗</span> Sources
@@ -124,7 +124,7 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsSourcesExpanded(!isSourcesExpanded)}
-                className="text-gray-400 hover:text-white"
+                className="text-gray-400 hover:text-white dark:text-gray-300 dark:hover:text-white"
               >
                 {isSourcesExpanded ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
               </Button>
@@ -135,7 +135,7 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
                   <Button
                     key={index}
                     variant="outline"
-                    className="bg-[#3C3C3C] p-3 rounded text-left flex flex-col items-start h-auto w-full"
+                    className="bg-[#3C3C3C] dark:bg-[#4C4C4C] p-3 rounded text-left flex flex-col items-start h-auto w-full"
                     onClick={() => onSourceClick(source)}
                   >
                     <p className="font-medium w-full break-words">{source.title}</p>
@@ -153,7 +153,7 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
 
       <AnimatePresence>
         {showAnswer && (
-          <motion.div {...animationProps} className="bg-[#2D2D2D] rounded-lg p-4" ref={answerRef}>
+          <motion.div {...animationProps} className="bg-[#2D2D2D] dark:bg-[#3C3C3C] rounded-lg p-4" ref={answerRef}>
             <h3 className="text-lg font-semibold flex items-center mb-2">
               <span className="mr-2">📝</span> Answer
             </h3>
