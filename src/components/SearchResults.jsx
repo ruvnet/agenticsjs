@@ -20,11 +20,11 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
   const answerRef = useRef(null);
 
   useEffect(() => {
-    const stepDuration = 2000; // 2 seconds per step
-    const initialDelay = 50; // Reduced initial delay to 50ms (almost instant)
+    const stepDuration = 2000;
+    const initialDelay = 50;
 
     const timer = setTimeout(() => {
-      setCurrentStep(1); // Immediately set to step 1 after the initial delay
+      setCurrentStep(1);
 
       const stepTimer = setInterval(() => {
         setCurrentStep((prevStep) => {
@@ -94,16 +94,16 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
               </Button>
             </div>
             {isProSearchExpanded && (
-              <ul className="list-none pl-6">
+              <ul className="list-none pl-0 sm:pl-6">
                 {results.proSearch.map((item, index) => (
-                  <li key={index} className="mb-2 flex items-start">
+                  <li key={index} className="mb-2">
                     <Button
                       variant="link"
-                      className="text-[#4A72FF] p-0 h-auto font-normal text-left"
+                      className="text-[#4A72FF] p-0 h-auto font-normal text-left break-words whitespace-normal"
                       onClick={() => onProSearchClick(item)}
                     >
-                      <span className="mr-2">✓</span>
-                      <span>{item}</span>
+                      <span className="mr-2 inline-block">✓</span>
+                      <span className="inline">{item}</span>
                     </Button>
                   </li>
                 ))}
@@ -130,18 +130,18 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
               </Button>
             </div>
             {isSourcesExpanded && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4">
                 {results.sources.map((source, index) => (
                   <Button
                     key={index}
                     variant="outline"
-                    className="bg-[#3C3C3C] p-3 rounded text-left flex flex-col items-start h-auto"
+                    className="bg-[#3C3C3C] p-3 rounded text-left flex flex-col items-start h-auto w-full break-words"
                     onClick={() => onSourceClick(source)}
                   >
-                    <p className="font-medium">{source.title}</p>
-                    <p className="text-sm text-gray-400 flex items-center">
-                      {source.source}
-                      <ExternalLink className="ml-1 h-3 w-3" />
+                    <p className="font-medium w-full break-words">{source.title}</p>
+                    <p className="text-sm text-gray-400 flex items-center w-full break-words">
+                      <span className="break-all mr-1">{source.source}</span>
+                      <ExternalLink className="flex-shrink-0 h-3 w-3" />
                     </p>
                   </Button>
                 ))}
