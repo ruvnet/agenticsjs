@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useUIConfig } from '../config/uiConfig';
 
 const steps = [
   { id: 'define', text: 'Defining request' },
@@ -9,13 +10,18 @@ const steps = [
 ];
 
 const SearchSteps = ({ currentStep, isGeneratingComplete }) => {
+  const { config } = useUIConfig();
+  const isDarkMode = config.theme === 'dark';
+
   return (
     <div className="flex flex-col space-y-2 mb-4">
       {steps.map((step, index) => (
         <motion.div
           key={step.id}
           className={`flex items-center space-x-2 ${
-            index <= currentStep ? 'text-white' : 'text-gray-500'
+            index <= currentStep 
+              ? isDarkMode ? 'text-white' : 'text-gray-800'
+              : isDarkMode ? 'text-gray-500' : 'text-gray-400'
           }`}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -23,8 +29,11 @@ const SearchSteps = ({ currentStep, isGeneratingComplete }) => {
         >
           <motion.div
             className={`w-6 h-6 rounded-full flex items-center justify-center ${
-              index < currentStep || (index === 3 && isGeneratingComplete) ? 'bg-green-500' : 
-              index === currentStep ? 'bg-blue-500' : 'bg-gray-500'
+              index < currentStep || (index === 3 && isGeneratingComplete) 
+                ? 'bg-green-500' 
+                : index === currentStep 
+                  ? 'bg-blue-500' 
+                  : isDarkMode ? 'bg-gray-500' : 'bg-gray-300'
             }`}
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
