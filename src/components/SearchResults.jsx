@@ -75,19 +75,18 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
     transition: { duration: config.animations.enabled ? config.animations.duration / 1000 : 0 }
   };
 
-  const bgColor = config.theme === 'dark' ? 'bg-[#1C1C1C]' : 'bg-white';
   const textColor = config.theme === 'dark' ? 'text-white' : 'text-gray-800';
-  const sectionBgColor = config.theme === 'dark' ? 'bg-[#2D2D2D]' : 'bg-gray-100';
-  const buttonBgColor = config.theme === 'dark' ? 'bg-[#3C3C3C]' : 'bg-white';
-  const buttonHoverColor = config.theme === 'dark' ? 'hover:bg-[#4A4A4A]' : 'hover:bg-gray-200';
+  const borderColor = config.theme === 'dark' ? 'border-gray-700' : 'border-gray-300';
+  const buttonBgColor = config.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-200';
+  const buttonHoverColor = config.theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-300';
 
   return (
-    <div className={`space-y-4 ${bgColor} ${textColor}`}>
+    <div className={`space-y-4 ${textColor}`}>
       <SearchSteps currentStep={currentStep} isGeneratingComplete={isGeneratingComplete} />
 
       <AnimatePresence>
         {showProSearch && (
-          <motion.div {...animationProps} className={`${sectionBgColor} rounded-lg p-4`} ref={proSearchRef}>
+          <motion.div {...animationProps} className={`border ${borderColor} rounded-lg p-4`} ref={proSearchRef}>
             <div className="flex justify-between items-center mb-2">
               <h3 className="text-lg font-semibold flex items-center">
                 <span className="mr-2">{config.components.proSearch.icon}</span> {config.components.proSearch.title}
@@ -107,7 +106,7 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
                   <li key={index} className="mb-2">
                     <Button
                       variant="link"
-                      className={`${config.theme === 'dark' ? 'text-[#4A72FF]' : 'text-blue-600'} p-0 h-auto font-normal text-left break-words whitespace-normal`}
+                      className={`${config.theme === 'dark' ? 'text-blue-400' : 'text-blue-600'} p-0 h-auto font-normal text-left break-words whitespace-normal`}
                       onClick={() => onProSearchClick(item)}
                     >
                       <span className="mr-2 inline-block">✓</span>
@@ -123,7 +122,7 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
 
       <AnimatePresence>
         {showSources && (
-          <motion.div {...animationProps} className={`${sectionBgColor} rounded-lg p-4`} ref={sourcesRef}>
+          <motion.div {...animationProps} className={`border ${borderColor} rounded-lg p-4`} ref={sourcesRef}>
             <div className="flex justify-between items-center mb-2">
               <h3 className="text-lg font-semibold flex items-center">
                 <span className="mr-2">{config.components.sources.icon}</span> {config.components.sources.title}
@@ -142,7 +141,7 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
                 {results.sources.map((source, index) => (
                   <div
                     key={index}
-                    className={`${buttonBgColor} p-3 rounded text-left flex flex-col items-start h-auto w-full cursor-pointer ${buttonHoverColor} transition-colors`}
+                    className={`border ${borderColor} p-3 rounded text-left flex flex-col items-start h-auto w-full cursor-pointer ${buttonHoverColor} transition-colors`}
                     onClick={() => onSourceClick(source)}
                   >
                     <p className="font-medium w-full break-words mb-1">{source.title}</p>
@@ -160,7 +159,7 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
 
       <AnimatePresence>
         {showAnswer && (
-          <motion.div {...animationProps} className={`${sectionBgColor} rounded-lg p-4`} ref={answerRef}>
+          <motion.div {...animationProps} className={`border ${borderColor} rounded-lg p-4`} ref={answerRef}>
             <h3 className="text-lg font-semibold flex items-center mb-2">
               <span className="mr-2">{config.components.answer.icon}</span> {config.components.answer.title}
             </h3>
