@@ -1,6 +1,6 @@
-# AgenticJS
+# AgenticsJS
 
-AgenticJS is a powerful and flexible JavaScript library designed to provide an intelligent and interactive search experience with real-time results, advanced visualization, and plugin capabilities. Built with Vite, React, and Tailwind CSS, AgenticJS offers a seamless integration with modern web development workflows. It uses the same approach as Perplexity, the o1 for ChatGPT UI, and you.com style display of sequential queries and results.
+AgenticsJS is a powerful and flexible JavaScript library designed to provide an intelligent and interactive search experience with real-time results, advanced visualization, and plugin capabilities. Built with Vite, React, and Tailwind CSS, AgenticsJS offers a seamless integration with modern web development workflows. It uses the same approach as Perplexity, the o1 for ChatGPT UI, and you.com style display of sequential queries and results.
 
 ## Features
 
@@ -13,18 +13,18 @@ AgenticJS is a powerful and flexible JavaScript library designed to provide an i
 
 ## Installation
 
-To install AgenticJS, you can use npm:
+To install AgenticsJS, you can use npm:
 
 ```sh
-npm install agenticjs
+npm install agenticsjs
 ```
 
 ## Usage
 
-Here's a basic example of how to use AgenticJS in your project:
+Here's a basic example of how to use AgenticsJS in your project:
 
 ```javascript
-import { App, SearchInput, SearchResults } from 'agenticjs';
+import { App, SearchInput, SearchResults } from 'agenticsjs';
 
 const MyApp = () => (
   <App>
@@ -38,10 +38,10 @@ export default MyApp;
 
 ## Customization
 
-AgenticJS is highly customizable. You can override default styles and configurations to fit your needs. For example, to customize the theme:
+AgenticsJS is highly customizable. You can override default styles and configurations to fit your needs. For example, to customize the theme:
 
 ```javascript
-import { UIConfigProvider } from 'agenticjs';
+import { UIConfigProvider } from 'agenticsjs';
 
 const customConfig = {
   theme: 'dark',
@@ -59,7 +59,7 @@ export default MyApp;
 
 ## API/SDK Overview
 
-AgenticJS provides a comprehensive API for developers to interact with the library. Below is an overview of the main components and their usage:
+AgenticsJS provides a comprehensive API for developers to interact with the library. Below is an overview of the main components and their usage:
 
 ### App
 
@@ -79,7 +79,7 @@ A provider component to pass custom configurations to the library.
 
 ## Advanced Features
 
-AgenticJS also supports advanced features such as:
+AgenticsJS also supports advanced features such as:
 
 - **Pro Search**: Advanced search techniques for more accurate results.
 - **Source Highlighting**: Highlight sources in the search results.
@@ -87,7 +87,7 @@ AgenticJS also supports advanced features such as:
 
 ## Plugin System
 
-AgenticJS includes a powerful plugin system that allows you to extend and customize the functionality of the library. You can create, apply, and manage plugins to add new features or modify existing ones.
+AgenticsJS includes a powerful plugin system that allows you to extend and customize the functionality of the library. You can create, apply, and manage plugins to add new features or modify existing ones.
 
 ### Creating a Plugin
 
@@ -190,13 +190,13 @@ For detailed implementation instructions and best practices, please refer to the
 
 ## Running Demo Mode
 
-To run AgenticJS in demo mode, you can use the following command:
+To run AgenticsJS in demo mode, you can use the following command:
 
 ```sh
 npm run demo
 ```
 
-This will start a local server with a demo of AgenticJS.
+This will start a local server with a demo of AgenticsJS.
 
 ## Contributing
 
@@ -204,4 +204,4 @@ We welcome contributions from the community. Please read our [contributing guide
 
 ## License
 
-AgenticJS is licensed under the MIT License. See the [LICENSE](./LICENSE) file for more information.
+AgenticsJS is licensed under the MIT License. See the [LICENSE](./LICENSE) file for more information.

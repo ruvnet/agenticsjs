@@ -1,5 +1,5 @@
 {
-  "name": "agenticjs",
+  "name": "agenticsjs",
   "private": false,
   "version": "1.0.0",
   "description": "AgenticJS is a powerful and flexible JavaScript library designed to provide an intelligent and interactive search experience with real-time results and advanced visualization.",
@@ -17,15 +17,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yourusername/agenticjs.git"
+    "url": "git+https://github.com/ruvnet/agenticjs.git"
   },
   "keywords": ["vite", "tailwindcss"],
   "author": "Your Name",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/yourusername/agenticjs/issues"
+    "url": "https://github.com/ruvnet/agenticjs/issues"
   },
-  "homepage": "https://github.com/yourusername/agenticjs#readme",
+  "homepage": "https://github.com/ruvnet/agenticjs#readme",
   "dependencies": {
     "@hookform/resolvers": "^3.6.0",
     "@radix-ui/react-accordion": "^1.2.0",
