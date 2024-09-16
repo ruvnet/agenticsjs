@@ -52,7 +52,7 @@ const InitialScreen = ({ onSearch, scrollToTop }) => {
           transition={{ duration: 0.5, delay: 1.5 }}
           className="text-center mb-8"
         >
-          <h1 className={`text-4xl font-bold mb-2 ${textColor}`}>Agentic.js</h1>
+          <h1 className={`text-4xl font-bold mb-2 ${textColor}`}>Agentics.js</h1>
           <p className={`text-xl ${secondaryTextColor}`}>Agentic Interfaces Made Easy</p>
         </motion.div>
 
