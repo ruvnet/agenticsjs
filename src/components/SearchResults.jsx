@@ -129,7 +129,91 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
       sourcesRef={sourcesRef}
       answerRef={answerRef}
       currentStep={currentStep}
-    />
+    >
+      <SearchSteps currentStep={currentStep} isGeneratingComplete={isGeneratingComplete} />
+      
+      {showProSearch && results?.proSearch && (
+        <motion.div
+          ref={proSearchRef}
+          {...animationProps}
+          className={`mt-4 p-4 rounded-lg ${borderColor} border`}
+        >
+          <div className="flex justify-between items-center mb-2">
+            <h3 className={`text-lg font-semibold ${textColor}`}>Pro Search</h3>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsProSearchExpanded(!isProSearchExpanded)}
+              className={`${buttonBgColor} ${buttonHoverColor}`}
+            >
+              {isProSearchExpanded ? <ChevronUp /> : <ChevronDown />}
+            </Button>
+          </div>
+          {isProSearchExpanded && (
+            <ul className="space-y-2">
+              {results.proSearch.map((item, index) => (
+                <li key={index}>
+                  <Button
+                    variant="link"
+                    onClick={() => onProSearchClick(item)}
+                    className={`${textColor} text-left`}
+                  >
+                    {item}
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </motion.div>
+      )}
+
+      {showSources && results?.sources && (
+        <motion.div
+          ref={sourcesRef}
+          {...animationProps}
+          className={`mt-4 p-4 rounded-lg ${borderColor} border`}
+        >
+          <div className="flex justify-between items-center mb-2">
+            <h3 className={`text-lg font-semibold ${textColor}`}>Sources</h3>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsSourcesExpanded(!isSourcesExpanded)}
+              className={`${buttonBgColor} ${buttonHoverColor}`}
+            >
+              {isSourcesExpanded ? <ChevronUp /> : <ChevronDown />}
+            </Button>
+          </div>
+          {isSourcesExpanded && (
+            <ul className="space-y-2">
+              {results.sources.map((source, index) => (
+                <li key={index} className="flex items-center">
+                  <Button
+                    variant="link"
+                    onClick={() => onSourceClick(source)}
+                    className={`${textColor} text-left flex items-center`}
+                  >
+                    {source.title}
+                    <ExternalLink className="ml-2 h-4 w-4" />
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </motion.div>
+      )}
+
+      {showAnswer && results?.answer && (
+        <motion.div
+          ref={answerRef}
+          {...animationProps}
+          className={`mt-4 p-4 rounded-lg ${borderColor} border`}
+        >
+          <h3 className={`text-lg font-semibold ${textColor} mb-2`}>Answer</h3>
+          <StreamingText text={results.answer} onComplete={handleStreamingComplete} />
+        </motion.div>
+      )}
+    </ModifiedSearchResults>
   );
 };
 
