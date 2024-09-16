@@ -88,19 +88,9 @@ export const updateConfig = (config, updates) => {
   return newConfig;
 };
 
-// Plugin architecture
-export const createPlugin = (name, setup) => {
-  return {
-    name,
-    setup,
-  };
-};
+export const createPlugin = (name, setup) => ({ name, setup });
+export const applyPlugin = (config, plugin) => plugin.setup(config);
 
-export const applyPlugin = (config, plugin) => {
-  return plugin.setup(config);
-};
-
-// SDK functions
 export const setTheme = (config, theme) => updateConfig(config, { theme });
 export const setAnimations = (config, animations) => updateConfig(config, { animations });
 export const setLanguage = (config, language) => updateConfig(config, { language });
