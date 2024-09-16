@@ -30,7 +30,8 @@ const SearchInput = ({ onSearch, isSearching }) => {
             placeholder={config.components.searchInput.placeholder}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className={`w-full ${config.theme === 'dark' ? 'bg-[#3C3C3C] text-white' : 'bg-white text-black'} border-none rounded-full pl-10 pr-12 py-3`}
+            className={`w-full ${config.theme === 'dark' ? 'bg-[#3C3C3C] text-white' : 'bg-white text-black'} border-none rounded-full pl-10 pr-12 py-3 text-base`}
+            style={{ fontSize: '16px' }}
           />
           <Button
             type="button"
