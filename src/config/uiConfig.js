@@ -30,26 +30,11 @@ export const defaultConfig = {
   },
   showSettingsIcon: true,
   plugins: [],
-  colors: {
-    primary: '#4A72FF',
-    secondary: '#3C3C3C',
-    background: '#1C1C1C',
-    text: '#FFFFFF',
+  hooks: {
+    addHook: () => {},
+    removeHook: () => {},
+    applyHooks: () => Promise.resolve([]),
   },
-  font: {
-    family: 'Inter, sans-serif',
-    weight: {
-      regular: 400,
-      medium: 500,
-      bold: 700,
-    },
-  },
-  speechVisualization: 'waveform',
-  searchDelay: 2000,
-  resultAnimationDuration: 500,
-  maxResults: 10,
-  autoSuggest: true,
-  voiceSearch: true,
 };
 
 export const UIConfigContext = createContext(defaultConfig);
@@ -70,29 +55,40 @@ export const updateConfig = (config, updates) => {
       ...config.components,
       ...updates.components,
     },
-    colors: {
-      ...config.colors,
-      ...updates.colors,
-    },
-    font: {
-      ...config.font,
-      ...updates.font,
-    },
   };
-  localStorage.setItem('uiConfig', JSON.stringify(newConfig));
   return newConfig;
 };
 
 // Plugin architecture
-export const createPlugin = (name, setup) => {
+export const createPlugin = (id, version, setup) => {
   return {
-    name,
+    id,
+    version,
     setup,
   };
 };
 
 export const applyPlugin = (config, plugin) => {
   return plugin.setup(config);
+};
+
+export const registerPlugin = (config, plugin) => {
+  const updatedConfig = applyPlugin(config, plugin);
+  return {
+    ...updatedConfig,
+    plugins: [...updatedConfig.plugins, plugin.id],
+  };
+};
+
+export const unregisterPlugin = (config, pluginId) => {
+  return {
+    ...config,
+    plugins: config.plugins.filter(id => id !== pluginId),
+  };
+};
+
+export const listPlugins = (config) => {
+  return config.plugins;
 };
 
 // SDK functions
@@ -105,12 +101,36 @@ export const setSearchBarPosition = (config, searchBarPosition) => updateConfig(
 export const setComponentConfig = (config, componentName, componentConfig) =>
   updateConfig(config, { components: { [componentName]: componentConfig } });
 export const toggleSettingsIcon = (config) => updateConfig(config, { showSettingsIcon: !config.showSettingsIcon });
-export const addPlugin = (config, plugin) => updateConfig(config, { plugins: [...config.plugins, plugin] });
-export const setColors = (config, colors) => updateConfig(config, { colors });
-export const setFont = (config, font) => updateConfig(config, { font });
-export const setSpeechVisualization = (config, visualization) => updateConfig(config, { speechVisualization: visualization });
-export const setSearchDelay = (config, delay) => updateConfig(config, { searchDelay: delay });
-export const setResultAnimationDuration = (config, duration) => updateConfig(config, { resultAnimationDuration: duration });
-export const setMaxResults = (config, maxResults) => updateConfig(config, { maxResults });
-export const setAutoSuggest = (config, autoSuggest) => updateConfig(config, { autoSuggest });
-export const setVoiceSearch = (config, voiceSearch) => updateConfig(config, { voiceSearch });
+
+// Hook system
+export const addHook = (config, hookName, callback) => {
+  const hooks = config.hooks || {};
+  const existingHooks = hooks[hookName] || [];
+  return updateConfig(config, {
+    hooks: {
+      ...hooks,
+      [hookName]: [...existingHooks, callback],
+    },
+  });
+};
+
+export const removeHook = (config, hookName, callback) => {
+  const hooks = config.hooks || {};
+  const existingHooks = hooks[hookName] || [];
+  return updateConfig(config, {
+    hooks: {
+      ...hooks,
+      [hookName]: existingHooks.filter(cb => cb !== callback),
+    },
+  });
+};
+
+export const applyHooks = async (config, hookName, ...args) => {
+  const hooks = config.hooks || {};
+  const relevantHooks = hooks[hookName] || [];
+  const results = [];
+  for (const hook of relevantHooks) {
+    results.push(await hook(...args));
+  }
+  return results;
+};

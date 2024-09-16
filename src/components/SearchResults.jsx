@@ -6,9 +6,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import SearchSteps from './SearchSteps';
 import StreamingText from './StreamingText';
 import { scrollToElement } from '../utils/scrollUtils';
+import wordCountPlugin from '../plugins/wordCountPlugin';
 
 const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLatestQuery }) => {
-  const { config } = useUIConfig();
+  const { config, updateUIConfig } = useUIConfig();
   const [isProSearchExpanded, setIsProSearchExpanded] = useState(true);
   const [isSourcesExpanded, setIsSourcesExpanded] = useState(true);
   const [currentStep, setCurrentStep] = useState(0);
@@ -16,10 +17,16 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
   const [showSources, setShowSources] = useState(false);
   const [showAnswer, setShowAnswer] = useState(false);
   const [isGeneratingComplete, setIsGeneratingComplete] = useState(false);
+  const [processedResults, setProcessedResults] = useState(results);
 
   const proSearchRef = useRef(null);
   const sourcesRef = useRef(null);
   const answerRef = useRef(null);
+
+  useEffect(() => {
+    const updatedConfig = wordCountPlugin.setup(config);
+    updateUIConfig(updatedConfig);
+  }, []);
 
   useEffect(() => {
     if (isLatestQuery) {
@@ -72,6 +79,22 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
     }
   }, [currentStep]);
 
+  useEffect(() => {
+    const processResults = async () => {
+      if (results && config.hooks && config.hooks.afterSearch) {
+        let processedData = { ...results };
+        for (const hook of config.hooks.afterSearch) {
+          processedData = await hook(processedData);
+        }
+        setProcessedResults(processedData);
+      } else {
+        setProcessedResults(results);
+      }
+    };
+
+    processResults();
+  }, [results, config.hooks]);
+
   const handleStreamingComplete = () => {
     setIsGeneratingComplete(true);
   };
@@ -94,7 +117,7 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
       {isLatestQuery && <SearchSteps currentStep={currentStep} isGeneratingComplete={isGeneratingComplete} />}
 
       <AnimatePresence>
-        {showProSearch && results && (
+        {showProSearch && processedResults && processedResults.proSearch && (
           <motion.div {...animationProps} className={`border ${borderColor} rounded-lg p-4`} ref={proSearchRef}>
             <div className="flex justify-between items-center mb-2">
               <h3 className="text-lg font-semibold flex items-center">
@@ -111,7 +134,7 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
             </div>
             {isProSearchExpanded && (
               <ul className="list-none pl-0">
-                {results.proSearch.map((item, index) => (
+                {processedResults.proSearch.map((item, index) => (
                   <li key={index} className="mb-2">
                     <Button
                       variant="link"
@@ -130,7 +153,7 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
       </AnimatePresence>
 
       <AnimatePresence>
-        {showSources && results && (
+        {showSources && processedResults && processedResults.sources && (
           <motion.div {...animationProps} className={`border ${borderColor} rounded-lg p-4`} ref={sourcesRef}>
             <div className="flex justify-between items-center mb-2">
               <h3 className="text-lg font-semibold flex items-center">
@@ -147,7 +170,7 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
             </div>
             {isSourcesExpanded && (
               <div className="grid grid-cols-1 gap-4">
-                {results.sources.map((source, index) => (
+                {processedResults.sources.map((source, index) => (
                   <div
                     key={index}
                     className={`border ${borderColor} p-3 rounded text-left flex flex-col items-start h-auto w-full cursor-pointer ${buttonHoverColor} transition-colors`}
@@ -167,15 +190,18 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
       </AnimatePresence>
 
       <AnimatePresence>
-        {showAnswer && results && (
+        {showAnswer && processedResults && processedResults.answer && (
           <motion.div {...animationProps} className={`border ${borderColor} rounded-lg p-4`} ref={answerRef}>
             <h3 className="text-lg font-semibold flex items-center mb-2">
               <span className="mr-2">{config.components.answer.icon}</span> {config.components.answer.title}
             </h3>
             {isLatestQuery ? (
-              <StreamingText text={results.answer} onComplete={handleStreamingComplete} />
+              <StreamingText text={processedResults.answer} onComplete={handleStreamingComplete} />
             ) : (
-              <p>{results.answer}</p>
+              <p>{processedResults.answer}</p>
+            )}
+            {processedResults.wordCount && (
+              <p className="mt-2 text-sm text-gray-500">Word count: {processedResults.wordCount}</p>
             )}
           </motion.div>
         )}
