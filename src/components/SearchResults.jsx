@@ -6,10 +6,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import SearchSteps from './SearchSteps';
 import StreamingText from './StreamingText';
 import { scrollToElement } from '../utils/scrollUtils';
-import wordCountPlugin from '../plugins/wordCountPlugin';
 
 const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLatestQuery }) => {
-  const { config, updateUIConfig } = useUIConfig();
+  const { config } = useUIConfig();
   const [isProSearchExpanded, setIsProSearchExpanded] = useState(true);
   const [isSourcesExpanded, setIsSourcesExpanded] = useState(true);
   const [currentStep, setCurrentStep] = useState(0);
@@ -22,11 +21,6 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
   const proSearchRef = useRef(null);
   const sourcesRef = useRef(null);
   const answerRef = useRef(null);
-
-  useEffect(() => {
-    const updatedConfig = wordCountPlugin.setup(config);
-    updateUIConfig(updatedConfig);
-  }, []);
 
   useEffect(() => {
     if (isLatestQuery) {
@@ -84,7 +78,9 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
       if (results && config.hooks && config.hooks.afterSearch) {
         let processedData = { ...results };
         for (const hook of config.hooks.afterSearch) {
-          processedData = await hook(processedData);
+          if (typeof hook === 'function') {
+            processedData = await hook(processedData);
+          }
         }
         setProcessedResults(processedData);
       } else {
