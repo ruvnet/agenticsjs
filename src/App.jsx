@@ -107,7 +107,7 @@ const AppContent = () => {
   };
 
   const renderSearchInput = () => (
-    <div className={`${config.searchBarPosition === 'top' ? 'order-first mb-4' : 'order-last mt-4'} w-full px-4`}>
+    <div className="w-full px-4 py-2">
       <SearchInput onSearch={handleSearch} isSearching={isSearching} />
     </div>
   );
@@ -146,7 +146,11 @@ const AppContent = () => {
               />
             ))}
           </div>
-          {config.searchBarPosition === 'bottom' && renderSearchInput()}
+          {config.searchBarPosition === 'bottom' && (
+            <div className="sticky bottom-0 bg-inherit">
+              {renderSearchInput()}
+            </div>
+          )}
         </div>
       )}
       <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
