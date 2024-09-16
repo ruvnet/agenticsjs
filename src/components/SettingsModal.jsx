@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Moon, Sun, Globe, Zap, Palette, Layout, Type, Volume2, Search, Clock, List, MessageSquare, Mic, Settings } from 'lucide-react';
+import { X, Moon, Sun, Globe, Zap, Palette, Layout, Type, Volume2, Search, Clock, List, MessageSquare, Mic } from 'lucide-react';
 import { useUIConfig } from '../config/uiConfig';
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -31,12 +31,11 @@ const SettingsModal = ({ isOpen, onClose }) => {
           </Button>
         </DialogHeader>
         <Tabs defaultValue="general" className="w-full">
-          <TabsList className={`grid w-full grid-cols-5 p-2 ${config?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'} rounded-lg`}>
+          <TabsList className={`grid w-full grid-cols-4 p-2 ${config?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'} rounded-lg`}>
             <TabsTrigger value="general">General</TabsTrigger>
             <TabsTrigger value="appearance">Appearance</TabsTrigger>
             <TabsTrigger value="search">Search</TabsTrigger>
             <TabsTrigger value="accessibility">Accessibility</TabsTrigger>
-            <TabsTrigger value="plugins">Plugins</TabsTrigger>
           </TabsList>
           <div className="p-4 space-y-6">
             <TabsContent value="general">
@@ -50,9 +49,6 @@ const SettingsModal = ({ isOpen, onClose }) => {
             </TabsContent>
             <TabsContent value="accessibility">
               <AccessibilitySettings config={config} handleChange={handleChange} />
-            </TabsContent>
-            <TabsContent value="plugins">
-              <PluginsSettings config={config} />
             </TabsContent>
           </div>
         </Tabs>
@@ -238,33 +234,6 @@ const AccessibilitySettings = ({ config, handleChange }) => (
       </div>
     )}
   </>
-);
-
-const PluginsSettings = ({ config }) => (
-  <div className="space-y-4">
-    <h3 className="text-lg font-semibold">Installed Plugins</h3>
-    {config.plugins && config.plugins.length > 0 ? (
-      <ul className="list-disc pl-5">
-        {config.plugins.map((plugin, index) => (
-          <li key={index} className="mb-2">
-            <span className="font-medium">{plugin}</span>
-          </li>
-        ))}
-      </ul>
-    ) : (
-      <p>No plugins installed.</p>
-    )}
-    <div className="mt-4">
-      <h4 className="text-md font-semibold mb-2">Add New Plugin</h4>
-      <p className="text-sm mb-2">To add a new plugin, use the following steps:</p>
-      <ol className="list-decimal pl-5 text-sm">
-        <li>Create a new plugin file in the <code>src/plugins</code> directory</li>
-        <li>Import the plugin in your main application file</li>
-        <li>Register the plugin using the <code>registerPlugin</code> function</li>
-        <li>Apply the plugin using the <code>applyPlugin</code> function</li>
-      </ol>
-    </div>
-  </div>
 );
 
 export default SettingsModal;
