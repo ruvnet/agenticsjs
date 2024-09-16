@@ -22,4 +22,19 @@ export default defineConfig({
       },
     ],
   },
+  build: {
+    lib: {
+      entry: 'src/index.js',
+      name: 'AgenticJS',
+      fileName: (format) => `agenticjs.${format}.js`
+    },
+    rollupOptions: {
+      external: ['react'],
+      output: {
+        globals: {
+          react: 'React'
+        }
+      }
+    }
+  }
 });

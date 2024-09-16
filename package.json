@@ -1,15 +1,31 @@
 {
-  "name": "vite-project",
-  "private": true,
-  "version": "0.0.0",
+  "name": "agenticjs",
+  "private": false,
+  "version": "1.0.0",
+  "description": "AgenticJS is a powerful and flexible JavaScript library designed to provide an intelligent and interactive search experience with real-time results and advanced visualization.",
+  "main": "dist/index.js",
+  "files": ["dist"],
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "prepublishOnly": "npm run build",
+    "demo": "vite"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/agenticjs.git"
+  },
+  "keywords": ["vite", "tailwindcss"],
+  "author": "Your Name",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yourusername/agenticjs/issues"
+  },
+  "homepage": "https://github.com/yourusername/agenticjs#readme",
   "dependencies": {
     "@hookform/resolvers": "^3.6.0",
     "@radix-ui/react-accordion": "^1.2.0",

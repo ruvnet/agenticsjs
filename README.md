@@ -1,72 +1,105 @@
-# Welcome to your GPT Engineer project
+# AgenticJS
 
-## Project info
+AgenticJS is a powerful and flexible JavaScript library designed to provide an intelligent and interactive search experience with real-time results and advanced visualization. Built with Vite, React, and Tailwind CSS, AgenticJS offers a seamless integration with modern web development workflows. It uses the same approach as Perplexity, the o1 for ChatGPT UI, and you.com style display of sequential queries and results.
 
-**Project**: searchly-sticky-answers
+## Features
 
-**URL**: https://run.gptengineer.app/projects/a5d6ec16-ec47-431c-b412-8b29c8934a86/improve
+- **Real-time Search**: Get instant search results as you type.
+- **Advanced Visualization**: Visualize search results with interactive charts and graphs.
+- **Customizable**: Easily customize the look and feel to match your brand.
+- **Modular Components**: Use only the components you need.
+- **Responsive Design**: Optimized for both desktop and mobile devices.
 
-## How can I edit this code?
+## Installation
 
-There are several ways of editing your application.
-
-**Use GPT Engineer**
-
-Simply visit the GPT Engineer project at [GPT Engineer](https://gptengineer.app/projects/a5d6ec16-ec47-431c-b412-8b29c8934a86/improve) and start prompting.
-
-Changes made via gptengineer.app will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in the GPT Engineer UI.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+To install AgenticJS, you can use npm:
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+npm install agenticjs
 ```
 
-**Edit a file directly in GitHub**
+## Usage
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Here's a basic example of how to use AgenticJS in your project:
 
-**Use GitHub Codespaces**
+```javascript
+import { App, SearchInput, SearchResults } from 'agenticjs';
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+const MyApp = () => (
+  <App>
+    <SearchInput />
+    <SearchResults />
+  </App>
+);
 
-## What technologies are used for this project?
+export default MyApp;
+```
 
-This project is built with .
+## Customization
 
-- Vite
-- React
-- shadcn-ui
-- Tailwind CSS
+AgenticJS is highly customizable. You can override default styles and configurations to fit your needs. For example, to customize the theme:
 
-## How can I deploy this project?
+```javascript
+import { UIConfigProvider } from 'agenticjs';
 
-All GPT Engineer projects can be deployed directly via the GPT Engineer app.
+const customConfig = {
+  theme: 'dark',
+  searchBarPosition: 'top',
+};
 
-Simply visit your project at [GPT Engineer](https://gptengineer.app/projects/a5d6ec16-ec47-431c-b412-8b29c8934a86/improve) and click on Share -> Publish.
+const MyApp = () => (
+  <UIConfigProvider config={customConfig}>
+    <App />
+  </UIConfigProvider>
+);
 
-## I want to use a custom domain - is that possible?
+export default MyApp;
+```
 
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.gptengineer.app/tips-tricks/custom-domain/)
+## API/SDK Overview
+
+AgenticJS provides a comprehensive API for developers to interact with the library. Below is an overview of the main components and their usage:
+
+### App
+
+The main component that wraps your application.
+
+### SearchInput
+
+A component for the search input field.
+
+### SearchResults
+
+A component to display search results.
+
+### UIConfigProvider
+
+A provider component to pass custom configurations to the library.
+
+## Advanced Features
+
+AgenticJS also supports advanced features such as:
+
+- **Pro Search**: Advanced search techniques for more accurate results.
+- **Source Highlighting**: Highlight sources in the search results.
+- **Error Handling**: Built-in error handling and reporting.
+
+For more detailed information, please refer to the [API Documentation](./src/docs/api_documentation.md).
+
+## Running Demo Mode
+
+To run AgenticJS in demo mode, you can use the following command:
+
+```sh
+npm run demo
+```
+
+This will start a local server with a demo of AgenticJS.
+
+## Contributing
+
+We welcome contributions from the community. Please read our [contributing guidelines](./CONTRIBUTING.md) before submitting a pull request.
+
+## License
+
+AgenticJS is licensed under the MIT License. See the [LICENSE](./LICENSE) file for more information.
