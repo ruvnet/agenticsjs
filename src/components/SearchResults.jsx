@@ -24,7 +24,8 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
 
   useEffect(() => {
     // Apply the wordCountPlugin
-    updateUIConfig(wordCountPlugin.setup(config));
+    const updatedConfig = wordCountPlugin.setup(config);
+    updateUIConfig(updatedConfig);
 
     if (isLatestQuery) {
       const stepDuration = 2000;
