@@ -134,18 +134,17 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
             {isSourcesExpanded && (
               <div className="grid grid-cols-1 gap-4">
                 {results.sources.map((source, index) => (
-                  <Button
+                  <div
                     key={index}
-                    variant="outline"
-                    className={`${config.theme === 'dark' ? 'bg-[#3C3C3C]' : 'bg-white'} p-3 rounded text-left flex flex-col items-start h-auto w-full`}
+                    className={`${config.theme === 'dark' ? 'bg-[#3C3C3C]' : 'bg-white'} p-3 rounded text-left flex flex-col items-start h-auto w-full cursor-pointer hover:bg-opacity-80 transition-colors`}
                     onClick={() => onSourceClick(source)}
                   >
-                    <p className="font-medium w-full break-words">{source.title}</p>
+                    <p className="font-medium w-full break-words mb-1">{source.title}</p>
                     <p className={`text-sm ${config.theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} flex items-center w-full`}>
                       <span className="break-all mr-1">{source.source}</span>
                       <ExternalLink className="flex-shrink-0 h-3 w-3 ml-1" />
                     </p>
-                  </Button>
+                  </div>
                 ))}
               </div>
             )}
