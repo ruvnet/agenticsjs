@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Moon, Sun, Globe, Zap, Palette, Layout, Type, Volume2, Search, Clock, List, MessageSquare, Mic, Plugin } from 'lucide-react';
+import { X, Moon, Sun, Globe, Zap, Palette, Layout, Type, Volume2, Search, Clock, List, MessageSquare, Mic, Puzzle } from 'lucide-react';
 import { useUIConfig } from '../config/uiConfig';
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
