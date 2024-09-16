@@ -1,6 +1,6 @@
 # AgenticJS
 
-AgenticJS is a powerful and flexible JavaScript library designed to provide an intelligent and interactive search experience with real-time results and advanced visualization. Built with Vite, React, and Tailwind CSS, AgenticJS offers a seamless integration with modern web development workflows. It uses the same approach as Perplexity, the o1 for ChatGPT UI, and you.com style display of sequential queries and results.
+AgenticJS is a powerful and flexible JavaScript library designed to provide an intelligent and interactive search experience with real-time results, advanced visualization, and plugin capabilities. Built with Vite, React, and Tailwind CSS, AgenticJS offers a seamless integration with modern web development workflows. It uses the same approach as Perplexity, the o1 for ChatGPT UI, and you.com style display of sequential queries and results.
 
 ## Features
 
@@ -9,6 +9,7 @@ AgenticJS is a powerful and flexible JavaScript library designed to provide an i
 - **Customizable**: Easily customize the look and feel to match your brand.
 - **Modular Components**: Use only the components you need.
 - **Responsive Design**: Optimized for both desktop and mobile devices.
+- **Plugin System**: Extend and customize functionality with plugins.
 
 ## Installation
 
