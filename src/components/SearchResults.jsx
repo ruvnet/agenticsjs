@@ -6,10 +6,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import SearchSteps from './SearchSteps';
 import StreamingText from './StreamingText';
 import { scrollToElement } from '../utils/scrollUtils';
-import wordCountPlugin from '../plugins/wordCountPlugin';
 
 const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLatestQuery }) => {
-  const { config, updateUIConfig } = useUIConfig();
+  const { config } = useUIConfig();
   const [isProSearchExpanded, setIsProSearchExpanded] = useState(true);
   const [isSourcesExpanded, setIsSourcesExpanded] = useState(true);
   const [currentStep, setCurrentStep] = useState(0);
@@ -23,10 +22,6 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
   const answerRef = useRef(null);
 
   useEffect(() => {
-    // Apply the wordCountPlugin
-    const updatedConfig = wordCountPlugin.setup(config);
-    updateUIConfig(updatedConfig);
-
     if (isLatestQuery) {
       const stepDuration = 2000;
       const initialDelay = 50;
@@ -56,7 +51,7 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
       setShowAnswer(true);
       setIsGeneratingComplete(true);
     }
-  }, [isLatestQuery, config, updateUIConfig]);
+  }, [isLatestQuery]);
 
   useEffect(() => {
     if (currentStep === 1) {
@@ -92,12 +87,6 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
   const borderColor = config.theme === 'dark' ? 'border-gray-700' : 'border-gray-300';
   const buttonBgColor = config.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-200';
   const buttonHoverColor = config.theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-300';
-
-  const WordCountDisplay = ({ count }) => (
-    <div className={`mt-2 text-sm ${config.theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-      Word count: {count}
-    </div>
-  );
 
   return (
     <div className={`space-y-4 ${textColor} mb-8`}>
@@ -188,7 +177,6 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
             ) : (
               <p>{results.answer}</p>
             )}
-            {results.wordCount && <WordCountDisplay count={results.wordCount} />}
           </motion.div>
         )}
       </AnimatePresence>
