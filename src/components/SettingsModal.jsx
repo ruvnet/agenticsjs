@@ -51,18 +51,18 @@ const SettingsModal = ({ isOpen, onClose }) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className={`sm:max-w-[425px] max-h-[90vh] overflow-y-auto ${config.theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'} rounded-lg`}>
-        <DialogHeader className="flex justify-between items-center p-4 border-b">
-          <DialogTitle className="text-xl font-bold">Settings</DialogTitle>
-          <Button variant="ghost" onClick={onClose} className="p-1">
+      <DialogContent className="sm:max-w-[425px] max-h-[80vh] overflow-y-auto bg-[#1C1C1C] text-white rounded-xl">
+        <DialogHeader className="flex justify-between items-center p-4 border-b border-gray-700">
+          <DialogTitle className="text-2xl font-bold">Settings</DialogTitle>
+          <Button variant="ghost" onClick={onClose} className="p-1 text-gray-400 hover:text-white">
             <X className="h-6 w-6" />
           </Button>
         </DialogHeader>
         <Tabs defaultValue="general" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 p-2">
-            <TabsTrigger value="general">General</TabsTrigger>
-            <TabsTrigger value="appearance">Appearance</TabsTrigger>
-            <TabsTrigger value="accessibility">Accessibility</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-3 p-2 bg-[#2D2D2D] rounded-lg">
+            <TabsTrigger value="general" className="data-[state=active]:bg-[#3C3C3C] data-[state=active]:text-white">General</TabsTrigger>
+            <TabsTrigger value="appearance" className="data-[state=active]:bg-[#3C3C3C] data-[state=active]:text-white">Appearance</TabsTrigger>
+            <TabsTrigger value="accessibility" className="data-[state=active]:bg-[#3C3C3C] data-[state=active]:text-white">Accessibility</TabsTrigger>
           </TabsList>
           <div className="p-4 space-y-6">
             <TabsContent value="general">
@@ -71,10 +71,10 @@ const SettingsModal = ({ isOpen, onClose }) => {
                 title="Language"
                 control={
                   <Select value={config.language} onValueChange={handleLanguageChange}>
-                    <SelectTrigger className="w-[130px]">
+                    <SelectTrigger className="w-[130px] bg-[#2D2D2D] border-gray-700 text-white">
                       <SelectValue placeholder="Select language" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-[#2D2D2D] border-gray-700 text-white">
                       <SelectItem value="en">English</SelectItem>
                       <SelectItem value="es">Español</SelectItem>
                       <SelectItem value="fr">Français</SelectItem>
@@ -89,10 +89,10 @@ const SettingsModal = ({ isOpen, onClose }) => {
                 title="Search Bar Position"
                 control={
                   <Select value={config.searchBarPosition} onValueChange={handleSearchBarPositionChange}>
-                    <SelectTrigger className="w-[130px]">
+                    <SelectTrigger className="w-[130px] bg-[#2D2D2D] border-gray-700 text-white">
                       <SelectValue placeholder="Select position" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-[#2D2D2D] border-gray-700 text-white">
                       <SelectItem value="top">Top</SelectItem>
                       <SelectItem value="bottom">Bottom</SelectItem>
                     </SelectContent>
@@ -126,10 +126,10 @@ const SettingsModal = ({ isOpen, onClose }) => {
                 title="Font Size"
                 control={
                   <Select value={config.fontSize} onValueChange={handleFontSizeChange}>
-                    <SelectTrigger className="w-[130px]">
+                    <SelectTrigger className="w-[130px] bg-[#2D2D2D] border-gray-700 text-white">
                       <SelectValue placeholder="Select size" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-[#2D2D2D] border-gray-700 text-white">
                       <SelectItem value="small">Small</SelectItem>
                       <SelectItem value="medium">Medium</SelectItem>
                       <SelectItem value="large">Large</SelectItem>
@@ -142,10 +142,10 @@ const SettingsModal = ({ isOpen, onClose }) => {
                 title="Accent Color"
                 control={
                   <Select value={config.accentColor} onValueChange={handleAccentColorChange}>
-                    <SelectTrigger className="w-[130px]">
+                    <SelectTrigger className="w-[130px] bg-[#2D2D2D] border-gray-700 text-white">
                       <SelectValue placeholder="Select color" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-[#2D2D2D] border-gray-700 text-white">
                       <SelectItem value="blue">Blue</SelectItem>
                       <SelectItem value="green">Green</SelectItem>
                       <SelectItem value="red">Red</SelectItem>
