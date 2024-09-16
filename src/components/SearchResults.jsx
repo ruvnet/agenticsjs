@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
+import { motion } from "framer-motion";
 import { ChevronDown, ChevronUp, ExternalLink } from 'lucide-react';
 import { useUIConfig } from '../config/uiConfig';
 import { Button } from "@/components/ui/button";
-import { motion, AnimatePresence } from "framer-motion";
 import SearchSteps from './SearchSteps';
 import StreamingText from './StreamingText';
 import { scrollToElement } from '../utils/scrollUtils';
@@ -18,17 +18,10 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
   const [showAnswer, setShowAnswer] = useState(false);
   const [isGeneratingComplete, setIsGeneratingComplete] = useState(false);
 
-  const proSearchRef = useRef(null);
-  const sourcesRef = useRef(null);
-  const answerRef = useRef(null);
-
   useEffect(() => {
-    // Apply the wordCountPlugin
     const updatedConfig = wordCountPlugin.setup(config);
     updateUIConfig(updatedConfig);
-
     return () => {
-      // Cleanup the plugin when the component unmounts
       const cleanedConfig = wordCountPlugin.cleanup(config);
       updateUIConfig(cleanedConfig);
     };
@@ -36,27 +29,17 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
 
   useEffect(() => {
     if (isLatestQuery) {
-      const stepDuration = 2000;
-      const initialDelay = 50;
-
-      const timer = setTimeout(() => {
-        setCurrentStep(1);
-
-        const stepTimer = setInterval(() => {
-          setCurrentStep((prevStep) => {
-            if (prevStep < 3) {
-              return prevStep + 1;
-            } else {
-              clearInterval(stepTimer);
-              return prevStep;
-            }
-          });
-        }, stepDuration);
-
-        return () => clearInterval(stepTimer);
-      }, initialDelay);
-
-      return () => clearTimeout(timer);
+      const stepTimer = setInterval(() => {
+        setCurrentStep((prevStep) => {
+          if (prevStep < 3) {
+            return prevStep + 1;
+          } else {
+            clearInterval(stepTimer);
+            return prevStep;
+          }
+        });
+      }, 2000);
+      return () => clearInterval(stepTimer);
     } else {
       setCurrentStep(3);
       setShowProSearch(true);
@@ -67,27 +50,19 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
   }, [isLatestQuery]);
 
   useEffect(() => {
-    if (currentStep === 1) {
+    const showContent = (setter, ref) => {
       setTimeout(() => {
-        setShowProSearch(true);
-        scrollToElement(proSearchRef.current, 500);
+        setter(true);
+        scrollToElement(ref.current, 500);
       }, 1000);
-    } else if (currentStep === 2) {
-      setTimeout(() => {
-        setShowSources(true);
-        scrollToElement(sourcesRef.current, 500);
-      }, 1000);
-    } else if (currentStep === 3) {
-      setTimeout(() => {
-        setShowAnswer(true);
-        scrollToElement(answerRef.current, 500);
-      }, 1000);
-    }
+    };
+
+    if (currentStep === 1) showContent(setShowProSearch, { current: document.getElementById('proSearch') });
+    else if (currentStep === 2) showContent(setShowSources, { current: document.getElementById('sources') });
+    else if (currentStep === 3) showContent(setShowAnswer, { current: document.getElementById('answer') });
   }, [currentStep]);
 
-  const handleStreamingComplete = () => {
-    setIsGeneratingComplete(true);
-  };
+  const handleStreamingComplete = () => setIsGeneratingComplete(true);
 
   const animationProps = {
     initial: { opacity: 0, height: 0 },
@@ -101,7 +76,6 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
   const buttonBgColor = config.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-200';
   const buttonHoverColor = config.theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-300';
 
-  // Use the modified SearchResults component from the plugin
   const ModifiedSearchResults = config.components.SearchResults || SearchResults;
 
   return (
@@ -125,16 +99,12 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
       setIsSourcesExpanded={setIsSourcesExpanded}
       onProSearchClick={onProSearchClick}
       onSourceClick={onSourceClick}
-      proSearchRef={proSearchRef}
-      sourcesRef={sourcesRef}
-      answerRef={answerRef}
-      currentStep={currentStep}
     >
       <SearchSteps currentStep={currentStep} isGeneratingComplete={isGeneratingComplete} />
       
       {showProSearch && results?.proSearch && (
         <motion.div
-          ref={proSearchRef}
+          id="proSearch"
           {...animationProps}
           className={`mt-4 p-4 rounded-lg ${borderColor} border`}
         >
@@ -169,7 +139,7 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
 
       {showSources && results?.sources && (
         <motion.div
-          ref={sourcesRef}
+          id="sources"
           {...animationProps}
           className={`mt-4 p-4 rounded-lg ${borderColor} border`}
         >
@@ -205,7 +175,7 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
 
       {showAnswer && results?.answer && (
         <motion.div
-          ref={answerRef}
+          id="answer"
           {...animationProps}
           className={`mt-4 p-4 rounded-lg ${borderColor} border`}
         >
