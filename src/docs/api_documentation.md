@@ -84,7 +84,7 @@ The Agentic UI API provides endpoints for searching, retrieving pro search sugge
 
 ## Implementation with Python FastAPI
 
-Here's how you can implement these endpoints using Python FastAPI:
+Here's a complete implementation of these endpoints using Python FastAPI:
 
 ```python
 from fastapi import FastAPI, HTTPException
@@ -94,9 +94,13 @@ from datetime import datetime
 
 app = FastAPI()
 
+class DateRange(BaseModel):
+    start: datetime
+    end: datetime
+
 class SearchFilters(BaseModel):
     language: Optional[str] = None
-    date_range: Optional[dict] = None
+    date_range: Optional[DateRange] = None
 
 class SearchRequest(BaseModel):
     query: str
@@ -116,35 +120,49 @@ async def search(request: SearchRequest):
     # Implement your search logic here
     # This is a placeholder response
     return SearchResponse(
-        answer="This is a sample answer.",
-        pro_search=["Suggestion 1", "Suggestion 2"],
-        sources=[Source(title="Source 1", url="http://example.com")]
+        answer="This is a sample answer for the query: " + request.query,
+        pro_search=["Advanced search for " + request.query, "Explore related topics"],
+        sources=[
+            Source(title="Source 1", url="http://example.com/1"),
+            Source(title="Source 2", url="http://example.com/2")
+        ]
     )
 
 @app.get("/api/pro-search")
 async def pro_search(query: str):
     # Implement your pro search suggestion logic here
-    # This is a placeholder response
-    return {"suggestions": ["Pro Suggestion 1", "Pro Suggestion 2"]}
+    suggestions = [
+        f"Advanced analysis of {query}",
+        f"Compare {query} with similar topics",
+        f"Historical perspective on {query}"
+    ]
+    return {"suggestions": suggestions}
 
 @app.get("/api/sources")
 async def get_sources(search_id: str):
     # Implement your source fetching logic here
-    # This is a placeholder response
-    return {
-        "sources": [
-            {
-                "title": "Source Title",
-                "url": "http://example.com",
-                "snippet": "This is a sample snippet."
-            }
-        ]
-    }
+    sources = [
+        {
+            "title": f"Comprehensive Guide to {search_id}",
+            "url": f"http://example.com/guide/{search_id}",
+            "snippet": f"This guide provides an in-depth look at {search_id}..."
+        },
+        {
+            "title": f"Latest Research on {search_id}",
+            "url": f"http://example.com/research/{search_id}",
+            "snippet": f"Recent studies have shown that {search_id} has significant impact on..."
+        }
+    ]
+    return {"sources": sources}
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
 ```
 
 ## Implementation with Express.js
 
-Here's how you can implement these endpoints using Express.js:
+Here's a complete implementation of these endpoints using Express.js:
 
 ```javascript
 const express = require('express');
@@ -156,36 +174,44 @@ app.use(bodyParser.json());
 app.post('/api/search', (req, res) => {
   const { query, filters } = req.body;
   // Implement your search logic here
-  // This is a placeholder response
-  res.json({
-    answer: "This is a sample answer.",
-    pro_search: ["Suggestion 1", "Suggestion 2"],
-    sources: [{ title: "Source 1", url: "http://example.com" }]
-  });
+  const searchResponse = {
+    answer: `This is a sample answer for the query: ${query}`,
+    pro_search: [`Advanced search for ${query}`, "Explore related topics"],
+    sources: [
+      { title: "Source 1", url: "http://example.com/1" },
+      { title: "Source 2", url: "http://example.com/2" }
+    ]
+  };
+  res.json(searchResponse);
 });
 
 app.get('/api/pro-search', (req, res) => {
   const { query } = req.query;
   // Implement your pro search suggestion logic here
-  // This is a placeholder response
-  res.json({
-    suggestions: ["Pro Suggestion 1", "Pro Suggestion 2"]
-  });
+  const suggestions = [
+    `Advanced analysis of ${query}`,
+    `Compare ${query} with similar topics`,
+    `Historical perspective on ${query}`
+  ];
+  res.json({ suggestions });
 });
 
 app.get('/api/sources', (req, res) => {
   const { search_id } = req.query;
   // Implement your source fetching logic here
-  // This is a placeholder response
-  res.json({
-    sources: [
-      {
-        title: "Source Title",
-        url: "http://example.com",
-        snippet: "This is a sample snippet."
-      }
-    ]
-  });
+  const sources = [
+    {
+      title: `Comprehensive Guide to ${search_id}`,
+      url: `http://example.com/guide/${search_id}`,
+      snippet: `This guide provides an in-depth look at ${search_id}...`
+    },
+    {
+      title: `Latest Research on ${search_id}`,
+      url: `http://example.com/research/${search_id}`,
+      snippet: `Recent studies have shown that ${search_id} has significant impact on...`
+    }
+  ];
+  res.json({ sources });
 });
 
 const PORT = process.env.PORT || 3000;
