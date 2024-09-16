@@ -4,44 +4,70 @@ This guide provides instructions on how to customize the sequential display of d
 
 ## Modifying Sequential Display of Data
 
-The search results in Agentic UI are displayed sequentially by default. To modify this behavior:
+To modify the sequential display of search results:
 
-1. Locate the `SearchResults` component in `src/components/SearchResults.jsx`.
-
-2. Modify the `useEffect` hook that controls the display of search steps:
+1. Update the `SearchResults` component in `src/components/SearchResults.jsx`:
 
 ```javascript
-useEffect(() => {
-  if (isLatestQuery) {
-    const stepDuration = 1000; // Adjust this value to change the speed of sequential display
-    const steps = ['proSearch', 'sources', 'answer'];
-    
-    steps.forEach((step, index) => {
-      setTimeout(() => {
-        switch(step) {
-          case 'proSearch':
-            setShowProSearch(true);
-            break;
-          case 'sources':
-            setShowSources(true);
-            break;
-          case 'answer':
-            setShowAnswer(true);
-            break;
-        }
-      }, stepDuration * (index + 1));
-    });
-  } else {
-    setShowProSearch(true);
-    setShowSources(true);
-    setShowAnswer(true);
-  }
-}, [isLatestQuery]);
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from "framer-motion";
+
+const SearchResults = ({ query, results, isLatestQuery }) => {
+  const [showProSearch, setShowProSearch] = useState(false);
+  const [showSources, setShowSources] = useState(false);
+  const [showAnswer, setShowAnswer] = useState(false);
+
+  useEffect(() => {
+    if (isLatestQuery) {
+      const stepDuration = 1000; // Adjust this value to change the speed
+      const steps = ['proSearch', 'sources', 'answer'];
+      
+      steps.forEach((step, index) => {
+        setTimeout(() => {
+          switch(step) {
+            case 'proSearch':
+              setShowProSearch(true);
+              break;
+            case 'sources':
+              setShowSources(true);
+              break;
+            case 'answer':
+              setShowAnswer(true);
+              break;
+          }
+        }, stepDuration * (index + 1));
+      });
+    } else {
+      setShowProSearch(true);
+      setShowSources(true);
+      setShowAnswer(true);
+    }
+  }, [isLatestQuery]);
+
+  // Render components using AnimatePresence for smooth transitions
+  return (
+    <div>
+      <AnimatePresence>
+        {showProSearch && results?.proSearch && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+          >
+            <ProSearchResult data={results.proSearch} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+      {/* Similar AnimatePresence blocks for sources and answer */}
+    </div>
+  );
+};
+
+export default SearchResults;
 ```
 
-3. Adjust the `stepDuration` value to change the speed of the sequential display.
-
-4. To change the order of display, modify the `steps` array.
+2. Adjust the `stepDuration` value to change the speed of the sequential display.
+3. Modify the `steps` array to change the order of display.
 
 ## Integrating Concurrent Searches
 
@@ -76,43 +102,47 @@ export const performConcurrentSearch = async (query) => {
 };
 ```
 
-2. Modify the `SearchResults` component to use the concurrent search:
+2. Modify the parent component that uses `SearchResults` to use the concurrent search:
 
 ```javascript
+import React, { useState, useEffect } from 'react';
 import { performConcurrentSearch } from '../api/searchApi';
+import SearchResults from './SearchResults';
 
-const SearchResults = ({ query }) => {
+const SearchContainer = ({ query }) => {
   const [results, setResults] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchResults = async () => {
+      setIsLoading(true);
       try {
         const concurrentResults = await performConcurrentSearch(query);
         setResults(concurrentResults);
       } catch (error) {
         // Handle error
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    fetchResults();
+    if (query) {
+      fetchResults();
+    }
   }, [query]);
 
-  // Render results...
+  return (
+    <div>
+      {isLoading ? (
+        <LoadingIndicator />
+      ) : (
+        <SearchResults query={query} results={results} isLatestQuery={true} />
+      )}
+    </div>
+  );
 };
+
+export default SearchContainer;
 ```
 
-3. Update the rendering logic to display results as they become available:
-
-```javascript
-return (
-  <div>
-    {results?.mainSearch && <MainSearchResult data={results.mainSearch} />}
-    {results?.proSearch && <ProSearchResult data={results.proSearch} />}
-    {results?.sources && <SourcesResult data={results.sources} />}
-  </div>
-);
-```
-
-By implementing these changes, you can customize the sequential display of search results and integrate concurrent searches for improved performance.
-
-Remember to adjust the API endpoints and response handling according to your specific backend implementation.
+By implementing these changes, you can customize the sequential display of search results and integrate concurrent searches for improved performance. Remember to adjust the API endpoints and response handling according to your specific backend implementation.
