@@ -13,11 +13,6 @@ const SearchInput = ({ onSearch, isSearching }) => {
     onSearch(query);
   };
 
-  const bgColor = config.theme === 'dark' ? config.colors.primary.dark : config.colors.primary.light;
-  const textColor = config.theme === 'dark' ? config.colors.text.dark : config.colors.text.light;
-  const buttonBgColor = config.theme === 'dark' ? config.colors.accent.dark : config.colors.accent.light;
-  const buttonHoverColor = config.theme === 'dark' ? 'hover:bg-opacity-90' : 'hover:bg-opacity-80';
-
   return (
     <form onSubmit={handleSubmit} className="flex items-center">
       <div className="relative flex-grow mr-2">
@@ -26,7 +21,7 @@ const SearchInput = ({ onSearch, isSearching }) => {
           placeholder={config.components.searchInput.placeholder}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className={`w-full ${bgColor} ${textColor} border-none rounded-full pl-10 pr-12 py-3`}
+          className={`w-full ${config.theme === 'dark' ? 'bg-[#3C3C3C] text-white' : 'bg-white text-black'} border-none rounded-full pl-10 pr-12 py-3`}
         />
         <Button
           type="button"
@@ -37,7 +32,7 @@ const SearchInput = ({ onSearch, isSearching }) => {
         <Button
           type="submit"
           disabled={isSearching}
-          className={`absolute right-1 top-1/2 transform -translate-y-1/2 ${buttonBgColor} ${buttonHoverColor} rounded-full w-10 h-10 flex items-center justify-center`}
+          className={`absolute right-1 top-1/2 transform -translate-y-1/2 ${config.theme === 'dark' ? 'bg-[#4A72FF] hover:bg-[#3A62EF]' : 'bg-blue-500 hover:bg-blue-600'} rounded-full w-10 h-10 flex items-center justify-center`}
         >
           {isSearching ? (
             <div className="w-5 h-5 border-t-2 border-white rounded-full animate-spin"></div>
@@ -49,7 +44,7 @@ const SearchInput = ({ onSearch, isSearching }) => {
         </Button>
       </div>
       {config.components.searchInput.micEnabled && (
-        <Button type="button" variant="ghost" className={`${bgColor} rounded-full w-10 h-10 flex items-center justify-center`}>
+        <Button type="button" variant="ghost" className={`${config.theme === 'dark' ? 'bg-[#3C3C3C]' : 'bg-gray-200'} rounded-full w-10 h-10 flex items-center justify-center`}>
           <Mic className="h-5 w-5" />
         </Button>
       )}
