@@ -1,16 +1,11 @@
 import React from 'react';
 import { useUIConfig } from '../config/uiConfig';
+import CodeBlock from './CodeBlock';
 
 const SDKDocumentation = () => {
   const { config } = useUIConfig();
-  const codeClass = `${config.theme === 'dark' ? 'bg-gray-900' : 'bg-gray-200'} p-4 rounded-md overflow-x-auto`;
 
-  return (
-    <div className={`${config.theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
-      <h3 className="text-xl font-semibold mb-4">SDK/API Documentation</h3>
-      <p className="mb-4">The Agentic UI SDK provides a set of functions to customize and extend the UI:</p>
-      <pre className={codeClass}>
-        {`
+  const sdkExample = `
 import { useUIConfig } from '../config/uiConfig';
 
 const MyComponent = () => {
@@ -24,8 +19,13 @@ const MyComponent = () => {
 
   // ...
 }
-        `}
-      </pre>
+  `;
+
+  return (
+    <div className={`${config.theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
+      <h3 className="text-xl font-semibold mb-4">SDK/API Documentation</h3>
+      <p className="mb-4">The Agentic UI SDK provides a set of functions to customize and extend the UI:</p>
+      <CodeBlock code={sdkExample} />
       <h4 className="text-lg font-semibold mt-6 mb-2">Available Functions</h4>
       <ul className="list-disc pl-6 space-y-2">
         <li><code>setTheme(config, theme)</code>: Change the UI theme</li>
@@ -38,6 +38,9 @@ const MyComponent = () => {
         <li><code>toggleSettingsIcon(config)</code>: Show/hide the settings icon</li>
         <li><code>addPlugin(config, plugin)</code>: Add a new plugin to the UI</li>
       </ul>
+      <p className="mt-4">
+        For more detailed information on each function, refer to the API reference in the official documentation.
+      </p>
     </div>
   );
 };
