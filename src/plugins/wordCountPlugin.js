@@ -4,12 +4,12 @@ const wordCountPlugin = createPlugin(
   'wordCount',
   '1.0.0',
   (config) => {
-    const newConfig = {
+    return {
       ...config,
       hooks: {
         ...config.hooks,
         afterSearch: [
-          ...(config.hooks.afterSearch || []),
+          ...(config.hooks?.afterSearch || []),
           (results) => {
             if (results && results.answer) {
               const wordCount = results.answer.split(/\s+/).length;
@@ -23,7 +23,6 @@ const wordCountPlugin = createPlugin(
         ],
       },
     };
-    return newConfig;
   }
 );
 
