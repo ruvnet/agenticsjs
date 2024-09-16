@@ -22,6 +22,11 @@ const AppContent = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isDocumentationOpen, setIsDocumentationOpen] = useState(false);
   const contentRef = useRef(null);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  useEffect(() => {
+    setIsFullscreen(window.navigator.standalone);
+  }, []);
 
   const scrollToTop = () => {
     contentRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
@@ -84,10 +89,16 @@ const AppContent = () => {
   };
 
   return (
-    <div className={`min-h-screen flex flex-col ${config?.theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-white text-gray-800'}`}>
+    <div className={`min-h-screen flex flex-col ${config?.theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-white text-gray-800'} ${isFullscreen ? 'fullscreen-mode' : ''}`}>
       <Helmet>
         <title>Agentic UI - Intelligent Search Interface</title>
         <meta name="description" content="Experience the future of search with Agentic UI's intelligent and interactive interface." />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <meta name="theme-color" content="#4A72FF" />
       </Helmet>
       {showInitialScreen ? (
         <InitialScreen onSearch={handleSearch} scrollToTop={scrollToTop} />
@@ -117,6 +128,14 @@ const AppContent = () => {
       )}
       <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
       <DocumentationModal isOpen={isDocumentationOpen} onClose={() => setIsDocumentationOpen(false)} />
+      <style jsx global>{`
+        .fullscreen-mode .sticky-top {
+          padding-top: calc(15px + env(safe-area-inset-top));
+        }
+        .fullscreen-mode .sticky-bottom {
+          padding-bottom: calc(5px + env(safe-area-inset-bottom));
+        }
+      `}</style>
     </div>
   );
 };
