@@ -75,11 +75,11 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
     transition: { duration: config.animations.enabled ? config.animations.duration / 1000 : 0 }
   };
 
-  const bgColor = config.theme === 'dark' ? 'bg-[#1C1C1C]' : 'bg-white';
-  const textColor = config.theme === 'dark' ? 'text-white' : 'text-gray-800';
-  const sectionBgColor = config.theme === 'dark' ? 'bg-[#2D2D2D]' : 'bg-gray-100';
-  const buttonBgColor = config.theme === 'dark' ? 'bg-[#3C3C3C]' : 'bg-white';
-  const buttonHoverColor = config.theme === 'dark' ? 'hover:bg-[#4A4A4A]' : 'hover:bg-gray-200';
+  const bgColor = config.theme === 'dark' ? config.colors.background.dark : config.colors.background.light;
+  const textColor = config.theme === 'dark' ? config.colors.text.dark : config.colors.text.light;
+  const sectionBgColor = config.theme === 'dark' ? config.colors.secondary.dark : config.colors.secondary.light;
+  const buttonBgColor = config.theme === 'dark' ? config.colors.primary.dark : config.colors.primary.light;
+  const buttonHoverColor = config.theme === 'dark' ? config.colors.accent.dark : config.colors.accent.light;
 
   return (
     <div className={`space-y-4 ${bgColor} ${textColor}`}>
@@ -96,7 +96,7 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsProSearchExpanded(!isProSearchExpanded)}
-                className={`${buttonBgColor} ${buttonHoverColor}`}
+                className={`${buttonBgColor} hover:${buttonHoverColor}`}
               >
                 {isProSearchExpanded ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
               </Button>
@@ -107,7 +107,7 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
                   <li key={index} className="mb-2">
                     <Button
                       variant="link"
-                      className={`${config.theme === 'dark' ? 'text-[#4A72FF]' : 'text-blue-600'} p-0 h-auto font-normal text-left break-words whitespace-normal`}
+                      className={`${config.theme === 'dark' ? config.colors.accent.dark : config.colors.accent.light} p-0 h-auto font-normal text-left break-words whitespace-normal`}
                       onClick={() => onProSearchClick(item)}
                     >
                       <span className="mr-2 inline-block">✓</span>
@@ -132,7 +132,7 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsSourcesExpanded(!isSourcesExpanded)}
-                className={`${buttonBgColor} ${buttonHoverColor}`}
+                className={`${buttonBgColor} hover:${buttonHoverColor}`}
               >
                 {isSourcesExpanded ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
               </Button>
@@ -142,7 +142,7 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
                 {results.sources.map((source, index) => (
                   <div
                     key={index}
-                    className={`${buttonBgColor} p-3 rounded text-left flex flex-col items-start h-auto w-full cursor-pointer ${buttonHoverColor} transition-colors`}
+                    className={`${buttonBgColor} p-3 rounded text-left flex flex-col items-start h-auto w-full cursor-pointer hover:${buttonHoverColor} transition-colors`}
                     onClick={() => onSourceClick(source)}
                   >
                     <p className="font-medium w-full break-words mb-1">{source.title}</p>

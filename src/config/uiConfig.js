@@ -8,7 +8,7 @@ export const defaultConfig = {
   },
   language: 'en',
   fontSize: 'medium',
-  accentColor: 'blue',
+  accentColor: 'gray',
   searchBarPosition: 'bottom',
   components: {
     searchInput: {
@@ -31,10 +31,26 @@ export const defaultConfig = {
   showSettingsIcon: true,
   plugins: [],
   colors: {
-    primary: '#4A72FF',
-    secondary: '#3C3C3C',
-    background: '#1C1C1C',
-    text: '#FFFFFF',
+    primary: {
+      dark: '#3C3C3C',
+      light: '#F0F0F0',
+    },
+    secondary: {
+      dark: '#2D2D2D',
+      light: '#E0E0E0',
+    },
+    background: {
+      dark: '#1C1C1C',
+      light: '#FFFFFF',
+    },
+    text: {
+      dark: '#FFFFFF',
+      light: '#000000',
+    },
+    accent: {
+      dark: '#4A4A4A',
+      light: '#D0D0D0',
+    },
   },
   font: {
     family: 'Inter, sans-serif',
@@ -51,7 +67,7 @@ export const UIConfigContext = createContext(defaultConfig);
 export const useUIConfig = () => useContext(UIConfigContext);
 
 export const updateConfig = (config, updates) => {
-  return {
+  const newConfig = {
     ...config,
     ...updates,
     components: {
@@ -67,6 +83,9 @@ export const updateConfig = (config, updates) => {
       ...updates.font,
     },
   };
+
+  localStorage.setItem('uiConfig', JSON.stringify(newConfig));
+  return newConfig;
 };
 
 // Plugin architecture
