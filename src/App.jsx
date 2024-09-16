@@ -106,8 +106,14 @@ const AppContent = () => {
     setQueries([]);
   };
 
+  const renderSearchInput = () => (
+    <div className={`${config.searchBarPosition === 'top' ? 'order-first mb-4' : 'order-last mt-4'} w-full px-4`}>
+      <SearchInput onSearch={handleSearch} isSearching={isSearching} />
+    </div>
+  );
+
   return (
-    <div className={`min-h-screen flex flex-col ${config?.theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-white text-gray-800'} ${isFullscreen ? 'fullscreen-mode' : ''}`}>
+    <div className={`min-h-screen flex flex-col ${config.theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-white text-gray-800'} ${isFullscreen ? 'fullscreen-mode' : ''}`}>
       <Helmet>
         <title>Agentic UI - Intelligent Search Interface</title>
         <meta name="description" content="Experience the future of search with Agentic UI's intelligent and interactive interface." />
@@ -121,13 +127,14 @@ const AppContent = () => {
       {showInitialScreen ? (
         <InitialScreen onSearch={handleSearch} scrollToTop={scrollToTop} />
       ) : (
-        <>
+        <div className="flex flex-col min-h-screen">
           <TopNavigation
             onClose={handleCloseSearch}
             onOpenSettings={() => setIsSettingsOpen(true)}
             onOpenDocumentation={() => setIsDocumentationOpen(true)}
           />
-          <div ref={contentRef} className="flex-grow overflow-y-auto p-4 pb-24">
+          {config.searchBarPosition === 'top' && renderSearchInput()}
+          <div ref={contentRef} className="flex-grow overflow-y-auto p-4">
             {queries.map((queryItem, index) => (
               <SearchResults
                 key={index}
@@ -139,10 +146,8 @@ const AppContent = () => {
               />
             ))}
           </div>
-          <div className={`fixed ${config?.searchBarPosition === 'top' ? 'top-0' : 'bottom-0'} left-0 right-0 p-4 ${config?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}>
-            <SearchInput onSearch={handleSearch} isSearching={isSearching} />
-          </div>
-        </>
+          {config.searchBarPosition === 'bottom' && renderSearchInput()}
+        </div>
       )}
       <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
       <DocumentationModal isOpen={isDocumentationOpen} onClose={() => setIsDocumentationOpen(false)} />
