@@ -42,7 +42,7 @@ const SearchInput = ({ onSearch, isSearching }) => {
           <Button
             type="submit"
             disabled={isSearching}
-            className={`absolute right-1 top-1/2 transform -translate-y-1/2 ${config.theme === 'dark' ? 'bg-[#4A72FF] hover:bg-[#3A62EF]' : 'bg-blue-500 hover:bg-blue-600'} rounded-full w-10 h-10 flex items-center justify-center`}
+            className={`absolute right-1 top-1/2 transform -translate-y-1/2 bg-accent hover:bg-accent/90 rounded-full w-10 h-10 flex items-center justify-center`}
           >
             {isSearching ? (
               <div className="w-5 h-5 border-t-2 border-white rounded-full animate-spin"></div>

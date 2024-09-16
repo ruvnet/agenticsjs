@@ -138,7 +138,7 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
                   <li key={index} className="mb-2">
                     <Button
                       variant="link"
-                      className={`${config.theme === 'dark' ? 'text-blue-400' : 'text-blue-600'} p-0 h-auto font-normal text-left break-words whitespace-normal`}
+                      className={`text-accent hover:text-accent/80 p-0 h-auto font-normal text-left break-words whitespace-normal`}
                       onClick={() => onProSearchClick(item)}
                     >
                       <span className="mr-2 inline-block">✓</span>
