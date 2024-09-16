@@ -1,15 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from "framer-motion";
+import React, { useState, useEffect, useRef } from 'react';
 import { ChevronDown, ChevronUp, ExternalLink } from 'lucide-react';
 import { useUIConfig } from '../config/uiConfig';
 import { Button } from "@/components/ui/button";
+import { motion, AnimatePresence } from "framer-motion";
 import SearchSteps from './SearchSteps';
 import StreamingText from './StreamingText';
 import { scrollToElement } from '../utils/scrollUtils';
-import wordCountPlugin from '../plugins/wordCountPlugin';
 
 const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLatestQuery }) => {
-  const { config, updateUIConfig } = useUIConfig();
+  const { config } = useUIConfig();
   const [isProSearchExpanded, setIsProSearchExpanded] = useState(true);
   const [isSourcesExpanded, setIsSourcesExpanded] = useState(true);
   const [currentStep, setCurrentStep] = useState(0);
@@ -18,28 +17,33 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
   const [showAnswer, setShowAnswer] = useState(false);
   const [isGeneratingComplete, setIsGeneratingComplete] = useState(false);
 
-  useEffect(() => {
-    const updatedConfig = wordCountPlugin.setup(config);
-    updateUIConfig(updatedConfig);
-    return () => {
-      const cleanedConfig = wordCountPlugin.cleanup(config);
-      updateUIConfig(cleanedConfig);
-    };
-  }, []);
+  const proSearchRef = useRef(null);
+  const sourcesRef = useRef(null);
+  const answerRef = useRef(null);
 
   useEffect(() => {
     if (isLatestQuery) {
-      const stepTimer = setInterval(() => {
-        setCurrentStep((prevStep) => {
-          if (prevStep < 3) {
-            return prevStep + 1;
-          } else {
-            clearInterval(stepTimer);
-            return prevStep;
-          }
-        });
-      }, 2000);
-      return () => clearInterval(stepTimer);
+      const stepDuration = 2000;
+      const initialDelay = 50;
+
+      const timer = setTimeout(() => {
+        setCurrentStep(1);
+
+        const stepTimer = setInterval(() => {
+          setCurrentStep((prevStep) => {
+            if (prevStep < 3) {
+              return prevStep + 1;
+            } else {
+              clearInterval(stepTimer);
+              return prevStep;
+            }
+          });
+        }, stepDuration);
+
+        return () => clearInterval(stepTimer);
+      }, initialDelay);
+
+      return () => clearTimeout(timer);
     } else {
       setCurrentStep(3);
       setShowProSearch(true);
@@ -50,19 +54,27 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
   }, [isLatestQuery]);
 
   useEffect(() => {
-    const showContent = (setter, ref) => {
+    if (currentStep === 1) {
       setTimeout(() => {
-        setter(true);
-        scrollToElement(ref.current, 500);
+        setShowProSearch(true);
+        scrollToElement(proSearchRef.current, 500);
       }, 1000);
-    };
-
-    if (currentStep === 1) showContent(setShowProSearch, { current: document.getElementById('proSearch') });
-    else if (currentStep === 2) showContent(setShowSources, { current: document.getElementById('sources') });
-    else if (currentStep === 3) showContent(setShowAnswer, { current: document.getElementById('answer') });
+    } else if (currentStep === 2) {
+      setTimeout(() => {
+        setShowSources(true);
+        scrollToElement(sourcesRef.current, 500);
+      }, 1000);
+    } else if (currentStep === 3) {
+      setTimeout(() => {
+        setShowAnswer(true);
+        scrollToElement(answerRef.current, 500);
+      }, 1000);
+    }
   }, [currentStep]);
 
-  const handleStreamingComplete = () => setIsGeneratingComplete(true);
+  const handleStreamingComplete = () => {
+    setIsGeneratingComplete(true);
+  };
 
   const animationProps = {
     initial: { opacity: 0, height: 0 },
@@ -76,114 +88,99 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
   const buttonBgColor = config.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-200';
   const buttonHoverColor = config.theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-300';
 
-  const ModifiedSearchResults = config.components.SearchResults || SearchResults;
-
   return (
-    <ModifiedSearchResults
-      query={query}
-      results={results}
-      isLatestQuery={isLatestQuery}
-      showProSearch={showProSearch}
-      showSources={showSources}
-      showAnswer={showAnswer}
-      isGeneratingComplete={isGeneratingComplete}
-      handleStreamingComplete={handleStreamingComplete}
-      animationProps={animationProps}
-      textColor={textColor}
-      borderColor={borderColor}
-      buttonBgColor={buttonBgColor}
-      buttonHoverColor={buttonHoverColor}
-      isProSearchExpanded={isProSearchExpanded}
-      setIsProSearchExpanded={setIsProSearchExpanded}
-      isSourcesExpanded={isSourcesExpanded}
-      setIsSourcesExpanded={setIsSourcesExpanded}
-      onProSearchClick={onProSearchClick}
-      onSourceClick={onSourceClick}
-    >
-      <SearchSteps currentStep={currentStep} isGeneratingComplete={isGeneratingComplete} />
-      
-      {showProSearch && results?.proSearch && (
-        <motion.div
-          id="proSearch"
-          {...animationProps}
-          className={`mt-4 p-4 rounded-lg ${borderColor} border`}
-        >
-          <div className="flex justify-between items-center mb-2">
-            <h3 className={`text-lg font-semibold ${textColor}`}>Pro Search</h3>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsProSearchExpanded(!isProSearchExpanded)}
-              className={`${buttonBgColor} ${buttonHoverColor}`}
-            >
-              {isProSearchExpanded ? <ChevronUp /> : <ChevronDown />}
-            </Button>
-          </div>
-          {isProSearchExpanded && (
-            <ul className="space-y-2">
-              {results.proSearch.map((item, index) => (
-                <li key={index}>
-                  <Button
-                    variant="link"
-                    onClick={() => onProSearchClick(item)}
-                    className={`${textColor} text-left`}
-                  >
-                    {item}
-                  </Button>
-                </li>
-              ))}
-            </ul>
-          )}
-        </motion.div>
-      )}
+    <div className={`space-y-4 ${textColor} mb-8`}>
+      <h2 className="text-2xl font-bold mb-4">{query}</h2>
+      {isLatestQuery && <SearchSteps currentStep={currentStep} isGeneratingComplete={isGeneratingComplete} />}
 
-      {showSources && results?.sources && (
-        <motion.div
-          id="sources"
-          {...animationProps}
-          className={`mt-4 p-4 rounded-lg ${borderColor} border`}
-        >
-          <div className="flex justify-between items-center mb-2">
-            <h3 className={`text-lg font-semibold ${textColor}`}>Sources</h3>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsSourcesExpanded(!isSourcesExpanded)}
-              className={`${buttonBgColor} ${buttonHoverColor}`}
-            >
-              {isSourcesExpanded ? <ChevronUp /> : <ChevronDown />}
-            </Button>
-          </div>
-          {isSourcesExpanded && (
-            <ul className="space-y-2">
-              {results.sources.map((source, index) => (
-                <li key={index} className="flex items-center">
-                  <Button
-                    variant="link"
+      <AnimatePresence>
+        {showProSearch && results && (
+          <motion.div {...animationProps} className={`border ${borderColor} rounded-lg p-4`} ref={proSearchRef}>
+            <div className="flex justify-between items-center mb-2">
+              <h3 className="text-lg font-semibold flex items-center">
+                <span className="mr-2">{config.components.proSearch.icon}</span> {config.components.proSearch.title}
+              </h3>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsProSearchExpanded(!isProSearchExpanded)}
+                className={`${buttonBgColor} ${buttonHoverColor}`}
+              >
+                {isProSearchExpanded ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
+              </Button>
+            </div>
+            {isProSearchExpanded && (
+              <ul className="list-none pl-0">
+                {results.proSearch.map((item, index) => (
+                  <li key={index} className="mb-2">
+                    <Button
+                      variant="link"
+                      className={`${config.theme === 'dark' ? 'text-blue-400' : 'text-blue-600'} p-0 h-auto font-normal text-left break-words whitespace-normal`}
+                      onClick={() => onProSearchClick(item)}
+                    >
+                      <span className="mr-2 inline-block">✓</span>
+                      <span className="inline">{item}</span>
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showSources && results && (
+          <motion.div {...animationProps} className={`border ${borderColor} rounded-lg p-4`} ref={sourcesRef}>
+            <div className="flex justify-between items-center mb-2">
+              <h3 className="text-lg font-semibold flex items-center">
+                <span className="mr-2">{config.components.sources.icon}</span> {config.components.sources.title}
+              </h3>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsSourcesExpanded(!isSourcesExpanded)}
+                className={`${buttonBgColor} ${buttonHoverColor}`}
+              >
+                {isSourcesExpanded ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
+              </Button>
+            </div>
+            {isSourcesExpanded && (
+              <div className="grid grid-cols-1 gap-4">
+                {results.sources.map((source, index) => (
+                  <div
+                    key={index}
+                    className={`border ${borderColor} p-3 rounded text-left flex flex-col items-start h-auto w-full cursor-pointer ${buttonHoverColor} transition-colors`}
                     onClick={() => onSourceClick(source)}
-                    className={`${textColor} text-left flex items-center`}
                   >
-                    {source.title}
-                    <ExternalLink className="ml-2 h-4 w-4" />
-                  </Button>
-                </li>
-              ))}
-            </ul>
-          )}
-        </motion.div>
-      )}
+                    <p className="font-medium w-full break-words mb-1">{source.title}</p>
+                    <p className={`text-sm ${config.theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} flex items-center w-full`}>
+                      <span className="break-all mr-1">{source.source}</span>
+                      <ExternalLink className="flex-shrink-0 h-3 w-3 ml-1" />
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {showAnswer && results?.answer && (
-        <motion.div
-          id="answer"
-          {...animationProps}
-          className={`mt-4 p-4 rounded-lg ${borderColor} border`}
-        >
-          <h3 className={`text-lg font-semibold ${textColor} mb-2`}>Answer</h3>
-          <StreamingText text={results.answer} onComplete={handleStreamingComplete} />
-        </motion.div>
-      )}
-    </ModifiedSearchResults>
+      <AnimatePresence>
+        {showAnswer && results && (
+          <motion.div {...animationProps} className={`border ${borderColor} rounded-lg p-4`} ref={answerRef}>
+            <h3 className="text-lg font-semibold flex items-center mb-2">
+              <span className="mr-2">{config.components.answer.icon}</span> {config.components.answer.title}
+            </h3>
+            {isLatestQuery ? (
+              <StreamingText text={results.answer} onComplete={handleStreamingComplete} />
+            ) : (
+              <p>{results.answer}</p>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 };
 
