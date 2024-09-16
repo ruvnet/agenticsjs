@@ -1,65 +1,20 @@
 import React from 'react';
-import { X, Moon, Sun, Globe, Zap, Palette, Layout, Type, Volume2 } from 'lucide-react';
+import { X, Moon, Sun, Globe, Zap, Palette, Layout, Type, Volume2, Search, Clock, List, MessageSquare, Mic } from 'lucide-react';
 import { useUIConfig } from '../config/uiConfig';
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SettingsGroup from './SettingsGroup';
 
 const SettingsModal = ({ isOpen, onClose }) => {
   const { config, updateUIConfig } = useUIConfig();
 
-  const handleThemeChange = () => {
-    updateUIConfig({ theme: config.theme === 'dark' ? 'light' : 'dark' });
-  };
-
-  const handleAnimationToggle = () => {
-    updateUIConfig({ animations: { ...config.animations, enabled: !config.animations.enabled } });
-  };
-
-  const handleLanguageChange = (value) => {
-    updateUIConfig({ language: value });
-  };
-
-  const handleFontSizeChange = (value) => {
-    updateUIConfig({ fontSize: value });
-  };
-
-  const handleAccentColorChange = (value) => {
-    updateUIConfig({ accentColor: value });
-  };
-
-  const handleSearchBarPositionChange = (value) => {
-    updateUIConfig({ searchBarPosition: value });
-  };
-
-  const handleAnimationSpeedChange = (value) => {
-    updateUIConfig({ animations: { ...config.animations, duration: value[0] } });
-  };
-
-  const handleVoiceAssistantToggle = () => {
-    updateUIConfig({ voiceAssistant: !config.voiceAssistant });
-  };
-
-  const handleColorChange = (colorKey, value) => {
-    updateUIConfig({ colors: { ...config.colors, [colorKey]: value } });
-  };
-
-  const handleFontFamilyChange = (value) => {
-    updateUIConfig({ font: { ...config.font, family: value } });
-  };
-
-  const handleSpeechVisualizationChange = (value) => {
-    updateUIConfig({ speechVisualization: value });
+  const handleChange = (key, value) => {
+    updateUIConfig({ [key]: value });
   };
 
   const bgColor = config?.theme === 'dark' ? 'bg-gray-900' : 'bg-white';
@@ -79,40 +34,21 @@ const SettingsModal = ({ isOpen, onClose }) => {
           <TabsList className={`grid w-full grid-cols-4 p-2 ${config?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'} rounded-lg`}>
             <TabsTrigger value="general">General</TabsTrigger>
             <TabsTrigger value="appearance">Appearance</TabsTrigger>
+            <TabsTrigger value="search">Search</TabsTrigger>
             <TabsTrigger value="accessibility">Accessibility</TabsTrigger>
-            <TabsTrigger value="colors">Colors</TabsTrigger>
           </TabsList>
           <div className="p-4 space-y-6">
             <TabsContent value="general">
-              <GeneralSettings
-                config={config}
-                handleLanguageChange={handleLanguageChange}
-                handleSearchBarPositionChange={handleSearchBarPositionChange}
-                handleVoiceAssistantToggle={handleVoiceAssistantToggle}
-                handleSpeechVisualizationChange={handleSpeechVisualizationChange}
-              />
+              <GeneralSettings config={config} handleChange={handleChange} />
             </TabsContent>
             <TabsContent value="appearance">
-              <AppearanceSettings
-                config={config}
-                handleThemeChange={handleThemeChange}
-                handleFontSizeChange={handleFontSizeChange}
-                handleAccentColorChange={handleAccentColorChange}
-                handleFontFamilyChange={handleFontFamilyChange}
-              />
+              <AppearanceSettings config={config} handleChange={handleChange} />
+            </TabsContent>
+            <TabsContent value="search">
+              <SearchSettings config={config} handleChange={handleChange} />
             </TabsContent>
             <TabsContent value="accessibility">
-              <AccessibilitySettings
-                config={config}
-                handleAnimationToggle={handleAnimationToggle}
-                handleAnimationSpeedChange={handleAnimationSpeedChange}
-              />
-            </TabsContent>
-            <TabsContent value="colors">
-              <ColorSettings
-                config={config}
-                handleColorChange={handleColorChange}
-              />
+              <AccessibilitySettings config={config} handleChange={handleChange} />
             </TabsContent>
           </div>
         </Tabs>
@@ -121,13 +57,13 @@ const SettingsModal = ({ isOpen, onClose }) => {
   );
 };
 
-const GeneralSettings = ({ config, handleLanguageChange, handleSearchBarPositionChange, handleVoiceAssistantToggle, handleSpeechVisualizationChange }) => (
+const GeneralSettings = ({ config, handleChange }) => (
   <>
     <SettingsGroup
       icon={<Globe className="mr-2 h-4 w-4" />}
       title="Language"
       control={
-        <Select value={config?.language} onValueChange={handleLanguageChange}>
+        <Select value={config?.language} onValueChange={(value) => handleChange('language', value)}>
           <SelectTrigger className={`w-[130px] ${config?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}>
             <SelectValue placeholder="Select language" />
           </SelectTrigger>
@@ -145,7 +81,7 @@ const GeneralSettings = ({ config, handleLanguageChange, handleSearchBarPosition
       icon={<Layout className="mr-2 h-4 w-4" />}
       title="Search Bar Position"
       control={
-        <Select value={config?.searchBarPosition} onValueChange={handleSearchBarPositionChange}>
+        <Select value={config?.searchBarPosition} onValueChange={(value) => handleChange('searchBarPosition', value)}>
           <SelectTrigger className={`w-[130px] ${config?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}>
             <SelectValue placeholder="Select position" />
           </SelectTrigger>
@@ -156,35 +92,10 @@ const GeneralSettings = ({ config, handleLanguageChange, handleSearchBarPosition
         </Select>
       }
     />
-    <SettingsGroup
-      icon={<Volume2 className="mr-2 h-4 w-4" />}
-      title="Voice Assistant"
-      control={
-        <Switch
-          checked={config?.voiceAssistant}
-          onCheckedChange={handleVoiceAssistantToggle}
-        />
-      }
-    />
-    <SettingsGroup
-      icon={<Zap className="mr-2 h-4 w-4" />}
-      title="Speech Visualization"
-      control={
-        <Select value={config?.speechVisualization} onValueChange={handleSpeechVisualizationChange}>
-          <SelectTrigger className={`w-[130px] ${config?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}>
-            <SelectValue placeholder="Select style" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="waveform">Waveform</SelectItem>
-            <SelectItem value="blocks">Blocks</SelectItem>
-          </SelectContent>
-        </Select>
-      }
-    />
   </>
 );
 
-const AppearanceSettings = ({ config, handleThemeChange, handleFontSizeChange, handleAccentColorChange, handleFontFamilyChange }) => (
+const AppearanceSettings = ({ config, handleChange }) => (
   <>
     <SettingsGroup
       icon={config?.theme === 'dark' ? <Moon className="mr-2 h-4 w-4" /> : <Sun className="mr-2 h-4 w-4" />}
@@ -192,7 +103,7 @@ const AppearanceSettings = ({ config, handleThemeChange, handleFontSizeChange, h
       control={
         <Switch
           checked={config?.theme === 'dark'}
-          onCheckedChange={handleThemeChange}
+          onCheckedChange={(checked) => handleChange('theme', checked ? 'dark' : 'light')}
         />
       }
     />
@@ -200,7 +111,7 @@ const AppearanceSettings = ({ config, handleThemeChange, handleFontSizeChange, h
       icon={<Type className="mr-2 h-4 w-4" />}
       title="Font Size"
       control={
-        <Select value={config?.fontSize} onValueChange={handleFontSizeChange}>
+        <Select value={config?.fontSize} onValueChange={(value) => handleChange('fontSize', value)}>
           <SelectTrigger className={`w-[130px] ${config?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}>
             <SelectValue placeholder="Select size" />
           </SelectTrigger>
@@ -216,7 +127,7 @@ const AppearanceSettings = ({ config, handleThemeChange, handleFontSizeChange, h
       icon={<Palette className="mr-2 h-4 w-4" />}
       title="Accent Color"
       control={
-        <Select value={config?.accentColor} onValueChange={handleAccentColorChange}>
+        <Select value={config?.accentColor} onValueChange={(value) => handleChange('accentColor', value)}>
           <SelectTrigger className={`w-[130px] ${config?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}>
             <SelectValue placeholder="Select color" />
           </SelectTrigger>
@@ -230,21 +141,71 @@ const AppearanceSettings = ({ config, handleThemeChange, handleFontSizeChange, h
         </Select>
       }
     />
+  </>
+);
+
+const SearchSettings = ({ config, handleChange }) => (
+  <>
     <SettingsGroup
-      icon={<Type className="mr-2 h-4 w-4" />}
-      title="Font Family"
+      icon={<Clock className="mr-2 h-4 w-4" />}
+      title="Search Delay (ms)"
       control={
         <Input
-          value={config?.font?.family}
-          onChange={(e) => handleFontFamilyChange(e.target.value)}
-          className={`w-[200px] ${config?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}
+          type="number"
+          value={config?.searchDelay}
+          onChange={(e) => handleChange('searchDelay', parseInt(e.target.value))}
+          className={`w-[100px] ${config?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}
+        />
+      }
+    />
+    <SettingsGroup
+      icon={<Zap className="mr-2 h-4 w-4" />}
+      title="Result Animation Duration (ms)"
+      control={
+        <Input
+          type="number"
+          value={config?.resultAnimationDuration}
+          onChange={(e) => handleChange('resultAnimationDuration', parseInt(e.target.value))}
+          className={`w-[100px] ${config?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}
+        />
+      }
+    />
+    <SettingsGroup
+      icon={<List className="mr-2 h-4 w-4" />}
+      title="Max Results"
+      control={
+        <Input
+          type="number"
+          value={config?.maxResults}
+          onChange={(e) => handleChange('maxResults', parseInt(e.target.value))}
+          className={`w-[100px] ${config?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}
+        />
+      }
+    />
+    <SettingsGroup
+      icon={<MessageSquare className="mr-2 h-4 w-4" />}
+      title="Auto Suggest"
+      control={
+        <Switch
+          checked={config?.autoSuggest}
+          onCheckedChange={(checked) => handleChange('autoSuggest', checked)}
+        />
+      }
+    />
+    <SettingsGroup
+      icon={<Mic className="mr-2 h-4 w-4" />}
+      title="Voice Search"
+      control={
+        <Switch
+          checked={config?.voiceSearch}
+          onCheckedChange={(checked) => handleChange('voiceSearch', checked)}
         />
       }
     />
   </>
 );
 
-const AccessibilitySettings = ({ config, handleAnimationToggle, handleAnimationSpeedChange }) => (
+const AccessibilitySettings = ({ config, handleChange }) => (
   <>
     <SettingsGroup
       icon={<Zap className="mr-2 h-4 w-4" />}
@@ -252,7 +213,7 @@ const AccessibilitySettings = ({ config, handleAnimationToggle, handleAnimationS
       control={
         <Switch
           checked={config?.animations?.enabled}
-          onCheckedChange={handleAnimationToggle}
+          onCheckedChange={(checked) => handleChange('animations', { ...config.animations, enabled: checked })}
         />
       }
     />
@@ -261,7 +222,7 @@ const AccessibilitySettings = ({ config, handleAnimationToggle, handleAnimationS
         <span className="text-sm">Animation Speed</span>
         <Slider
           value={[config?.animations?.duration]}
-          onValueChange={handleAnimationSpeedChange}
+          onValueChange={(value) => handleChange('animations', { ...config.animations, duration: value[0] })}
           max={1000}
           step={50}
           className="w-full"
@@ -272,26 +233,6 @@ const AccessibilitySettings = ({ config, handleAnimationToggle, handleAnimationS
         </div>
       </div>
     )}
-  </>
-);
-
-const ColorSettings = ({ config, handleColorChange }) => (
-  <>
-    {Object.entries(config?.colors || {}).map(([key, value]) => (
-      <SettingsGroup
-        key={key}
-        icon={<div className="w-4 h-4 rounded-full mr-2" style={{ backgroundColor: value }}></div>}
-        title={key.charAt(0).toUpperCase() + key.slice(1)}
-        control={
-          <Input
-            type="color"
-            value={value}
-            onChange={(e) => handleColorChange(key, e.target.value)}
-            className="w-8 h-8 p-0 border-0"
-          />
-        }
-      />
-    ))}
   </>
 );
 

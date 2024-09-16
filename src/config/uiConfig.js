@@ -44,15 +44,26 @@ export const defaultConfig = {
       bold: 700,
     },
   },
-  speechVisualization: 'waveform', // New option: 'waveform' or 'blocks'
+  speechVisualization: 'waveform',
+  searchDelay: 2000,
+  resultAnimationDuration: 500,
+  maxResults: 10,
+  autoSuggest: true,
+  voiceSearch: true,
 };
 
 export const UIConfigContext = createContext(defaultConfig);
 
-export const useUIConfig = () => useContext(UIConfigContext);
+export const useUIConfig = () => {
+  const context = useContext(UIConfigContext);
+  if (context === undefined) {
+    throw new Error('useUIConfig must be used within a UIConfigProvider');
+  }
+  return context;
+};
 
 export const updateConfig = (config, updates) => {
-  return {
+  const newConfig = {
     ...config,
     ...updates,
     components: {
@@ -68,6 +79,8 @@ export const updateConfig = (config, updates) => {
       ...updates.font,
     },
   };
+  localStorage.setItem('uiConfig', JSON.stringify(newConfig));
+  return newConfig;
 };
 
 // Plugin architecture
@@ -96,3 +109,8 @@ export const addPlugin = (config, plugin) => updateConfig(config, { plugins: [..
 export const setColors = (config, colors) => updateConfig(config, { colors });
 export const setFont = (config, font) => updateConfig(config, { font });
 export const setSpeechVisualization = (config, visualization) => updateConfig(config, { speechVisualization: visualization });
+export const setSearchDelay = (config, delay) => updateConfig(config, { searchDelay: delay });
+export const setResultAnimationDuration = (config, duration) => updateConfig(config, { resultAnimationDuration: duration });
+export const setMaxResults = (config, maxResults) => updateConfig(config, { maxResults });
+export const setAutoSuggest = (config, autoSuggest) => updateConfig(config, { autoSuggest });
+export const setVoiceSearch = (config, voiceSearch) => updateConfig(config, { voiceSearch });
