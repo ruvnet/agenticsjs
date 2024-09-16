@@ -84,7 +84,11 @@ AgenticJS also supports advanced features such as:
 - **Source Highlighting**: Highlight sources in the search results.
 - **Error Handling**: Built-in error handling and reporting.
 
-For more detailed information, please refer to the [API Documentation](./src/docs/api_documentation.md).
+## Plugin System
+
+AgenticJS includes a powerful plugin system that allows you to extend and customize the functionality of the library. You can create, apply, and manage plugins to add new features or modify existing ones.
+
+For detailed implementation instructions and best practices, please refer to the [Plugin System Documentation](./src/docs/plugin_system.md).
 
 ## Running Demo Mode
 

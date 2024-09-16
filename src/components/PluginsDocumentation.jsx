@@ -37,6 +37,37 @@ const updatedConfig = applyPlugin(config, myPlugin);
           </pre>
         </li>
         <li>
+          <strong>Register the plugin</strong>
+          <pre className={codeClass}>
+            {`
+import { registerPlugin } from '../config/uiConfig';
+
+registerPlugin(myPlugin);
+            `}
+          </pre>
+        </li>
+        <li>
+          <strong>Unregister the plugin</strong>
+          <pre className={codeClass}>
+            {`
+import { unregisterPlugin } from '../config/uiConfig';
+
+unregisterPlugin('myPlugin');
+            `}
+          </pre>
+        </li>
+        <li>
+          <strong>List all plugins</strong>
+          <pre className={codeClass}>
+            {`
+import { listPlugins } from '../config/uiConfig';
+
+const plugins = listPlugins();
+console.log(plugins);
+            `}
+          </pre>
+        </li>
+        <li>
           <strong>Use the plugin in your components</strong>
           <pre className={codeClass}>
             {`
@@ -60,6 +91,9 @@ const MyComponent = () => {
         <li>Provide default values for any new config options to ensure backwards compatibility</li>
         <li>Use TypeScript for type safety when developing plugins</li>
         <li>Test your plugins thoroughly to ensure they don't conflict with existing functionality</li>
+        <li>Implement error handling within your plugin to prevent it from crashing the core system</li>
+        <li>Monitor the performance impact of your plugin and optimize it as needed</li>
+        <li>Ensure your plugin does not introduce security vulnerabilities</li>
       </ul>
     </div>
   );
