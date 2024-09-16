@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Settings } from 'lucide-react';
+import { X, Settings, Mic } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { useUIConfig } from '../config/uiConfig';
 
@@ -53,6 +53,12 @@ const SpeechModal = ({ isOpen, onClose, onSpeechResult }) => {
     }, 100);
   };
 
+  const modalVariants = {
+    hidden: { opacity: 0, scale: 0.8 },
+    visible: { opacity: 1, scale: 1, transition: { type: 'spring', damping: 15 } },
+    exit: { opacity: 0, scale: 0.8, transition: { duration: 0.2 } }
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -60,13 +66,14 @@ const SpeechModal = ({ isOpen, onClose, onSpeechResult }) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50"
         >
           <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.9, opacity: 0 }}
-            className={`w-full max-w-md p-6 rounded-lg shadow-xl ${config.theme === 'dark' ? 'bg-gray-900' : 'bg-gray-100'}`}
+            variants={modalVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            className={`w-full max-w-md p-6 rounded-2xl shadow-2xl ${config.theme === 'dark' ? 'bg-gray-900' : 'bg-gray-100'} border-2 ${config.theme === 'dark' ? 'border-blue-500' : 'border-blue-300'}`}
           >
             <div className="flex justify-between items-center mb-4">
               <Button variant="ghost" onClick={onClose} className="text-gray-500 hover:text-gray-700">
@@ -77,20 +84,40 @@ const SpeechModal = ({ isOpen, onClose, onSpeechResult }) => {
               </Button>
             </div>
             <div className="text-center mb-8">
-              <h2 className={`text-3xl font-bold mb-2 ${config.theme === 'dark' ? 'text-gray-100' : 'text-gray-900'}`}>
+              <motion.h2
+                initial={{ y: -20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.2 }}
+                className={`text-3xl font-bold mb-2 ${config.theme === 'dark' ? 'text-blue-300' : 'text-blue-600'}`}
+              >
                 {isListening ? 'Listening...' : 'Speak to begin'}
-              </h2>
-              <p className={`text-lg ${config.theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
+              </motion.h2>
+              <motion.p
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.4 }}
+                className={`text-lg ${config.theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}
+              >
                 {recognizedText}
-              </p>
+              </motion.p>
             </div>
-            <div className="h-20 mb-8">
-              <svg width="100%" height="100%" viewBox="0 0 100 20">
+            <div className="h-24 mb-8 relative">
+              <div className="absolute inset-0 flex items-center justify-center">
+                <motion.div
+                  animate={{
+                    scale: isListening ? [1, 1.2, 1] : 1,
+                    opacity: isListening ? [0.5, 1, 0.5] : 0.5
+                  }}
+                  transition={{ repeat: Infinity, duration: 1.5 }}
+                  className={`w-16 h-16 rounded-full ${isListening ? 'bg-blue-500' : 'bg-gray-400'}`}
+                />
+              </div>
+              <svg width="100%" height="100%" viewBox="0 0 100 24" preserveAspectRatio="none">
                 {voicePattern.map((value, index) => (
                   <motion.rect
                     key={index}
                     x={index * 2}
-                    y={10 - value * 10}
+                    y={12 - value * 10}
                     width="1.5"
                     height={value * 20}
                     fill={config.theme === 'dark' ? '#4A72FF' : '#3B82F6'}
@@ -107,9 +134,10 @@ const SpeechModal = ({ isOpen, onClose, onSpeechResult }) => {
                 isListening
                   ? 'bg-red-500 hover:bg-red-600'
                   : 'bg-blue-500 hover:bg-blue-600'
-              }`}
+              } transition-colors duration-300 transform hover:scale-105`}
             >
-              {isListening ? 'Stop' : 'Start Listening'}
+              <Mic className="w-6 h-6 mr-2" />
+              {isListening ? 'Stop Listening' : 'Start Listening'}
             </Button>
           </motion.div>
         </motion.div>
