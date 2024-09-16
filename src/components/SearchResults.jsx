@@ -6,9 +6,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import SearchSteps from './SearchSteps';
 import StreamingText from './StreamingText';
 import { scrollToElement } from '../utils/scrollUtils';
+import wordCountPlugin from '../plugins/wordCountPlugin';
 
 const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLatestQuery }) => {
-  const { config } = useUIConfig();
+  const { config, updateUIConfig } = useUIConfig();
   const [isProSearchExpanded, setIsProSearchExpanded] = useState(true);
   const [isSourcesExpanded, setIsSourcesExpanded] = useState(true);
   const [currentStep, setCurrentStep] = useState(0);
@@ -20,6 +21,18 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
   const proSearchRef = useRef(null);
   const sourcesRef = useRef(null);
   const answerRef = useRef(null);
+
+  useEffect(() => {
+    // Apply the word count plugin
+    const updatedConfig = wordCountPlugin.setup(config);
+    updateUIConfig(updatedConfig);
+
+    return () => {
+      // Clean up the plugin when the component unmounts
+      const cleanedConfig = wordCountPlugin.cleanup(config);
+      updateUIConfig(cleanedConfig);
+    };
+  }, []);
 
   useEffect(() => {
     if (isLatestQuery) {
@@ -177,6 +190,7 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
             ) : (
               <p>{results.answer}</p>
             )}
+            {config.components.WordCountDisplay && <config.components.WordCountDisplay text={results.answer} />}
           </motion.div>
         )}
       </AnimatePresence>
