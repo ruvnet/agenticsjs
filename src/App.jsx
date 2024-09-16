@@ -25,7 +25,19 @@ const AppContent = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   useEffect(() => {
-    setIsFullscreen(window.navigator.standalone);
+    const checkFullscreen = () => {
+      const isFullscreenMode = window.navigator.standalone;
+      setIsFullscreen(isFullscreenMode);
+      document.documentElement.style.setProperty('--safe-area-inset-top', isFullscreenMode ? '15px' : '0px');
+      document.documentElement.style.setProperty('--safe-area-inset-bottom', isFullscreenMode ? '5px' : '0px');
+    };
+
+    checkFullscreen();
+    window.addEventListener('resize', checkFullscreen);
+
+    return () => {
+      window.removeEventListener('resize', checkFullscreen);
+    };
   }, []);
 
   const scrollToTop = () => {
@@ -129,11 +141,15 @@ const AppContent = () => {
       <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
       <DocumentationModal isOpen={isDocumentationOpen} onClose={() => setIsDocumentationOpen(false)} />
       <style jsx global>{`
+        :root {
+          --safe-area-inset-top: 0px;
+          --safe-area-inset-bottom: 0px;
+        }
         .fullscreen-mode .sticky-top {
-          padding-top: calc(15px + env(safe-area-inset-top));
+          padding-top: calc(var(--safe-area-inset-top) + env(safe-area-inset-top));
         }
         .fullscreen-mode .sticky-bottom {
-          padding-bottom: calc(5px + env(safe-area-inset-bottom));
+          padding-bottom: calc(var(--safe-area-inset-bottom) + env(safe-area-inset-bottom));
         }
       `}</style>
     </div>
