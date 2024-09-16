@@ -1,11 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useUIConfig } from '../config/uiConfig';
 
 const GeometricIcon = ({ size = 24, animate = true }) => {
-  const { config } = useUIConfig();
-  const accentColor = `var(--accent)`;
-
   const iconVariants = {
     hidden: { opacity: 0, scale: 0.5 },
     visible: { 
@@ -42,7 +38,7 @@ const GeometricIcon = ({ size = 24, animate = true }) => {
     >
       <motion.path
         d="M50 10L90 90H10L50 10Z"
-        stroke={accentColor}
+        stroke="#4A72FF"
         strokeWidth="4"
         fill="none"
         variants={pathVariants}
@@ -51,7 +47,7 @@ const GeometricIcon = ({ size = 24, animate = true }) => {
         cx="50"
         cy="50"
         r="30"
-        stroke={accentColor}
+        stroke="#4A72FF"
         strokeWidth="4"
         fill="none"
         variants={circleVariants}
