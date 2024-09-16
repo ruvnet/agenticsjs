@@ -45,17 +45,19 @@ const AppContent = () => {
       setQueries(prevQueries => {
         const updatedQueries = [...prevQueries];
         const lastQueryIndex = updatedQueries.length - 1;
-        updatedQueries[lastQueryIndex].results = {
-          answer: "Here's a simulated answer to your query about " + searchQuery,
-          proSearch: [
-            "Search for " + searchQuery + " using advanced techniques",
-            "Analyze " + searchQuery + " in various contexts"
-          ],
-          sources: [
-            { title: searchQuery + " - Comprehensive Guide", source: "example.com" },
-            { title: "Latest Research on " + searchQuery, source: "research.org" }
-          ]
-        };
+        if (lastQueryIndex >= 0) {
+          updatedQueries[lastQueryIndex].results = {
+            answer: "Here's a simulated answer to your query about " + searchQuery,
+            proSearch: [
+              "Search for " + searchQuery + " using advanced techniques",
+              "Analyze " + searchQuery + " in various contexts"
+            ],
+            sources: [
+              { title: searchQuery + " - Comprehensive Guide", source: "example.com" },
+              { title: "Latest Research on " + searchQuery, source: "research.org" }
+            ]
+          };
+        }
         return updatedQueries;
       });
     } catch (error) {
