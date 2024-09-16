@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Moon, Sun, Globe, Zap, Palette, Layout, Type, Volume2 } from 'lucide-react';
+import { X, Moon, Sun, Globe, Zap, Palette, Layout, Type, Volume2, Waveform } from 'lucide-react';
 import { useUIConfig } from '../config/uiConfig';
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -56,6 +56,10 @@ const SettingsModal = ({ isOpen, onClose }) => {
 
   const handleFontFamilyChange = (value) => {
     updateUIConfig({ font: { ...config.font, family: value } });
+  };
+
+  const handleSpeechVisualizationChange = (value) => {
+    updateUIConfig({ speechVisualization: value });
   };
 
   const bgColor = config.theme === 'dark' ? 'bg-gray-900' : 'bg-white';
@@ -121,6 +125,21 @@ const SettingsModal = ({ isOpen, onClose }) => {
                     checked={config.voiceAssistant}
                     onCheckedChange={handleVoiceAssistantToggle}
                   />
+                }
+              />
+              <SettingsGroup
+                icon={<Waveform className="mr-2 h-4 w-4" />}
+                title="Speech Visualization"
+                control={
+                  <Select value={config.speechVisualization} onValueChange={handleSpeechVisualizationChange}>
+                    <SelectTrigger className={`w-[130px] ${config.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'} ${borderColor} ${textColor}`}>
+                      <SelectValue placeholder="Select style" />
+                    </SelectTrigger>
+                    <SelectContent className={`${config.theme === 'dark' ? 'bg-gray-800' : 'bg-white'} ${borderColor} ${textColor}`}>
+                      <SelectItem value="waveform">Waveform</SelectItem>
+                      <SelectItem value="blocks">Blocks</SelectItem>
+                    </SelectContent>
+                  </Select>
                 }
               />
             </TabsContent>

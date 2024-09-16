@@ -44,6 +44,7 @@ export const defaultConfig = {
       bold: 700,
     },
   },
+  speechVisualization: 'waveform', // New option: 'waveform' or 'blocks'
 };
 
 export const UIConfigContext = createContext(defaultConfig);
@@ -94,3 +95,4 @@ export const toggleSettingsIcon = (config) => updateConfig(config, { showSetting
 export const addPlugin = (config, plugin) => updateConfig(config, { plugins: [...config.plugins, plugin] });
 export const setColors = (config, colors) => updateConfig(config, { colors });
 export const setFont = (config, font) => updateConfig(config, { font });
+export const setSpeechVisualization = (config, visualization) => updateConfig(config, { speechVisualization: visualization });

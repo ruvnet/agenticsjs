@@ -59,6 +59,42 @@ const SpeechModal = ({ isOpen, onClose, onSpeechResult }) => {
     exit: { opacity: 0, scale: 0.8, transition: { duration: 0.2 } }
   };
 
+  const renderVoiceVisualization = () => {
+    if (config.speechVisualization === 'waveform') {
+      return (
+        <svg width="100%" height="100" viewBox="0 0 100 100" preserveAspectRatio="none">
+          <motion.path
+            d={`M 0,50 ${voicePattern.map((v, i) => `L ${i * 2},${50 - v * 40}`).join(' ')}`}
+            fill="none"
+            stroke={config.theme === 'dark' ? '#4A72FF' : '#3B82F6'}
+            strokeWidth="2"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 0.5 }}
+          />
+        </svg>
+      );
+    } else {
+      return (
+        <svg width="100%" height="100" viewBox="0 0 100 24" preserveAspectRatio="none">
+          {voicePattern.map((value, index) => (
+            <motion.rect
+              key={index}
+              x={index * 2}
+              y={12 - value * 10}
+              width="1.5"
+              height={value * 20}
+              fill={config.theme === 'dark' ? '#4A72FF' : '#3B82F6'}
+              initial={{ height: 0 }}
+              animate={{ height: value * 20 }}
+              transition={{ duration: 0.1 }}
+            />
+          ))}
+        </svg>
+      );
+    }
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -112,21 +148,7 @@ const SpeechModal = ({ isOpen, onClose, onSpeechResult }) => {
                   className={`w-16 h-16 rounded-full ${isListening ? 'bg-blue-500' : 'bg-gray-400'}`}
                 />
               </div>
-              <svg width="100%" height="100%" viewBox="0 0 100 24" preserveAspectRatio="none">
-                {voicePattern.map((value, index) => (
-                  <motion.rect
-                    key={index}
-                    x={index * 2}
-                    y={12 - value * 10}
-                    width="1.5"
-                    height={value * 20}
-                    fill={config.theme === 'dark' ? '#4A72FF' : '#3B82F6'}
-                    initial={{ height: 0 }}
-                    animate={{ height: value * 20 }}
-                    transition={{ duration: 0.1 }}
-                  />
-                ))}
-              </svg>
+              {renderVoiceVisualization()}
             </div>
             <Button
               onClick={isListening ? stopListening : startListening}
