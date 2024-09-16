@@ -30,9 +30,9 @@ const SearchSteps = ({ currentStep, isGeneratingComplete }) => {
           <motion.div
             className={`w-6 h-6 rounded-full flex items-center justify-center ${
               index < currentStep || (index === 3 && isGeneratingComplete) 
-                ? 'bg-green-500' 
+                ? 'bg-accent' 
                 : index === currentStep 
-                  ? 'bg-blue-500' 
+                  ? 'bg-accent' 
                   : isDarkMode ? 'bg-gray-500' : 'bg-gray-300'
             }`}
             initial={{ scale: 0 }}
