@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import SearchInput from './components/SearchInput';
 import SearchResults from './components/SearchResults';
@@ -21,6 +21,11 @@ const AppContent = () => {
   const [showInitialScreen, setShowInitialScreen] = useState(true);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isDocumentationOpen, setIsDocumentationOpen] = useState(false);
+  const contentRef = useRef(null);
+
+  const scrollToTop = () => {
+    contentRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const handleSearch = async (searchQuery) => {
     setIsSearching(true);
@@ -57,6 +62,7 @@ const AppContent = () => {
       toast.error("An error occurred while fetching results. Please try again.");
     } finally {
       setIsSearching(false);
+      scrollToTop();
     }
   };
 
@@ -82,7 +88,7 @@ const AppContent = () => {
         <meta name="description" content="Experience the future of search with Agentic UI's intelligent and interactive interface." />
       </Helmet>
       {showInitialScreen ? (
-        <InitialScreen onSearch={handleSearch} />
+        <InitialScreen onSearch={handleSearch} scrollToTop={scrollToTop} />
       ) : (
         <>
           <TopNavigation
@@ -90,7 +96,7 @@ const AppContent = () => {
             onOpenSettings={() => setIsSettingsOpen(true)}
             onOpenDocumentation={() => setIsDocumentationOpen(true)}
           />
-          <div className="flex-grow overflow-y-auto p-4 pb-24">
+          <div ref={contentRef} className="flex-grow overflow-y-auto p-4 pb-24">
             {queries.map((queryItem, index) => (
               <SearchResults
                 key={index}

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useUIConfig } from '../config/uiConfig';
 import GeometricIcon from './GeometricIcon';
 
-const InitialScreen = ({ onSearch }) => {
+const InitialScreen = ({ onSearch, scrollToTop }) => {
   const { config } = useUIConfig();
   const isDarkMode = config.theme === 'dark';
 
@@ -24,6 +24,16 @@ const InitialScreen = ({ onSearch }) => {
     { icon: '🏌️', text: 'How to perfect your golf swing' },
     { icon: '🌮', text: 'Best taco recipes' },
   ];
+
+  const handleExampleClick = (query) => {
+    scrollToTop();
+    onSearch(query);
+  };
+
+  const handleSearch = (query) => {
+    scrollToTop();
+    onSearch(query);
+  };
 
   return (
     <div className={`fixed inset-0 flex items-center justify-center ${backgroundColor}`}>
@@ -52,7 +62,7 @@ const InitialScreen = ({ onSearch }) => {
           transition={{ duration: 0.5, delay: 2 }}
           className="w-full mb-8"
         >
-          <SearchInput onSearch={onSearch} isSearching={false} />
+          <SearchInput onSearch={handleSearch} isSearching={false} />
         </motion.div>
 
         <motion.div
@@ -66,7 +76,7 @@ const InitialScreen = ({ onSearch }) => {
               key={index}
               variant="outline"
               className={`${buttonBgColor} text-left p-3 rounded-lg flex items-center space-x-2 ${buttonHoverColor} transition-colors`}
-              onClick={() => onSearch(query.text)}
+              onClick={() => handleExampleClick(query.text)}
             >
               <span>{query.icon}</span>
               <span className={`text-sm ${secondaryTextColor} truncate`}>{query.text}</span>
