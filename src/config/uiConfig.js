@@ -30,6 +30,20 @@ export const defaultConfig = {
   },
   showSettingsIcon: true,
   plugins: [],
+  colors: {
+    primary: '#4A72FF',
+    secondary: '#3C3C3C',
+    background: '#1C1C1C',
+    text: '#FFFFFF',
+  },
+  font: {
+    family: 'Inter, sans-serif',
+    weight: {
+      regular: 400,
+      medium: 500,
+      bold: 700,
+    },
+  },
 };
 
 export const UIConfigContext = createContext(defaultConfig);
@@ -43,6 +57,14 @@ export const updateConfig = (config, updates) => {
     components: {
       ...config.components,
       ...updates.components,
+    },
+    colors: {
+      ...config.colors,
+      ...updates.colors,
+    },
+    font: {
+      ...config.font,
+      ...updates.font,
     },
   };
 };
@@ -70,3 +92,5 @@ export const setComponentConfig = (config, componentName, componentConfig) =>
   updateConfig(config, { components: { [componentName]: componentConfig } });
 export const toggleSettingsIcon = (config) => updateConfig(config, { showSettingsIcon: !config.showSettingsIcon });
 export const addPlugin = (config, plugin) => updateConfig(config, { plugins: [...config.plugins, plugin] });
+export const setColors = (config, colors) => updateConfig(config, { colors });
+export const setFont = (config, font) => updateConfig(config, { font });

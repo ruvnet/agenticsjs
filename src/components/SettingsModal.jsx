@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
+import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
@@ -49,6 +50,14 @@ const SettingsModal = ({ isOpen, onClose }) => {
     updateUIConfig({ voiceAssistant: !config.voiceAssistant });
   };
 
+  const handleColorChange = (colorKey, value) => {
+    updateUIConfig({ colors: { ...config.colors, [colorKey]: value } });
+  };
+
+  const handleFontFamilyChange = (value) => {
+    updateUIConfig({ font: { ...config.font, family: value } });
+  };
+
   const bgColor = config.theme === 'dark' ? 'bg-gray-900' : 'bg-white';
   const textColor = config.theme === 'dark' ? 'text-white' : 'text-gray-800';
   const borderColor = config.theme === 'dark' ? 'border-gray-700' : 'border-gray-200';
@@ -63,10 +72,11 @@ const SettingsModal = ({ isOpen, onClose }) => {
           </Button>
         </DialogHeader>
         <Tabs defaultValue="general" className="w-full">
-          <TabsList className={`grid w-full grid-cols-3 p-2 ${config.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'} rounded-lg`}>
+          <TabsList className={`grid w-full grid-cols-4 p-2 ${config.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'} rounded-lg`}>
             <TabsTrigger value="general" className={`data-[state=active]:${config.theme === 'dark' ? 'bg-gray-700' : 'bg-white'} data-[state=active]:${textColor}`}>General</TabsTrigger>
             <TabsTrigger value="appearance" className={`data-[state=active]:${config.theme === 'dark' ? 'bg-gray-700' : 'bg-white'} data-[state=active]:${textColor}`}>Appearance</TabsTrigger>
             <TabsTrigger value="accessibility" className={`data-[state=active]:${config.theme === 'dark' ? 'bg-gray-700' : 'bg-white'} data-[state=active]:${textColor}`}>Accessibility</TabsTrigger>
+            <TabsTrigger value="colors" className={`data-[state=active]:${config.theme === 'dark' ? 'bg-gray-700' : 'bg-white'} data-[state=active]:${textColor}`}>Colors</TabsTrigger>
           </TabsList>
           <div className="p-4 space-y-6">
             <TabsContent value="general">
@@ -159,6 +169,17 @@ const SettingsModal = ({ isOpen, onClose }) => {
                   </Select>
                 }
               />
+              <SettingsGroup
+                icon={<Type className="mr-2 h-4 w-4" />}
+                title="Font Family"
+                control={
+                  <Input
+                    value={config.font.family}
+                    onChange={(e) => handleFontFamilyChange(e.target.value)}
+                    className={`w-[200px] ${config.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'} ${borderColor} ${textColor}`}
+                  />
+                }
+              />
             </TabsContent>
             <TabsContent value="accessibility">
               <SettingsGroup
@@ -187,6 +208,23 @@ const SettingsModal = ({ isOpen, onClose }) => {
                   </div>
                 </div>
               )}
+            </TabsContent>
+            <TabsContent value="colors">
+              {Object.entries(config.colors).map(([key, value]) => (
+                <SettingsGroup
+                  key={key}
+                  icon={<div className="w-4 h-4 rounded-full mr-2" style={{ backgroundColor: value }}></div>}
+                  title={key.charAt(0).toUpperCase() + key.slice(1)}
+                  control={
+                    <Input
+                      type="color"
+                      value={value}
+                      onChange={(e) => handleColorChange(key, e.target.value)}
+                      className="w-8 h-8 p-0 border-0"
+                    />
+                  }
+                />
+              ))}
             </TabsContent>
           </div>
         </Tabs>

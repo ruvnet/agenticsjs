@@ -75,13 +75,19 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
     transition: { duration: config.animations.enabled ? config.animations.duration / 1000 : 0 }
   };
 
+  const bgColor = config.theme === 'dark' ? 'bg-[#1C1C1C]' : 'bg-white';
+  const textColor = config.theme === 'dark' ? 'text-white' : 'text-gray-800';
+  const sectionBgColor = config.theme === 'dark' ? 'bg-[#2D2D2D]' : 'bg-gray-100';
+  const buttonBgColor = config.theme === 'dark' ? 'bg-[#3C3C3C]' : 'bg-white';
+  const buttonHoverColor = config.theme === 'dark' ? 'hover:bg-[#4A4A4A]' : 'hover:bg-gray-200';
+
   return (
-    <div className="space-y-4">
+    <div className={`space-y-4 ${bgColor} ${textColor}`}>
       <SearchSteps currentStep={currentStep} isGeneratingComplete={isGeneratingComplete} />
 
       <AnimatePresence>
         {showProSearch && (
-          <motion.div {...animationProps} className={`${config.theme === 'dark' ? 'bg-[#2D2D2D]' : 'bg-gray-100'} rounded-lg p-4`} ref={proSearchRef}>
+          <motion.div {...animationProps} className={`${sectionBgColor} rounded-lg p-4`} ref={proSearchRef}>
             <div className="flex justify-between items-center mb-2">
               <h3 className="text-lg font-semibold flex items-center">
                 <span className="mr-2">{config.components.proSearch.icon}</span> {config.components.proSearch.title}
@@ -90,7 +96,7 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsProSearchExpanded(!isProSearchExpanded)}
-                className={`${config.theme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`}
+                className={`${buttonBgColor} ${buttonHoverColor}`}
               >
                 {isProSearchExpanded ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
               </Button>
@@ -117,7 +123,7 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
 
       <AnimatePresence>
         {showSources && (
-          <motion.div {...animationProps} className={`${config.theme === 'dark' ? 'bg-[#2D2D2D]' : 'bg-gray-100'} rounded-lg p-4`} ref={sourcesRef}>
+          <motion.div {...animationProps} className={`${sectionBgColor} rounded-lg p-4`} ref={sourcesRef}>
             <div className="flex justify-between items-center mb-2">
               <h3 className="text-lg font-semibold flex items-center">
                 <span className="mr-2">{config.components.sources.icon}</span> {config.components.sources.title}
@@ -126,7 +132,7 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsSourcesExpanded(!isSourcesExpanded)}
-                className={`${config.theme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`}
+                className={`${buttonBgColor} ${buttonHoverColor}`}
               >
                 {isSourcesExpanded ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
               </Button>
@@ -136,7 +142,7 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
                 {results.sources.map((source, index) => (
                   <div
                     key={index}
-                    className={`${config.theme === 'dark' ? 'bg-[#3C3C3C]' : 'bg-white'} p-3 rounded text-left flex flex-col items-start h-auto w-full cursor-pointer hover:bg-opacity-80 transition-colors`}
+                    className={`${buttonBgColor} p-3 rounded text-left flex flex-col items-start h-auto w-full cursor-pointer ${buttonHoverColor} transition-colors`}
                     onClick={() => onSourceClick(source)}
                   >
                     <p className="font-medium w-full break-words mb-1">{source.title}</p>
@@ -154,7 +160,7 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
 
       <AnimatePresence>
         {showAnswer && (
-          <motion.div {...animationProps} className={`${config.theme === 'dark' ? 'bg-[#2D2D2D]' : 'bg-gray-100'} rounded-lg p-4`} ref={answerRef}>
+          <motion.div {...animationProps} className={`${sectionBgColor} rounded-lg p-4`} ref={answerRef}>
             <h3 className="text-lg font-semibold flex items-center mb-2">
               <span className="mr-2">{config.components.answer.icon}</span> {config.components.answer.title}
             </h3>
