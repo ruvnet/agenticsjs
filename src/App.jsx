@@ -81,17 +81,15 @@ const AppContent = () => {
         <title>Agentic UI - Intelligent Search Interface</title>
         <meta name="description" content="Experience the future of search with Agentic UI's intelligent and interactive interface." />
       </Helmet>
-      {!showInitialScreen && (
-        <TopNavigation
-          onClose={handleCloseSearch}
-          onOpenSettings={() => setIsSettingsOpen(true)}
-          onOpenDocumentation={() => setIsDocumentationOpen(true)}
-        />
-      )}
       {showInitialScreen ? (
         <InitialScreen onSearch={handleSearch} />
       ) : (
         <>
+          <TopNavigation
+            onClose={handleCloseSearch}
+            onOpenSettings={() => setIsSettingsOpen(true)}
+            onOpenDocumentation={() => setIsDocumentationOpen(true)}
+          />
           <div className="flex-grow overflow-y-auto p-4 pb-24">
             {queries.map((queryItem, index) => (
               <SearchResults

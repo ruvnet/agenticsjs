@@ -26,7 +26,7 @@ const InitialScreen = ({ onSearch }) => {
   ];
 
   return (
-    <div className={`h-screen flex flex-col items-center justify-center p-4 ${backgroundColor}`}>
+    <div className={`fixed inset-0 flex flex-col items-center justify-center p-4 ${backgroundColor}`}>
       <motion.div
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
