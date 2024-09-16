@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Moon, Sun, Globe, Zap, Palette, Layout, Type, Volume2, Waveform } from 'lucide-react';
+import { X, Moon, Sun, Globe, Zap, Palette, Layout, Type, Volume2 } from 'lucide-react';
 import { useUIConfig } from '../config/uiConfig';
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -62,188 +62,57 @@ const SettingsModal = ({ isOpen, onClose }) => {
     updateUIConfig({ speechVisualization: value });
   };
 
-  const bgColor = config.theme === 'dark' ? 'bg-gray-900' : 'bg-white';
-  const textColor = config.theme === 'dark' ? 'text-white' : 'text-gray-800';
-  const borderColor = config.theme === 'dark' ? 'border-gray-700' : 'border-gray-200';
+  const bgColor = config?.theme === 'dark' ? 'bg-gray-900' : 'bg-white';
+  const textColor = config?.theme === 'dark' ? 'text-white' : 'text-gray-800';
+  const borderColor = config?.theme === 'dark' ? 'border-gray-700' : 'border-gray-200';
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className={`sm:max-w-[425px] max-h-[80vh] overflow-y-auto ${bgColor} ${textColor} rounded-xl`}>
         <DialogHeader className={`flex justify-between items-center p-4 border-b ${borderColor}`}>
           <DialogTitle className="text-2xl font-bold">Settings</DialogTitle>
-          <Button variant="ghost" onClick={onClose} className={`p-1 ${config.theme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`}>
+          <Button variant="ghost" onClick={onClose} className={`p-1 ${config?.theme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`}>
             <X className="h-6 w-6" />
           </Button>
         </DialogHeader>
         <Tabs defaultValue="general" className="w-full">
-          <TabsList className={`grid w-full grid-cols-4 p-2 ${config.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'} rounded-lg`}>
-            <TabsTrigger value="general" className={`data-[state=active]:${config.theme === 'dark' ? 'bg-gray-700' : 'bg-white'} data-[state=active]:${textColor}`}>General</TabsTrigger>
-            <TabsTrigger value="appearance" className={`data-[state=active]:${config.theme === 'dark' ? 'bg-gray-700' : 'bg-white'} data-[state=active]:${textColor}`}>Appearance</TabsTrigger>
-            <TabsTrigger value="accessibility" className={`data-[state=active]:${config.theme === 'dark' ? 'bg-gray-700' : 'bg-white'} data-[state=active]:${textColor}`}>Accessibility</TabsTrigger>
-            <TabsTrigger value="colors" className={`data-[state=active]:${config.theme === 'dark' ? 'bg-gray-700' : 'bg-white'} data-[state=active]:${textColor}`}>Colors</TabsTrigger>
+          <TabsList className={`grid w-full grid-cols-4 p-2 ${config?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'} rounded-lg`}>
+            <TabsTrigger value="general">General</TabsTrigger>
+            <TabsTrigger value="appearance">Appearance</TabsTrigger>
+            <TabsTrigger value="accessibility">Accessibility</TabsTrigger>
+            <TabsTrigger value="colors">Colors</TabsTrigger>
           </TabsList>
           <div className="p-4 space-y-6">
             <TabsContent value="general">
-              <SettingsGroup
-                icon={<Globe className="mr-2 h-4 w-4" />}
-                title="Language"
-                control={
-                  <Select value={config.language} onValueChange={handleLanguageChange}>
-                    <SelectTrigger className={`w-[130px] ${config.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'} ${borderColor} ${textColor}`}>
-                      <SelectValue placeholder="Select language" />
-                    </SelectTrigger>
-                    <SelectContent className={`${config.theme === 'dark' ? 'bg-gray-800' : 'bg-white'} ${borderColor} ${textColor}`}>
-                      <SelectItem value="en">English</SelectItem>
-                      <SelectItem value="es">Español</SelectItem>
-                      <SelectItem value="fr">Français</SelectItem>
-                      <SelectItem value="de">Deutsch</SelectItem>
-                      <SelectItem value="ja">日本語</SelectItem>
-                    </SelectContent>
-                  </Select>
-                }
-              />
-              <SettingsGroup
-                icon={<Layout className="mr-2 h-4 w-4" />}
-                title="Search Bar Position"
-                control={
-                  <Select value={config.searchBarPosition} onValueChange={handleSearchBarPositionChange}>
-                    <SelectTrigger className={`w-[130px] ${config.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'} ${borderColor} ${textColor}`}>
-                      <SelectValue placeholder="Select position" />
-                    </SelectTrigger>
-                    <SelectContent className={`${config.theme === 'dark' ? 'bg-gray-800' : 'bg-white'} ${borderColor} ${textColor}`}>
-                      <SelectItem value="top">Top</SelectItem>
-                      <SelectItem value="bottom">Bottom</SelectItem>
-                    </SelectContent>
-                  </Select>
-                }
-              />
-              <SettingsGroup
-                icon={<Volume2 className="mr-2 h-4 w-4" />}
-                title="Voice Assistant"
-                control={
-                  <Switch
-                    checked={config.voiceAssistant}
-                    onCheckedChange={handleVoiceAssistantToggle}
-                  />
-                }
-              />
-              <SettingsGroup
-                icon={<Waveform className="mr-2 h-4 w-4" />}
-                title="Speech Visualization"
-                control={
-                  <Select value={config.speechVisualization} onValueChange={handleSpeechVisualizationChange}>
-                    <SelectTrigger className={`w-[130px] ${config.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'} ${borderColor} ${textColor}`}>
-                      <SelectValue placeholder="Select style" />
-                    </SelectTrigger>
-                    <SelectContent className={`${config.theme === 'dark' ? 'bg-gray-800' : 'bg-white'} ${borderColor} ${textColor}`}>
-                      <SelectItem value="waveform">Waveform</SelectItem>
-                      <SelectItem value="blocks">Blocks</SelectItem>
-                    </SelectContent>
-                  </Select>
-                }
+              <GeneralSettings
+                config={config}
+                handleLanguageChange={handleLanguageChange}
+                handleSearchBarPositionChange={handleSearchBarPositionChange}
+                handleVoiceAssistantToggle={handleVoiceAssistantToggle}
+                handleSpeechVisualizationChange={handleSpeechVisualizationChange}
               />
             </TabsContent>
             <TabsContent value="appearance">
-              <SettingsGroup
-                icon={config.theme === 'dark' ? <Moon className="mr-2 h-4 w-4" /> : <Sun className="mr-2 h-4 w-4" />}
-                title="Theme"
-                control={
-                  <Switch
-                    checked={config.theme === 'dark'}
-                    onCheckedChange={handleThemeChange}
-                  />
-                }
-              />
-              <SettingsGroup
-                icon={<Type className="mr-2 h-4 w-4" />}
-                title="Font Size"
-                control={
-                  <Select value={config.fontSize} onValueChange={handleFontSizeChange}>
-                    <SelectTrigger className={`w-[130px] ${config.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'} ${borderColor} ${textColor}`}>
-                      <SelectValue placeholder="Select size" />
-                    </SelectTrigger>
-                    <SelectContent className={`${config.theme === 'dark' ? 'bg-gray-800' : 'bg-white'} ${borderColor} ${textColor}`}>
-                      <SelectItem value="small">Small</SelectItem>
-                      <SelectItem value="medium">Medium</SelectItem>
-                      <SelectItem value="large">Large</SelectItem>
-                    </SelectContent>
-                  </Select>
-                }
-              />
-              <SettingsGroup
-                icon={<Palette className="mr-2 h-4 w-4" />}
-                title="Accent Color"
-                control={
-                  <Select value={config.accentColor} onValueChange={handleAccentColorChange}>
-                    <SelectTrigger className={`w-[130px] ${config.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'} ${borderColor} ${textColor}`}>
-                      <SelectValue placeholder="Select color" />
-                    </SelectTrigger>
-                    <SelectContent className={`${config.theme === 'dark' ? 'bg-gray-800' : 'bg-white'} ${borderColor} ${textColor}`}>
-                      <SelectItem value="blue">Blue</SelectItem>
-                      <SelectItem value="green">Green</SelectItem>
-                      <SelectItem value="red">Red</SelectItem>
-                      <SelectItem value="purple">Purple</SelectItem>
-                      <SelectItem value="orange">Orange</SelectItem>
-                    </SelectContent>
-                  </Select>
-                }
-              />
-              <SettingsGroup
-                icon={<Type className="mr-2 h-4 w-4" />}
-                title="Font Family"
-                control={
-                  <Input
-                    value={config.font.family}
-                    onChange={(e) => handleFontFamilyChange(e.target.value)}
-                    className={`w-[200px] ${config.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'} ${borderColor} ${textColor}`}
-                  />
-                }
+              <AppearanceSettings
+                config={config}
+                handleThemeChange={handleThemeChange}
+                handleFontSizeChange={handleFontSizeChange}
+                handleAccentColorChange={handleAccentColorChange}
+                handleFontFamilyChange={handleFontFamilyChange}
               />
             </TabsContent>
             <TabsContent value="accessibility">
-              <SettingsGroup
-                icon={<Zap className="mr-2 h-4 w-4" />}
-                title="Animations"
-                control={
-                  <Switch
-                    checked={config.animations.enabled}
-                    onCheckedChange={handleAnimationToggle}
-                  />
-                }
+              <AccessibilitySettings
+                config={config}
+                handleAnimationToggle={handleAnimationToggle}
+                handleAnimationSpeedChange={handleAnimationSpeedChange}
               />
-              {config.animations.enabled && (
-                <div className="space-y-2 mt-4">
-                  <span className="text-sm">Animation Speed</span>
-                  <Slider
-                    value={[config.animations.duration]}
-                    onValueChange={handleAnimationSpeedChange}
-                    max={1000}
-                    step={50}
-                    className="w-full"
-                  />
-                  <div className="flex justify-between text-xs">
-                    <span>Fast</span>
-                    <span>Slow</span>
-                  </div>
-                </div>
-              )}
             </TabsContent>
             <TabsContent value="colors">
-              {Object.entries(config.colors).map(([key, value]) => (
-                <SettingsGroup
-                  key={key}
-                  icon={<div className="w-4 h-4 rounded-full mr-2" style={{ backgroundColor: value }}></div>}
-                  title={key.charAt(0).toUpperCase() + key.slice(1)}
-                  control={
-                    <Input
-                      type="color"
-                      value={value}
-                      onChange={(e) => handleColorChange(key, e.target.value)}
-                      className="w-8 h-8 p-0 border-0"
-                    />
-                  }
-                />
-              ))}
+              <ColorSettings
+                config={config}
+                handleColorChange={handleColorChange}
+              />
             </TabsContent>
           </div>
         </Tabs>
@@ -251,5 +120,179 @@ const SettingsModal = ({ isOpen, onClose }) => {
     </Dialog>
   );
 };
+
+const GeneralSettings = ({ config, handleLanguageChange, handleSearchBarPositionChange, handleVoiceAssistantToggle, handleSpeechVisualizationChange }) => (
+  <>
+    <SettingsGroup
+      icon={<Globe className="mr-2 h-4 w-4" />}
+      title="Language"
+      control={
+        <Select value={config?.language} onValueChange={handleLanguageChange}>
+          <SelectTrigger className={`w-[130px] ${config?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}>
+            <SelectValue placeholder="Select language" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="en">English</SelectItem>
+            <SelectItem value="es">Español</SelectItem>
+            <SelectItem value="fr">Français</SelectItem>
+            <SelectItem value="de">Deutsch</SelectItem>
+            <SelectItem value="ja">日本語</SelectItem>
+          </SelectContent>
+        </Select>
+      }
+    />
+    <SettingsGroup
+      icon={<Layout className="mr-2 h-4 w-4" />}
+      title="Search Bar Position"
+      control={
+        <Select value={config?.searchBarPosition} onValueChange={handleSearchBarPositionChange}>
+          <SelectTrigger className={`w-[130px] ${config?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}>
+            <SelectValue placeholder="Select position" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="top">Top</SelectItem>
+            <SelectItem value="bottom">Bottom</SelectItem>
+          </SelectContent>
+        </Select>
+      }
+    />
+    <SettingsGroup
+      icon={<Volume2 className="mr-2 h-4 w-4" />}
+      title="Voice Assistant"
+      control={
+        <Switch
+          checked={config?.voiceAssistant}
+          onCheckedChange={handleVoiceAssistantToggle}
+        />
+      }
+    />
+    <SettingsGroup
+      icon={<Zap className="mr-2 h-4 w-4" />}
+      title="Speech Visualization"
+      control={
+        <Select value={config?.speechVisualization} onValueChange={handleSpeechVisualizationChange}>
+          <SelectTrigger className={`w-[130px] ${config?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}>
+            <SelectValue placeholder="Select style" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="waveform">Waveform</SelectItem>
+            <SelectItem value="blocks">Blocks</SelectItem>
+          </SelectContent>
+        </Select>
+      }
+    />
+  </>
+);
+
+const AppearanceSettings = ({ config, handleThemeChange, handleFontSizeChange, handleAccentColorChange, handleFontFamilyChange }) => (
+  <>
+    <SettingsGroup
+      icon={config?.theme === 'dark' ? <Moon className="mr-2 h-4 w-4" /> : <Sun className="mr-2 h-4 w-4" />}
+      title="Theme"
+      control={
+        <Switch
+          checked={config?.theme === 'dark'}
+          onCheckedChange={handleThemeChange}
+        />
+      }
+    />
+    <SettingsGroup
+      icon={<Type className="mr-2 h-4 w-4" />}
+      title="Font Size"
+      control={
+        <Select value={config?.fontSize} onValueChange={handleFontSizeChange}>
+          <SelectTrigger className={`w-[130px] ${config?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}>
+            <SelectValue placeholder="Select size" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="small">Small</SelectItem>
+            <SelectItem value="medium">Medium</SelectItem>
+            <SelectItem value="large">Large</SelectItem>
+          </SelectContent>
+        </Select>
+      }
+    />
+    <SettingsGroup
+      icon={<Palette className="mr-2 h-4 w-4" />}
+      title="Accent Color"
+      control={
+        <Select value={config?.accentColor} onValueChange={handleAccentColorChange}>
+          <SelectTrigger className={`w-[130px] ${config?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}>
+            <SelectValue placeholder="Select color" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="blue">Blue</SelectItem>
+            <SelectItem value="green">Green</SelectItem>
+            <SelectItem value="red">Red</SelectItem>
+            <SelectItem value="purple">Purple</SelectItem>
+            <SelectItem value="orange">Orange</SelectItem>
+          </SelectContent>
+        </Select>
+      }
+    />
+    <SettingsGroup
+      icon={<Type className="mr-2 h-4 w-4" />}
+      title="Font Family"
+      control={
+        <Input
+          value={config?.font?.family}
+          onChange={(e) => handleFontFamilyChange(e.target.value)}
+          className={`w-[200px] ${config?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}
+        />
+      }
+    />
+  </>
+);
+
+const AccessibilitySettings = ({ config, handleAnimationToggle, handleAnimationSpeedChange }) => (
+  <>
+    <SettingsGroup
+      icon={<Zap className="mr-2 h-4 w-4" />}
+      title="Animations"
+      control={
+        <Switch
+          checked={config?.animations?.enabled}
+          onCheckedChange={handleAnimationToggle}
+        />
+      }
+    />
+    {config?.animations?.enabled && (
+      <div className="space-y-2 mt-4">
+        <span className="text-sm">Animation Speed</span>
+        <Slider
+          value={[config?.animations?.duration]}
+          onValueChange={handleAnimationSpeedChange}
+          max={1000}
+          step={50}
+          className="w-full"
+        />
+        <div className="flex justify-between text-xs">
+          <span>Fast</span>
+          <span>Slow</span>
+        </div>
+      </div>
+    )}
+  </>
+);
+
+const ColorSettings = ({ config, handleColorChange }) => (
+  <>
+    {Object.entries(config?.colors || {}).map(([key, value]) => (
+      <SettingsGroup
+        key={key}
+        icon={<div className="w-4 h-4 rounded-full mr-2" style={{ backgroundColor: value }}></div>}
+        title={key.charAt(0).toUpperCase() + key.slice(1)}
+        control={
+          <Input
+            type="color"
+            value={value}
+            onChange={(e) => handleColorChange(key, e.target.value)}
+            className="w-8 h-8 p-0 border-0"
+          />
+        }
+      />
+    ))}
+  </>
+);
 
 export default SettingsModal;
