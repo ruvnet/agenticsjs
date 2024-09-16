@@ -15,45 +15,44 @@ const queryClient = new QueryClient();
 
 const AppContent = () => {
   const { config } = useUIConfig();
-  const [query, setQuery] = useState('');
+  const [queries, setQueries] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
-  const [results, setResults] = useState(null);
   const [showInitialScreen, setShowInitialScreen] = useState(true);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isDocumentationOpen, setIsDocumentationOpen] = useState(false);
 
   const handleSearch = async (searchQuery) => {
-    setQuery(searchQuery);
     setIsSearching(true);
-    setResults(null);
     setShowInitialScreen(false);
+
+    const newQuery = {
+      query: searchQuery,
+      results: null,
+    };
+
+    setQueries(prevQueries => [...prevQueries, newQuery]);
 
     // Simulate multi-step search process
     setTimeout(() => {
-      setResults({
-        answer: "Here's a simulated answer to your query about " + searchQuery,
-        proSearch: [
-          "Search for " + searchQuery + " using advanced techniques",
-          "Analyze " + searchQuery + " in various contexts"
-        ],
-        sources: [
-          { title: searchQuery + " - Comprehensive Guide", source: "example.com" },
-          { title: "Latest Research on " + searchQuery, source: "research.org" }
-        ]
+      setQueries(prevQueries => {
+        const updatedQueries = [...prevQueries];
+        const lastQueryIndex = updatedQueries.length - 1;
+        updatedQueries[lastQueryIndex].results = {
+          answer: "Here's a simulated answer to your query about " + searchQuery,
+          proSearch: [
+            "Search for " + searchQuery + " using advanced techniques",
+            "Analyze " + searchQuery + " in various contexts"
+          ],
+          sources: [
+            { title: searchQuery + " - Comprehensive Guide", source: "example.com" },
+            { title: "Latest Research on " + searchQuery, source: "research.org" }
+          ]
+        };
+        return updatedQueries;
       });
       setIsSearching(false);
-    }, 4000); // 4 seconds for the entire process
+    }, 4000);
   };
-
-  useEffect(() => {
-    if (results) {
-      // Scroll to the top of the results container
-      const resultsContainer = document.getElementById('results-container');
-      if (resultsContainer) {
-        resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }
-  }, [results]);
 
   const handleProSearchClick = (item) => {
     toast.info(`Searching for: ${item}`);
@@ -67,8 +66,7 @@ const AppContent = () => {
 
   const handleCloseSearch = () => {
     setShowInitialScreen(true);
-    setResults(null);
-    setQuery('');
+    setQueries([]);
   };
 
   return (
@@ -84,16 +82,17 @@ const AppContent = () => {
         <InitialScreen onSearch={handleSearch} />
       ) : (
         <>
-          <div id="results-container" className="flex-grow overflow-y-auto p-4 pb-24">
-            <h1 className="text-2xl font-bold mb-4">{query || config?.components?.searchInput?.placeholder}</h1>
-            {results && (
+          <div className="flex-grow overflow-y-auto p-4 pb-24">
+            {queries.map((queryItem, index) => (
               <SearchResults
-                results={results}
-                query={query}
+                key={index}
+                query={queryItem.query}
+                results={queryItem.results}
                 onProSearchClick={handleProSearchClick}
                 onSourceClick={handleSourceClick}
+                isLatestQuery={index === queries.length - 1}
               />
-            )}
+            ))}
           </div>
           <div className={`fixed ${config?.searchBarPosition === 'top' ? 'top-0' : 'bottom-0'} left-0 right-0 p-4 ${config?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}>
             <SearchInput onSearch={handleSearch} isSearching={isSearching} />

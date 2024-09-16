@@ -7,7 +7,7 @@ import SearchSteps from './SearchSteps';
 import StreamingText from './StreamingText';
 import { scrollToElement } from '../utils/scrollUtils';
 
-const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
+const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLatestQuery }) => {
   const { config } = useUIConfig();
   const [isProSearchExpanded, setIsProSearchExpanded] = useState(true);
   const [isSourcesExpanded, setIsSourcesExpanded] = useState(true);
@@ -22,28 +22,36 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
   const answerRef = useRef(null);
 
   useEffect(() => {
-    const stepDuration = 2000;
-    const initialDelay = 50;
+    if (isLatestQuery) {
+      const stepDuration = 2000;
+      const initialDelay = 50;
 
-    const timer = setTimeout(() => {
-      setCurrentStep(1);
+      const timer = setTimeout(() => {
+        setCurrentStep(1);
 
-      const stepTimer = setInterval(() => {
-        setCurrentStep((prevStep) => {
-          if (prevStep < 3) {
-            return prevStep + 1;
-          } else {
-            clearInterval(stepTimer);
-            return prevStep;
-          }
-        });
-      }, stepDuration);
+        const stepTimer = setInterval(() => {
+          setCurrentStep((prevStep) => {
+            if (prevStep < 3) {
+              return prevStep + 1;
+            } else {
+              clearInterval(stepTimer);
+              return prevStep;
+            }
+          });
+        }, stepDuration);
 
-      return () => clearInterval(stepTimer);
-    }, initialDelay);
+        return () => clearInterval(stepTimer);
+      }, initialDelay);
 
-    return () => clearTimeout(timer);
-  }, []);
+      return () => clearTimeout(timer);
+    } else {
+      setCurrentStep(3);
+      setShowProSearch(true);
+      setShowSources(true);
+      setShowAnswer(true);
+      setIsGeneratingComplete(true);
+    }
+  }, [isLatestQuery]);
 
   useEffect(() => {
     if (currentStep === 1) {
@@ -81,11 +89,12 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
   const buttonHoverColor = config.theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-300';
 
   return (
-    <div className={`space-y-4 ${textColor}`}>
-      <SearchSteps currentStep={currentStep} isGeneratingComplete={isGeneratingComplete} />
+    <div className={`space-y-4 ${textColor} mb-8`}>
+      <h2 className="text-2xl font-bold mb-4">{query}</h2>
+      {isLatestQuery && <SearchSteps currentStep={currentStep} isGeneratingComplete={isGeneratingComplete} />}
 
       <AnimatePresence>
-        {showProSearch && (
+        {showProSearch && results && (
           <motion.div {...animationProps} className={`border ${borderColor} rounded-lg p-4`} ref={proSearchRef}>
             <div className="flex justify-between items-center mb-2">
               <h3 className="text-lg font-semibold flex items-center">
@@ -121,7 +130,7 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
       </AnimatePresence>
 
       <AnimatePresence>
-        {showSources && (
+        {showSources && results && (
           <motion.div {...animationProps} className={`border ${borderColor} rounded-lg p-4`} ref={sourcesRef}>
             <div className="flex justify-between items-center mb-2">
               <h3 className="text-lg font-semibold flex items-center">
@@ -158,12 +167,16 @@ const SearchResults = ({ results, query, onProSearchClick, onSourceClick }) => {
       </AnimatePresence>
 
       <AnimatePresence>
-        {showAnswer && (
+        {showAnswer && results && (
           <motion.div {...animationProps} className={`border ${borderColor} rounded-lg p-4`} ref={answerRef}>
             <h3 className="text-lg font-semibold flex items-center mb-2">
               <span className="mr-2">{config.components.answer.icon}</span> {config.components.answer.title}
             </h3>
-            <StreamingText text={results.answer} onComplete={handleStreamingComplete} />
+            {isLatestQuery ? (
+              <StreamingText text={results.answer} onComplete={handleStreamingComplete} />
+            ) : (
+              <p>{results.answer}</p>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
