@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Moon, Sun, Globe, Zap, Palette, ToggleLeft, ToggleRight, Layout, Type, Volume2 } from 'lucide-react';
+import { X, Moon, Sun, Globe, Zap, Palette, Layout, Type, Volume2 } from 'lucide-react';
 import { useUIConfig } from '../config/uiConfig';
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -13,6 +13,7 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import SettingsGroup from './SettingsGroup';
 
 const SettingsModal = ({ isOpen, onClose }) => {
   const { config, updateUIConfig } = useUIConfig();
@@ -72,117 +73,107 @@ const SettingsModal = ({ isOpen, onClose }) => {
             <TabsTrigger value="accessibility">Accessibility</TabsTrigger>
           </TabsList>
           <TabsContent value="general" className="space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="flex items-center">
-                <Globe className="mr-2 h-4 w-4" />
-                Language
-              </span>
-              <Select value={config.language} onValueChange={handleLanguageChange}>
-                <SelectTrigger className="w-[130px]">
-                  <SelectValue placeholder="Select language" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="en">English</SelectItem>
-                  <SelectItem value="es">Español</SelectItem>
-                  <SelectItem value="fr">Français</SelectItem>
-                  <SelectItem value="de">Deutsch</SelectItem>
-                  <SelectItem value="ja">日本語</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="flex items-center">
-                <Layout className="mr-2 h-4 w-4" />
-                Search Bar Position
-              </span>
-              <Select value={config.searchBarPosition} onValueChange={handleSearchBarPositionChange}>
-                <SelectTrigger className="w-[130px]">
-                  <SelectValue placeholder="Select position" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="top">Top</SelectItem>
-                  <SelectItem value="bottom">Bottom</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="flex items-center">
-                {config.showSettingsIcon ? <ToggleRight className="mr-2 h-4 w-4" /> : <ToggleLeft className="mr-2 h-4 w-4" />}
-                Show Settings Icon
-              </span>
-              <Switch
-                checked={config.showSettingsIcon}
-                onCheckedChange={handleShowSettingsIconToggle}
-              />
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="flex items-center">
-                <Volume2 className="mr-2 h-4 w-4" />
-                Voice Assistant
-              </span>
-              <Switch
-                checked={config.voiceAssistant}
-                onCheckedChange={handleVoiceAssistantToggle}
-              />
-            </div>
+            <SettingsGroup
+              icon={<Globe className="mr-2 h-4 w-4" />}
+              title="Language"
+              control={
+                <Select value={config.language} onValueChange={handleLanguageChange}>
+                  <SelectTrigger className="w-[130px]">
+                    <SelectValue placeholder="Select language" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="en">English</SelectItem>
+                    <SelectItem value="es">Español</SelectItem>
+                    <SelectItem value="fr">Français</SelectItem>
+                    <SelectItem value="de">Deutsch</SelectItem>
+                    <SelectItem value="ja">日本語</SelectItem>
+                  </SelectContent>
+                </Select>
+              }
+            />
+            <SettingsGroup
+              icon={<Layout className="mr-2 h-4 w-4" />}
+              title="Search Bar Position"
+              control={
+                <Select value={config.searchBarPosition} onValueChange={handleSearchBarPositionChange}>
+                  <SelectTrigger className="w-[130px]">
+                    <SelectValue placeholder="Select position" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="top">Top</SelectItem>
+                    <SelectItem value="bottom">Bottom</SelectItem>
+                  </SelectContent>
+                </Select>
+              }
+            />
+            <SettingsGroup
+              icon={<Volume2 className="mr-2 h-4 w-4" />}
+              title="Voice Assistant"
+              control={
+                <Switch
+                  checked={config.voiceAssistant}
+                  onCheckedChange={handleVoiceAssistantToggle}
+                />
+              }
+            />
           </TabsContent>
           <TabsContent value="appearance" className="space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="flex items-center">
-                {config.theme === 'dark' ? <Moon className="mr-2 h-4 w-4" /> : <Sun className="mr-2 h-4 w-4" />}
-                Theme
-              </span>
-              <Switch
-                checked={config.theme === 'dark'}
-                onCheckedChange={handleThemeChange}
-              />
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="flex items-center">
-                <Type className="mr-2 h-4 w-4" />
-                Font Size
-              </span>
-              <Select value={config.fontSize} onValueChange={handleFontSizeChange}>
-                <SelectTrigger className="w-[130px]">
-                  <SelectValue placeholder="Select size" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="small">Small</SelectItem>
-                  <SelectItem value="medium">Medium</SelectItem>
-                  <SelectItem value="large">Large</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="flex items-center">
-                <Palette className="mr-2 h-4 w-4" />
-                Accent Color
-              </span>
-              <Select value={config.accentColor} onValueChange={handleAccentColorChange}>
-                <SelectTrigger className="w-[130px]">
-                  <SelectValue placeholder="Select color" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="blue">Blue</SelectItem>
-                  <SelectItem value="green">Green</SelectItem>
-                  <SelectItem value="red">Red</SelectItem>
-                  <SelectItem value="purple">Purple</SelectItem>
-                  <SelectItem value="orange">Orange</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            <SettingsGroup
+              icon={config.theme === 'dark' ? <Moon className="mr-2 h-4 w-4" /> : <Sun className="mr-2 h-4 w-4" />}
+              title="Theme"
+              control={
+                <Switch
+                  checked={config.theme === 'dark'}
+                  onCheckedChange={handleThemeChange}
+                />
+              }
+            />
+            <SettingsGroup
+              icon={<Type className="mr-2 h-4 w-4" />}
+              title="Font Size"
+              control={
+                <Select value={config.fontSize} onValueChange={handleFontSizeChange}>
+                  <SelectTrigger className="w-[130px]">
+                    <SelectValue placeholder="Select size" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="small">Small</SelectItem>
+                    <SelectItem value="medium">Medium</SelectItem>
+                    <SelectItem value="large">Large</SelectItem>
+                  </SelectContent>
+                </Select>
+              }
+            />
+            <SettingsGroup
+              icon={<Palette className="mr-2 h-4 w-4" />}
+              title="Accent Color"
+              control={
+                <Select value={config.accentColor} onValueChange={handleAccentColorChange}>
+                  <SelectTrigger className="w-[130px]">
+                    <SelectValue placeholder="Select color" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="blue">Blue</SelectItem>
+                    <SelectItem value="green">Green</SelectItem>
+                    <SelectItem value="red">Red</SelectItem>
+                    <SelectItem value="purple">Purple</SelectItem>
+                    <SelectItem value="orange">Orange</SelectItem>
+                  </SelectContent>
+                </Select>
+              }
+            />
           </TabsContent>
           <TabsContent value="accessibility" className="space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="flex items-center">
-                <Zap className="mr-2 h-4 w-4" />
-                Animations
-              </span>
-              <Switch
-                checked={config.animations.enabled}
-                onCheckedChange={handleAnimationToggle}
-              />
-            </div>
+            <SettingsGroup
+              icon={<Zap className="mr-2 h-4 w-4" />}
+              title="Animations"
+              control={
+                <Switch
+                  checked={config.animations.enabled}
+                  onCheckedChange={handleAnimationToggle}
+                />
+              }
+            />
             {config.animations.enabled && (
               <div className="space-y-2">
                 <span className="text-sm">Animation Speed</span>
