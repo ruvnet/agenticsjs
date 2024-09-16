@@ -4,30 +4,7 @@ import { Search, Zap, Radio } from 'lucide-react';
 import SearchInput from './SearchInput';
 import { Button } from "@/components/ui/button";
 import { useUIConfig } from '../config/uiConfig';
-
-const GeometricIcon = () => (
-  <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <motion.path
-      d="M50 10L90 90H10L50 10Z"
-      stroke="currentColor"
-      strokeWidth="4"
-      initial={{ pathLength: 0, opacity: 0 }}
-      animate={{ pathLength: 1, opacity: 1 }}
-      transition={{ duration: 2, ease: "easeInOut" }}
-    />
-    <motion.circle
-      cx="50"
-      cy="50"
-      r="30"
-      stroke="currentColor"
-      strokeWidth="4"
-      fill="none"
-      initial={{ scale: 0, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      transition={{ duration: 1, delay: 1, ease: "easeOut" }}
-    />
-  </svg>
-);
+import GeometricIcon from './GeometricIcon';
 
 const InitialScreen = ({ onSearch }) => {
   const { config } = useUIConfig();
@@ -49,14 +26,14 @@ const InitialScreen = ({ onSearch }) => {
   ];
 
   return (
-    <div className={`min-h-screen flex flex-col items-center justify-center p-4 ${backgroundColor}`}>
+    <div className={`h-screen flex flex-col items-center justify-center p-4 ${backgroundColor}`}>
       <motion.div
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, delay: 0.5 }}
         className="mb-4"
       >
-        <GeometricIcon />
+        <GeometricIcon size={100} animate={true} />
       </motion.div>
       <motion.div
         initial={{ opacity: 0, y: -20 }}

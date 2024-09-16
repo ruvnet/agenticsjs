@@ -10,6 +10,7 @@ import UIConfigProvider from './components/UIConfigProvider';
 import { useUIConfig } from './config/uiConfig';
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
+import { Helmet } from 'react-helmet';
 
 const queryClient = new QueryClient();
 
@@ -32,8 +33,10 @@ const AppContent = () => {
 
     setQueries(prevQueries => [...prevQueries, newQuery]);
 
-    // Simulate multi-step search process
-    setTimeout(() => {
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
       setQueries(prevQueries => {
         const updatedQueries = [...prevQueries];
         const lastQueryIndex = updatedQueries.length - 1;
@@ -50,8 +53,11 @@ const AppContent = () => {
         };
         return updatedQueries;
       });
+    } catch (error) {
+      toast.error("An error occurred while fetching results. Please try again.");
+    } finally {
       setIsSearching(false);
-    }, 4000);
+    }
   };
 
   const handleProSearchClick = (item) => {
@@ -71,6 +77,10 @@ const AppContent = () => {
 
   return (
     <div className={`min-h-screen flex flex-col ${config?.theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-white text-gray-800'}`}>
+      <Helmet>
+        <title>Agentic UI - Intelligent Search Interface</title>
+        <meta name="description" content="Experience the future of search with Agentic UI's intelligent and interactive interface." />
+      </Helmet>
       {!showInitialScreen && (
         <TopNavigation
           onClose={handleCloseSearch}
