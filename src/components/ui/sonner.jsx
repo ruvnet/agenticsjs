@@ -25,4 +25,4 @@ const Toaster = ({
   );
 }
 
-export { Toaster }
+export { Toaster, Toaster as Sonner }
