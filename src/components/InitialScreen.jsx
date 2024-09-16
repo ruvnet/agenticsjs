@@ -53,7 +53,7 @@ const InitialScreen = ({ onSearch, scrollToTop }) => {
           className="text-center mb-8"
         >
           <h1 className={`text-4xl font-bold mb-2 ${textColor}`}>Agentic UI</h1>
-          <p className={`text-xl ${secondaryTextColor}`}>Where knowledge begins</p>
+          <p className={`text-xl ${secondaryTextColor}`}>JavaScript Framework for Agentic Interfaces</p>
         </motion.div>
 
         <motion.div
