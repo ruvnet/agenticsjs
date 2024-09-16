@@ -31,7 +31,9 @@ const UIConfigProvider = ({ children, initialConfig = {} }) => {
 
   return (
     <UIConfigContext.Provider value={{ config, updateUIConfig }}>
-      {children}
+      <div className={`font-${config.fontSize} accent-${config.accentColor}`}>
+        {children}
+      </div>
     </UIConfigContext.Provider>
   );
 };
