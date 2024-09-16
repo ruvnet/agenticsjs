@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import SearchInput from './components/SearchInput';
 import SearchResults from './components/SearchResults';
@@ -45,6 +45,16 @@ const AppContent = () => {
     }, 4000); // 4 seconds for the entire process
   };
 
+  useEffect(() => {
+    if (results) {
+      // Scroll to the top of the results container
+      const resultsContainer = document.getElementById('results-container');
+      if (resultsContainer) {
+        resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  }, [results]);
+
   const handleProSearchClick = (item) => {
     toast.info(`Searching for: ${item}`);
     handleSearch(item);
@@ -74,7 +84,7 @@ const AppContent = () => {
         <InitialScreen onSearch={handleSearch} />
       ) : (
         <>
-          <div className="flex-grow overflow-y-auto p-4 pb-24">
+          <div id="results-container" className="flex-grow overflow-y-auto p-4 pb-24">
             <h1 className="text-2xl font-bold mb-4">{query || config?.components?.searchInput?.placeholder}</h1>
             {results && (
               <SearchResults
