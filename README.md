@@ -1,8 +1,8 @@
 <a href="https://agenticjs.gptengineer.run/">
-  <img src="./assets/home.png" alt="AgenticJS Home">
+  <img src="https://raw.githubusercontent.com/ruvnet/agenticsjs/main/assets/home2.png?token=GHSAT0AAAAAACIVHP5X2PW7VBMOODBMEHBEZXILJVA" alt="AgenticJS Home">
 </a>
 <a href="https://agenticjs.gptengineer.run/">
-  <img src="./assets/search.png" alt="AgenticJS Home">
+  <img src="https://raw.githubusercontent.com/ruvnet/agenticsjs/main/assets/search.png?token=GHSAT0AAAAAACIVHP5XL6K4DR4RAHZOUZKSZXILKBA" alt="AgenticJS Home">
 </a>
 # AgenticsJS
 
