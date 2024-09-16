@@ -1,28 +1,59 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-const GeometricIcon = ({ size = 24 }) => (
-  <svg width={size} height={size} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <motion.path
-      d="M50 10L90 90H10L50 10Z"
-      stroke="currentColor"
-      strokeWidth="4"
-      initial={{ pathLength: 0, opacity: 0 }}
-      animate={{ pathLength: 1, opacity: 1 }}
-      transition={{ duration: 2, ease: "easeInOut", repeat: Infinity, repeatType: "reverse" }}
-    />
-    <motion.circle
-      cx="50"
-      cy="50"
-      r="30"
-      stroke="currentColor"
-      strokeWidth="4"
-      fill="none"
-      initial={{ scale: 0, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      transition={{ duration: 1, delay: 1, ease: "easeOut", repeat: Infinity, repeatType: "reverse" }}
-    />
-  </svg>
-);
+const GeometricIcon = ({ size = 24, animate = true }) => {
+  const iconVariants = {
+    hidden: { opacity: 0, scale: 0.5 },
+    visible: { 
+      opacity: 1, 
+      scale: 1,
+      transition: { duration: 0.5, ease: "easeOut" }
+    }
+  };
+
+  const pathVariants = {
+    hidden: { pathLength: 0 },
+    visible: { 
+      pathLength: 1,
+      transition: { duration: 2, ease: "easeInOut", repeat: animate ? Infinity : 0, repeatType: "reverse" }
+    }
+  };
+
+  const circleVariants = {
+    hidden: { scale: 0 },
+    visible: { 
+      scale: 1,
+      transition: { duration: 1, delay: 0.5, ease: "easeOut", repeat: animate ? Infinity : 0, repeatType: "reverse" }
+    }
+  };
+
+  return (
+    <motion.svg
+      width={size}
+      height={size}
+      viewBox="0 0 100 100"
+      initial="hidden"
+      animate="visible"
+      variants={iconVariants}
+    >
+      <motion.path
+        d="M50 10L90 90H10L50 10Z"
+        stroke="#4A72FF"
+        strokeWidth="4"
+        fill="none"
+        variants={pathVariants}
+      />
+      <motion.circle
+        cx="50"
+        cy="50"
+        r="30"
+        stroke="#4A72FF"
+        strokeWidth="4"
+        fill="none"
+        variants={circleVariants}
+      />
+    </motion.svg>
+  );
+};
 
 export default GeometricIcon;
