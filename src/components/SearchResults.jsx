@@ -79,7 +79,11 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
         let processedData = { ...results };
         for (const hook of config.hooks.afterSearch) {
           if (typeof hook === 'function') {
-            processedData = await hook(processedData);
+            try {
+              processedData = await hook(processedData);
+            } catch (error) {
+              console.error('Error in afterSearch hook:', error);
+            }
           }
         }
         setProcessedResults(processedData);

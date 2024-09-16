@@ -11,11 +11,12 @@ import { useUIConfig } from './config/uiConfig';
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 import { Helmet } from 'react-helmet';
+import wordCountPlugin from './plugins/wordCountPlugin';
 
 const queryClient = new QueryClient();
 
 const AppContent = () => {
-  const { config } = useUIConfig();
+  const { config, updateUIConfig } = useUIConfig();
   const [queries, setQueries] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const [showInitialScreen, setShowInitialScreen] = useState(true);
@@ -38,6 +39,11 @@ const AppContent = () => {
     return () => {
       window.removeEventListener('resize', checkFullscreen);
     };
+  }, []);
+
+  useEffect(() => {
+    // Register the wordCountPlugin
+    updateUIConfig(wordCountPlugin.setup(config));
   }, []);
 
   const scrollToTop = () => {
