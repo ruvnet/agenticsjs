@@ -18,23 +18,27 @@ import PluginsDocumentation from './PluginsDocumentation';
 const DocumentationModal = ({ isOpen, onClose }) => {
   const { config } = useUIConfig();
 
+  const bgColor = config.theme === 'dark' ? 'bg-gray-900' : 'bg-white';
+  const textColor = config.theme === 'dark' ? 'text-white' : 'text-gray-800';
+  const borderColor = config.theme === 'dark' ? 'border-gray-700' : 'border-gray-200';
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className={`sm:max-w-[90vw] md:max-w-[80vw] max-h-[90vh] overflow-hidden flex flex-col ${config.theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'} rounded-lg`}>
-        <DialogHeader className="flex-shrink-0 flex justify-between items-center p-4 border-b border-gray-700">
+      <DialogContent className={`sm:max-w-[90vw] md:max-w-[80vw] max-h-[90vh] overflow-hidden flex flex-col ${bgColor} ${textColor} rounded-lg`}>
+        <DialogHeader className={`flex-shrink-0 flex justify-between items-center p-4 border-b ${borderColor}`}>
           <DialogTitle className="text-2xl font-bold">Documentation</DialogTitle>
-          <Button variant="ghost" onClick={onClose} className="p-1 text-gray-400 hover:text-white">
+          <Button variant="ghost" onClick={onClose} className={`p-1 ${config.theme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`}>
             <X className="h-6 w-6" />
           </Button>
         </DialogHeader>
         <Tabs defaultValue="sdk" className="flex-grow flex flex-col overflow-hidden">
           <div className="flex justify-center p-4">
-            <TabsList className="inline-flex h-10 items-center justify-center rounded-md bg-gray-700 p-1">
+            <TabsList className={`inline-flex h-10 items-center justify-center rounded-full ${config.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'} p-1`}>
               {['SDK/API', 'Templates', 'CSS', 'Themes', 'Plugins'].map((tab) => (
                 <TabsTrigger
                   key={tab.toLowerCase()}
                   value={tab.toLowerCase()}
-                  className="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-gray-600 data-[state=active]:text-white data-[state=active]:shadow-sm"
+                  className={`inline-flex items-center justify-center whitespace-nowrap rounded-full px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:${config.theme === 'dark' ? 'bg-gray-700' : 'bg-white'} data-[state=active]:${textColor} data-[state=active]:shadow-sm`}
                 >
                   {tab}
                 </TabsTrigger>
