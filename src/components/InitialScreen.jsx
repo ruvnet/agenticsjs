@@ -3,12 +3,13 @@ import { motion } from 'framer-motion';
 import { Search, Zap, Radio } from 'lucide-react';
 import SearchInput from './SearchInput';
 import { Button } from "@/components/ui/button";
+import { useUIConfig } from '../config/uiConfig';
 
 const GeometricIcon = () => (
   <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
     <motion.path
       d="M50 10L90 90H10L50 10Z"
-      stroke="#4A72FF"
+      stroke="currentColor"
       strokeWidth="4"
       initial={{ pathLength: 0, opacity: 0 }}
       animate={{ pathLength: 1, opacity: 1 }}
@@ -18,7 +19,7 @@ const GeometricIcon = () => (
       cx="50"
       cy="50"
       r="30"
-      stroke="#4A72FF"
+      stroke="currentColor"
       strokeWidth="4"
       fill="none"
       initial={{ scale: 0, opacity: 0 }}
@@ -29,6 +30,15 @@ const GeometricIcon = () => (
 );
 
 const InitialScreen = ({ onSearch }) => {
+  const { config } = useUIConfig();
+  const isDarkMode = config.theme === 'dark';
+
+  const backgroundColor = isDarkMode ? 'bg-gray-900' : 'bg-gray-100';
+  const textColor = isDarkMode ? 'text-white' : 'text-gray-800';
+  const secondaryTextColor = isDarkMode ? 'text-gray-400' : 'text-gray-600';
+  const buttonBgColor = isDarkMode ? 'bg-gray-800' : 'bg-white';
+  const buttonHoverColor = isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-200';
+
   const exampleQueries = [
     { icon: '🍌', text: 'How to preserve bananas?' },
     { icon: '🌟', text: 'How many stars are visible from Earth?' },
@@ -39,7 +49,7 @@ const InitialScreen = ({ onSearch }) => {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-[#1C1C1C]">
+    <div className={`min-h-screen flex flex-col items-center justify-center p-4 ${backgroundColor}`}>
       <motion.div
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
@@ -54,8 +64,8 @@ const InitialScreen = ({ onSearch }) => {
         transition={{ duration: 0.5, delay: 1.5 }}
         className="text-center mb-8"
       >
-        <h1 className="text-4xl font-bold mb-2 text-white">Agentic UI</h1>
-        <p className="text-xl text-gray-400">Where knowledge begins</p>
+        <h1 className={`text-4xl font-bold mb-2 ${textColor}`}>Agentic UI</h1>
+        <p className={`text-xl ${secondaryTextColor}`}>Where knowledge begins</p>
       </motion.div>
 
       <motion.div
@@ -77,11 +87,11 @@ const InitialScreen = ({ onSearch }) => {
           <Button
             key={index}
             variant="outline"
-            className="bg-[#2D2D2D] text-left p-3 rounded-lg flex items-center space-x-2 hover:bg-[#3C3C3C] transition-colors"
+            className={`${buttonBgColor} text-left p-3 rounded-lg flex items-center space-x-2 ${buttonHoverColor} transition-colors`}
             onClick={() => onSearch(query.text)}
           >
             <span>{query.icon}</span>
-            <span className="text-sm text-gray-300 truncate">{query.text}</span>
+            <span className={`text-sm ${secondaryTextColor} truncate`}>{query.text}</span>
           </Button>
         ))}
       </motion.div>
@@ -92,15 +102,15 @@ const InitialScreen = ({ onSearch }) => {
         transition={{ duration: 0.5, delay: 2.4 }}
         className="mt-8 flex space-x-8"
       >
-        <div className="flex items-center text-gray-400">
+        <div className={`flex items-center ${secondaryTextColor}`}>
           <Search className="w-5 h-5 mr-2" />
           <span>Search</span>
         </div>
-        <div className="flex items-center text-gray-400">
+        <div className={`flex items-center ${secondaryTextColor}`}>
           <Zap className="w-5 h-5 mr-2" />
           <span>Ask</span>
         </div>
-        <div className="flex items-center text-gray-400">
+        <div className={`flex items-center ${secondaryTextColor}`}>
           <Radio className="w-5 h-5 mr-2" />
           <span>Discover</span>
         </div>
