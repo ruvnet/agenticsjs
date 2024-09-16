@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { UIConfigContext, defaultConfig, updateConfig } from '../config/uiConfig';
+import { UIConfigContext, defaultConfig, updateConfig, registerPlugin } from '../config/uiConfig';
+import wordCountPlugin from '../plugins/wordCountPlugin';
 
 const UIConfigProvider = ({ children, initialConfig = {} }) => {
   const [config, setConfig] = useState(() => {
@@ -13,6 +14,12 @@ const UIConfigProvider = ({ children, initialConfig = {} }) => {
   useEffect(() => {
     localStorage.setItem('uiConfig', JSON.stringify(config));
   }, [config]);
+
+  useEffect(() => {
+    // Register the wordCountPlugin
+    const updatedConfig = registerPlugin(config, wordCountPlugin);
+    setConfig(updatedConfig);
+  }, []);
 
   const updateUIConfig = (updates) => {
     setConfig((prevConfig) => {

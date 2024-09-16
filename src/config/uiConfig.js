@@ -31,9 +31,7 @@ export const defaultConfig = {
   showSettingsIcon: true,
   plugins: [],
   hooks: {
-    addHook: () => {},
-    removeHook: () => {},
-    applyHooks: () => Promise.resolve([]),
+    afterSearch: [],
   },
 };
 
@@ -76,19 +74,19 @@ export const registerPlugin = (config, plugin) => {
   const updatedConfig = applyPlugin(config, plugin);
   return {
     ...updatedConfig,
-    plugins: [...updatedConfig.plugins, plugin.id],
+    plugins: [...(updatedConfig.plugins || []), plugin.id],
   };
 };
 
 export const unregisterPlugin = (config, pluginId) => {
   return {
     ...config,
-    plugins: config.plugins.filter(id => id !== pluginId),
+    plugins: (config.plugins || []).filter(id => id !== pluginId),
   };
 };
 
 export const listPlugins = (config) => {
-  return config.plugins;
+  return config.plugins || [];
 };
 
 // SDK functions
