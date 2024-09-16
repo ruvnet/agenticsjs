@@ -1,7 +1,7 @@
 {
   "name": "agenticsjs",
   "private": false,
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "AgenticJS is a powerful and flexible JavaScript library designed to provide an intelligent and interactive search experience with real-time results and advanced visualization.",
   "main": "dist/index.js",
   "files": ["dist"],

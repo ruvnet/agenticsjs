@@ -1,3 +1,9 @@
+<a href="https://agenticjs.gptengineer.run/">
+  <img src="./assets/home.png" alt="AgenticJS Home">
+</a>
+<a href="https://agenticjs.gptengineer.run/">
+  <img src="./assets/search.png" alt="AgenticJS Home">
+</a>
 # AgenticsJS
 
 AgenticsJS is a powerful and flexible JavaScript library designed to provide an intelligent and interactive search experience with real-time results, advanced visualization, and plugin capabilities. Built with Vite, React, and Tailwind CSS, AgenticsJS offers a seamless integration with modern web development workflows. It uses the same approach as Perplexity, the o1 for ChatGPT UI, and you.com style display of sequential queries and results.
