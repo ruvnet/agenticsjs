@@ -47,7 +47,13 @@ const DocumentationModal = ({ isOpen, onClose }) => {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 variant={activeTab === tab.id ? "default" : "outline"}
-                className={`${activeTab === tab.id ? 'bg-primary text-primary-foreground' : ''}`}
+                className={`${
+                  activeTab === tab.id
+                    ? 'bg-blue-600 text-white'
+                    : config.theme === 'dark'
+                    ? 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                    : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+                } transition-colors`}
               >
                 {tab.label}
               </Button>
