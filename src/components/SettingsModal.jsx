@@ -119,14 +119,14 @@ const PluginsTab = ({ config, updateConfig }) => {
 
 const SettingsModal = ({ isOpen, onClose }) => {
   const { config, updateUIConfig } = useUIConfig();
-  const [jiraApiKey, setJiraApiKey] = useState('');
+  const [jinaApiKey, setJinaApiKey] = useState('');
   const [openAiApiKey, setOpenAiApiKey] = useState('');
   const [tempConfig, setTempConfig] = useState(config);
-  const [jiraTestResponse, setJiraTestResponse] = useState('');
+  const [jinaTestResponse, setJinaTestResponse] = useState('');
   const [openAiTestResponse, setOpenAiTestResponse] = useState('');
 
   useEffect(() => {
-    setJiraApiKey(localStorage.getItem('jiraApiKey') || '');
+    setJinaApiKey(localStorage.getItem('jinaApiKey') || '');
     setOpenAiApiKey(localStorage.getItem('openAiApiKey') || '');
     setTempConfig(config);
   }, [config, isOpen]);
@@ -136,8 +136,8 @@ const SettingsModal = ({ isOpen, onClose }) => {
   };
 
   const handleApiKeyChange = (key, value) => {
-    if (key === 'jiraApiKey') {
-      setJiraApiKey(value);
+    if (key === 'jinaApiKey') {
+      setJinaApiKey(value);
     } else if (key === 'openAiApiKey') {
       setOpenAiApiKey(value);
     }
@@ -145,25 +145,26 @@ const SettingsModal = ({ isOpen, onClose }) => {
 
   const handleSave = () => {
     updateUIConfig(tempConfig);
-    localStorage.setItem('jiraApiKey', jiraApiKey);
+    localStorage.setItem('jinaApiKey', jinaApiKey);
     localStorage.setItem('openAiApiKey', openAiApiKey);
     toast.success("Settings saved successfully!");
     onClose();
   };
 
-  const testJiraApi = async () => {
+  const testJinaApi = async () => {
     try {
-      const response = await fetch('https://your-jira-api-endpoint.com', {
+      const response = await fetch('https://s.jina.ai/When%20was%20Jina%20AI%20founded%3F', {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${jiraApiKey}`,
-          'Content-Type': 'application/json'
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${jinaApiKey}`,
+          'X-Return-Format': 'markdown'
         }
       });
       const data = await response.json();
-      setJiraTestResponse(JSON.stringify(data, null, 2));
+      setJinaTestResponse(JSON.stringify(data, null, 2));
     } catch (error) {
-      setJiraTestResponse(`Error: ${error.message}`);
+      setJinaTestResponse(`Error: ${error.message}`);
     }
   };
 
@@ -221,12 +222,12 @@ const SettingsModal = ({ isOpen, onClose }) => {
             </TabsContent>
             <TabsContent value="api">
               <ApiSettings
-                jiraApiKey={jiraApiKey}
+                jinaApiKey={jinaApiKey}
                 openAiApiKey={openAiApiKey}
                 handleApiKeyChange={handleApiKeyChange}
-                testJiraApi={testJiraApi}
+                testJinaApi={testJinaApi}
                 testOpenAiApi={testOpenAiApi}
-                jiraTestResponse={jiraTestResponse}
+                jinaTestResponse={jinaTestResponse}
                 openAiTestResponse={openAiTestResponse}
                 theme={tempConfig?.theme}
               />
@@ -390,26 +391,26 @@ const AccessibilitySettings = ({ config, handleChange }) => (
   </>
 );
 
-const ApiSettings = ({ jiraApiKey, openAiApiKey, handleApiKeyChange, testJiraApi, testOpenAiApi, jiraTestResponse, openAiTestResponse, theme }) => (
+const ApiSettings = ({ jinaApiKey, openAiApiKey, handleApiKeyChange, testJinaApi, testOpenAiApi, jinaTestResponse, openAiTestResponse, theme }) => (
   <>
     <SettingsGroup
       icon={<Key className="mr-2 h-4 w-4" />}
-      title="Jira.ai API Key"
+      title="Jina.ai API Key"
       control={
         <div className="space-y-2 w-full">
           <Input
             type="password"
-            value={jiraApiKey}
-            onChange={(e) => handleApiKeyChange('jiraApiKey', e.target.value)}
+            value={jinaApiKey}
+            onChange={(e) => handleApiKeyChange('jinaApiKey', e.target.value)}
             className={`w-full ${theme === 'dark' ? 'bg-gray-800 text-gray-200' : 'bg-white text-gray-800'}`}
-            placeholder="Enter Jira.ai API Key"
+            placeholder="Enter Jina.ai API Key"
           />
-          <Button onClick={testJiraApi} className="w-full">
-            <Play className="mr-2 h-4 w-4" /> Test Jira.ai API
+          <Button onClick={testJinaApi} className="w-full">
+            <Play className="mr-2 h-4 w-4" /> Test Jina.ai API
           </Button>
-          {jiraTestResponse && (
+          {jinaTestResponse && (
             <Textarea
-              value={jiraTestResponse}
+              value={jinaTestResponse}
               readOnly
               className={`w-full h-32 mt-2 ${theme === 'dark' ? 'bg-gray-800 text-gray-200' : 'bg-white text-gray-800'}`}
             />
