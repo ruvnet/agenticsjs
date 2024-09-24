@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Moon, Sun, Globe, Zap, Palette, Layout, Type, Volume2, Search, Clock, List, MessageSquare, Mic, Puzzle, Key, Brain, Sliders } from 'lucide-react';
+import { X, Moon, Sun, Globe, Zap, Palette, Layout, Type, Volume2, Search, Clock, List, MessageSquare, Mic, Puzzle, Key, Brain, Sliders, Save } from 'lucide-react';
 import { useUIConfig } from '../config/uiConfig';
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -9,46 +9,55 @@ import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SettingsGroup from './SettingsGroup';
+import { toast } from "sonner";
 
 const SettingsModal = ({ isOpen, onClose }) => {
   const { config, updateUIConfig } = useUIConfig();
   const [jiraApiKey, setJiraApiKey] = useState('');
   const [openAiApiKey, setOpenAiApiKey] = useState('');
+  const [tempConfig, setTempConfig] = useState(config);
 
   useEffect(() => {
     setJiraApiKey(localStorage.getItem('jiraApiKey') || '');
     setOpenAiApiKey(localStorage.getItem('openAiApiKey') || '');
-  }, []);
+    setTempConfig(config);
+  }, [config, isOpen]);
 
   const handleChange = (key, value) => {
-    updateUIConfig({ [key]: value });
+    setTempConfig(prev => ({ ...prev, [key]: value }));
   };
 
   const handleApiKeyChange = (key, value) => {
     if (key === 'jiraApiKey') {
       setJiraApiKey(value);
-      localStorage.setItem('jiraApiKey', value);
     } else if (key === 'openAiApiKey') {
       setOpenAiApiKey(value);
-      localStorage.setItem('openAiApiKey', value);
     }
   };
 
-  const bgColor = config?.theme === 'dark' ? 'bg-gray-900' : 'bg-white';
-  const textColor = config?.theme === 'dark' ? 'text-white' : 'text-gray-800';
-  const borderColor = config?.theme === 'dark' ? 'border-gray-700' : 'border-gray-200';
+  const handleSave = () => {
+    updateUIConfig(tempConfig);
+    localStorage.setItem('jiraApiKey', jiraApiKey);
+    localStorage.setItem('openAiApiKey', openAiApiKey);
+    toast.success("Settings saved successfully!");
+    onClose();
+  };
+
+  const bgColor = tempConfig?.theme === 'dark' ? 'bg-gray-900' : 'bg-white';
+  const textColor = tempConfig?.theme === 'dark' ? 'text-white' : 'text-gray-800';
+  const borderColor = tempConfig?.theme === 'dark' ? 'border-gray-700' : 'border-gray-200';
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className={`sm:max-w-[425px] max-h-[80vh] overflow-y-auto ${bgColor} ${textColor} rounded-xl`}>
         <DialogHeader className={`flex justify-between items-center p-4 border-b ${borderColor}`}>
           <DialogTitle className="text-2xl font-bold">Settings</DialogTitle>
-          <Button variant="ghost" onClick={onClose} className={`p-1 ${config?.theme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`}>
+          <Button variant="ghost" onClick={onClose} className={`p-1 ${tempConfig?.theme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`}>
             <X className="h-6 w-6" />
           </Button>
         </DialogHeader>
         <Tabs defaultValue="general" className="w-full">
-          <TabsList className={`grid w-full grid-cols-6 p-2 ${config?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'} rounded-lg`}>
+          <TabsList className={`grid w-full grid-cols-6 p-2 ${tempConfig?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'} rounded-lg`}>
             <TabsTrigger value="general"><Globe className="h-5 w-5" /></TabsTrigger>
             <TabsTrigger value="appearance"><Palette className="h-5 w-5" /></TabsTrigger>
             <TabsTrigger value="search"><Search className="h-5 w-5" /></TabsTrigger>
@@ -58,25 +67,30 @@ const SettingsModal = ({ isOpen, onClose }) => {
           </TabsList>
           <div className="p-4 space-y-6">
             <TabsContent value="general">
-              <GeneralSettings config={config} handleChange={handleChange} />
+              <GeneralSettings config={tempConfig} handleChange={handleChange} />
             </TabsContent>
             <TabsContent value="appearance">
-              <AppearanceSettings config={config} handleChange={handleChange} />
+              <AppearanceSettings config={tempConfig} handleChange={handleChange} />
             </TabsContent>
             <TabsContent value="search">
-              <SearchSettings config={config} handleChange={handleChange} />
+              <SearchSettings config={tempConfig} handleChange={handleChange} />
             </TabsContent>
             <TabsContent value="accessibility">
-              <AccessibilitySettings config={config} handleChange={handleChange} />
+              <AccessibilitySettings config={tempConfig} handleChange={handleChange} />
             </TabsContent>
             <TabsContent value="api">
               <ApiSettings jiraApiKey={jiraApiKey} openAiApiKey={openAiApiKey} handleApiKeyChange={handleApiKeyChange} />
             </TabsContent>
             <TabsContent value="llm">
-              <LLMSettings config={config} handleChange={handleChange} />
+              <LLMSettings config={tempConfig} handleChange={handleChange} />
             </TabsContent>
           </div>
         </Tabs>
+        <div className="mt-6 flex justify-end">
+          <Button onClick={handleSave} className="bg-accent hover:bg-accent/90">
+            <Save className="mr-2 h-4 w-4" /> Save Settings
+          </Button>
+        </div>
       </DialogContent>
     </Dialog>
   );

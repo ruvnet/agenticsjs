@@ -125,7 +125,7 @@ const AppContent = () => {
         <meta name="theme-color" content="#4A72FF" />
       </Helmet>
       {showInitialScreen ? (
-        <InitialScreen onSearch={handleSearch} scrollToTop={scrollToTop} />
+        <InitialScreen onSearch={handleSearch} scrollToTop={scrollToTop} onOpenSettings={() => setIsSettingsOpen(true)} />
       ) : (
         <div className="flex flex-col min-h-screen">
           <TopNavigation

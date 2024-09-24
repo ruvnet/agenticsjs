@@ -1,12 +1,12 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Search, Zap, Radio } from 'lucide-react';
+import { Search, Zap, Radio, Settings } from 'lucide-react';
 import SearchInput from './SearchInput';
 import { Button } from "@/components/ui/button";
 import { useUIConfig } from '../config/uiConfig';
 import GeometricIcon from './GeometricIcon';
 
-const InitialScreen = ({ onSearch, scrollToTop }) => {
+const InitialScreen = ({ onSearch, scrollToTop, onOpenSettings }) => {
   const { config } = useUIConfig();
   const isDarkMode = config.theme === 'dark';
 
@@ -37,6 +37,13 @@ const InitialScreen = ({ onSearch, scrollToTop }) => {
 
   return (
     <div className={`fixed inset-0 flex items-center justify-center ${backgroundColor}`}>
+      <Button
+        variant="ghost"
+        onClick={onOpenSettings}
+        className={`absolute top-4 right-4 p-2 ${isDarkMode ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`}
+      >
+        <Settings className="h-6 w-6" />
+      </Button>
       <div className="max-w-md w-full px-4">
         <motion.div
           initial={{ opacity: 0, y: -50 }}
