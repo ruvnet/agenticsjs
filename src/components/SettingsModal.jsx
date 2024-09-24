@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import SettingsGroup from './SettingsGroup';
 import { toast } from "sonner";
+import GeneralSettings from './GeneralSettings';
 
 const PluginsTab = ({ config, updateConfig }) => {
   const { registerPlugin, unregisterPlugin, listPlugins } = useUIConfig();
@@ -74,7 +75,7 @@ const PluginsTab = ({ config, updateConfig }) => {
           <li key={plugin} className="flex justify-between items-center">
             <span>{plugin}</span>
             <Button variant="destructive" size="sm" onClick={() => handleRemovePlugin(plugin)}>
-              <Trash2 className="h-4 w-4" />
+              <X className="h-4 w-4" />
             </Button>
           </li>
         ))}
@@ -86,7 +87,7 @@ const PluginsTab = ({ config, updateConfig }) => {
           <li key={plugin} className="flex justify-between items-center">
             <span>{plugin}</span>
             <Button variant="outline" size="sm" onClick={() => handleInstallPlugin(plugin)}>
-              <Plus className="h-4 w-4 mr-2" /> Install
+              <Play className="h-4 w-4 mr-2" /> Install
             </Button>
           </li>
         ))}
@@ -205,27 +206,19 @@ const SettingsModal = ({ isOpen, onClose }) => {
               <GeneralSettings config={tempConfig} handleChange={handleChange} />
             </TabsContent>
             <TabsContent value="appearance">
-              <AppearanceSettings config={tempConfig} handleChange={handleChange} />
+              {/* Implement AppearanceSettings component */}
             </TabsContent>
             <TabsContent value="search">
-              <SearchSettings config={tempConfig} handleChange={handleChange} />
+              {/* Implement SearchSettings component */}
             </TabsContent>
             <TabsContent value="accessibility">
-              <AccessibilitySettings config={tempConfig} handleChange={handleChange} />
+              {/* Implement AccessibilitySettings component */}
             </TabsContent>
             <TabsContent value="api">
-              <ApiSettings
-                jiraApiKey={jiraApiKey}
-                openAiApiKey={openAiApiKey}
-                handleApiKeyChange={handleApiKeyChange}
-                testJiraApi={testJiraApi}
-                testOpenAiApi={testOpenAiApi}
-                jiraTestResponse={jiraTestResponse}
-                openAiTestResponse={openAiTestResponse}
-              />
+              {/* Implement ApiSettings component */}
             </TabsContent>
             <TabsContent value="llm">
-              <LLMSettings config={tempConfig} handleChange={handleChange} />
+              {/* Implement LLMSettings component */}
             </TabsContent>
             <TabsContent value="plugins">
               <PluginsTab config={tempConfig} updateConfig={handleChange} />
