@@ -11,7 +11,105 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import SettingsGroup from './SettingsGroup';
 import { toast } from "sonner";
-import PluginsTab from './PluginsTab';
+
+const PluginsTab = ({ config, updateConfig }) => {
+  const { registerPlugin, unregisterPlugin, listPlugins } = useUIConfig();
+  const [newPluginName, setNewPluginName] = useState('');
+  const [newPluginCode, setNewPluginCode] = useState('');
+
+  const handleInstallPlugin = (pluginName) => {
+    // Simulated plugin installation
+    const newPlugin = {
+      id: pluginName,
+      version: '1.0.0',
+      setup: (config) => {
+        console.log(`Setting up ${pluginName}`);
+        return config;
+      }
+    };
+    registerPlugin(newPlugin);
+    updateConfig('plugins', [...new Set([...(config.plugins || []), pluginName])]);
+  };
+
+  const handleRemovePlugin = (pluginName) => {
+    unregisterPlugin(pluginName);
+    updateConfig('plugins', (config.plugins || []).filter(p => p !== pluginName));
+  };
+
+  const handleCreatePlugin = () => {
+    if (newPluginName && newPluginCode) {
+      try {
+        const pluginFunction = new Function('config', newPluginCode);
+        const newPlugin = {
+          id: newPluginName,
+          version: '1.0.0',
+          setup: pluginFunction
+        };
+        registerPlugin(newPlugin);
+        updateConfig('plugins', [...new Set([...(config.plugins || []), newPluginName])]);
+        setNewPluginName('');
+        setNewPluginCode('');
+      } catch (error) {
+        console.error('Error creating plugin:', error);
+        // Handle error (e.g., show an error message to the user)
+      }
+    }
+  };
+
+  const availablePlugins = [
+    'WordCount',
+    'SentimentAnalysis',
+    'LanguageDetection',
+    'TextSummarization',
+    'KeywordExtraction'
+  ];
+
+  const installedPlugins = [...new Set(config.plugins || [])];
+
+  return (
+    <div className="space-y-4">
+      <h3 className="text-lg font-semibold">Installed Plugins</h3>
+      <ul className="space-y-2">
+        {installedPlugins.map((plugin) => (
+          <li key={plugin} className="flex justify-between items-center">
+            <span>{plugin}</span>
+            <Button variant="destructive" size="sm" onClick={() => handleRemovePlugin(plugin)}>
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </li>
+        ))}
+      </ul>
+
+      <h3 className="text-lg font-semibold mt-6">Available Plugins</h3>
+      <ul className="space-y-2">
+        {availablePlugins.map((plugin) => (
+          <li key={plugin} className="flex justify-between items-center">
+            <span>{plugin}</span>
+            <Button variant="outline" size="sm" onClick={() => handleInstallPlugin(plugin)}>
+              <Plus className="h-4 w-4 mr-2" /> Install
+            </Button>
+          </li>
+        ))}
+      </ul>
+
+      <h3 className="text-lg font-semibold mt-6">Create Custom Plugin</h3>
+      <div className="space-y-2">
+        <Input
+          placeholder="Plugin Name"
+          value={newPluginName}
+          onChange={(e) => setNewPluginName(e.target.value)}
+        />
+        <textarea
+          className="w-full h-32 p-2 border rounded"
+          placeholder="Plugin Code (JavaScript function that takes 'config' as parameter and returns modified config)"
+          value={newPluginCode}
+          onChange={(e) => setNewPluginCode(e.target.value)}
+        />
+        <Button onClick={handleCreatePlugin}>Create Plugin</Button>
+      </div>
+    </div>
+  );
+};
 
 const SettingsModal = ({ isOpen, onClose }) => {
   const { config, updateUIConfig } = useUIConfig();
@@ -143,293 +241,5 @@ const SettingsModal = ({ isOpen, onClose }) => {
     </Dialog>
   );
 };
-
-const GeneralSettings = ({ config, handleChange }) => (
-  <>
-    <SettingsGroup
-      icon={<Globe className="mr-2 h-4 w-4" />}
-      title="Language"
-      control={
-        <Select value={config?.language} onValueChange={(value) => handleChange('language', value)}>
-          <SelectTrigger className={`w-[130px] ${config?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}>
-            <SelectValue placeholder="Select language" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="en">English</SelectItem>
-            <SelectItem value="es">Español</SelectItem>
-            <SelectItem value="fr">Français</SelectItem>
-            <SelectItem value="de">Deutsch</SelectItem>
-            <SelectItem value="ja">日本語</SelectItem>
-          </SelectContent>
-        </Select>
-      }
-    />
-    <SettingsGroup
-      icon={<Layout className="mr-2 h-4 w-4" />}
-      title="Search Bar Position"
-      control={
-        <Select value={config?.searchBarPosition} onValueChange={(value) => handleChange('searchBarPosition', value)}>
-          <SelectTrigger className={`w-[130px] ${config?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}>
-            <SelectValue placeholder="Select position" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="top">Top</SelectItem>
-            <SelectItem value="bottom">Bottom</SelectItem>
-          </SelectContent>
-        </Select>
-      }
-    />
-  </>
-);
-
-const AppearanceSettings = ({ config, handleChange }) => (
-  <>
-    <SettingsGroup
-      icon={config?.theme === 'dark' ? <Moon className="mr-2 h-4 w-4" /> : <Sun className="mr-2 h-4 w-4" />}
-      title="Theme"
-      control={
-        <Switch
-          checked={config?.theme === 'dark'}
-          onCheckedChange={(checked) => handleChange('theme', checked ? 'dark' : 'light')}
-        />
-      }
-    />
-    <SettingsGroup
-      icon={<Type className="mr-2 h-4 w-4" />}
-      title="Font Size"
-      control={
-        <Select value={config?.fontSize} onValueChange={(value) => handleChange('fontSize', value)}>
-          <SelectTrigger className={`w-[130px] ${config?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}>
-            <SelectValue placeholder="Select size" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="small">Small</SelectItem>
-            <SelectItem value="medium">Medium</SelectItem>
-            <SelectItem value="large">Large</SelectItem>
-          </SelectContent>
-        </Select>
-      }
-    />
-    <SettingsGroup
-      icon={<Palette className="mr-2 h-4 w-4" />}
-      title="Accent Color"
-      control={
-        <Select value={config?.accentColor} onValueChange={(value) => handleChange('accentColor', value)}>
-          <SelectTrigger className={`w-[130px] ${config?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}>
-            <SelectValue placeholder="Select color" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="blue">Blue</SelectItem>
-            <SelectItem value="green">Green</SelectItem>
-            <SelectItem value="red">Red</SelectItem>
-            <SelectItem value="purple">Purple</SelectItem>
-            <SelectItem value="orange">Orange</SelectItem>
-          </SelectContent>
-        </Select>
-      }
-    />
-  </>
-);
-
-const SearchSettings = ({ config, handleChange }) => (
-  <>
-    <SettingsGroup
-      icon={<Clock className="mr-2 h-4 w-4" />}
-      title="Search Delay (ms)"
-      control={
-        <Input
-          type="number"
-          value={config?.searchDelay}
-          onChange={(e) => handleChange('searchDelay', parseInt(e.target.value))}
-          className={`w-[100px] ${config?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}
-        />
-      }
-    />
-    <SettingsGroup
-      icon={<Zap className="mr-2 h-4 w-4" />}
-      title="Result Animation Duration (ms)"
-      control={
-        <Input
-          type="number"
-          value={config?.resultAnimationDuration}
-          onChange={(e) => handleChange('resultAnimationDuration', parseInt(e.target.value))}
-          className={`w-[100px] ${config?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}
-        />
-      }
-    />
-    <SettingsGroup
-      icon={<List className="mr-2 h-4 w-4" />}
-      title="Max Results"
-      control={
-        <Input
-          type="number"
-          value={config?.maxResults}
-          onChange={(e) => handleChange('maxResults', parseInt(e.target.value))}
-          className={`w-[100px] ${config?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}
-        />
-      }
-    />
-    <SettingsGroup
-      icon={<MessageSquare className="mr-2 h-4 w-4" />}
-      title="Auto Suggest"
-      control={
-        <Switch
-          checked={config?.autoSuggest}
-          onCheckedChange={(checked) => handleChange('autoSuggest', checked)}
-        />
-      }
-    />
-    <SettingsGroup
-      icon={<Mic className="mr-2 h-4 w-4" />}
-      title="Voice Search"
-      control={
-        <Switch
-          checked={config?.voiceSearch}
-          onCheckedChange={(checked) => handleChange('voiceSearch', checked)}
-        />
-      }
-    />
-  </>
-);
-
-const AccessibilitySettings = ({ config, handleChange }) => (
-  <>
-    <SettingsGroup
-      icon={<Zap className="mr-2 h-4 w-4" />}
-      title="Animations"
-      control={
-        <Switch
-          checked={config?.animations?.enabled}
-          onCheckedChange={(checked) => handleChange('animations', { ...config.animations, enabled: checked })}
-        />
-      }
-    />
-    {config?.animations?.enabled && (
-      <div className="space-y-2 mt-4">
-        <span className="text-sm">Animation Speed</span>
-        <Slider
-          value={[config?.animations?.duration]}
-          onValueChange={(value) => handleChange('animations', { ...config.animations, duration: value[0] })}
-          max={1000}
-          step={50}
-          className="w-full"
-        />
-        <div className="flex justify-between text-xs">
-          <span>Fast</span>
-          <span>Slow</span>
-        </div>
-      </div>
-    )}
-  </>
-);
-
-const ApiSettings = ({ jiraApiKey, openAiApiKey, handleApiKeyChange, testJiraApi, testOpenAiApi, jiraTestResponse, openAiTestResponse }) => (
-  <>
-    <SettingsGroup
-      icon={<Key className="mr-2 h-4 w-4" />}
-      title="Jira.ai API Key"
-      control={
-        <div className="space-y-2 w-full">
-          <Input
-            type="password"
-            value={jiraApiKey}
-            onChange={(e) => handleApiKeyChange('jiraApiKey', e.target.value)}
-            className="w-full"
-            placeholder="Enter Jira.ai API Key"
-          />
-          <Button onClick={testJiraApi} className="w-full">
-            <Play className="mr-2 h-4 w-4" /> Test Jira.ai API
-          </Button>
-          {jiraTestResponse && (
-            <Textarea
-              value={jiraTestResponse}
-              readOnly
-              className="w-full h-32 mt-2"
-            />
-          )}
-        </div>
-      }
-    />
-    <SettingsGroup
-      icon={<Key className="mr-2 h-4 w-4" />}
-      title="OpenAI API Key"
-      control={
-        <div className="space-y-2 w-full">
-          <Input
-            type="password"
-            value={openAiApiKey}
-            onChange={(e) => handleApiKeyChange('openAiApiKey', e.target.value)}
-            className="w-full"
-            placeholder="Enter OpenAI API Key"
-          />
-          <Button onClick={testOpenAiApi} className="w-full">
-            <Play className="mr-2 h-4 w-4" /> Test OpenAI API
-          </Button>
-          {openAiTestResponse && (
-            <Textarea
-              value={openAiTestResponse}
-              readOnly
-              className="w-full h-32 mt-2"
-            />
-          )}
-        </div>
-      }
-    />
-  </>
-);
-
-const LLMSettings = ({ config, handleChange }) => (
-  <>
-    <SettingsGroup
-      icon={<Brain className="mr-2 h-4 w-4" />}
-      title="LLM Model"
-      control={
-        <Select value={config?.llmModel} onValueChange={(value) => handleChange('llmModel', value)}>
-          <SelectTrigger className={`w-[200px] ${config?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}>
-            <SelectValue placeholder="Select model" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="gpt-3.5-turbo">GPT-3.5 Turbo</SelectItem>
-            <SelectItem value="gpt-4">GPT-4</SelectItem>
-            <SelectItem value="claude-v1">Claude v1</SelectItem>
-            <SelectItem value="palm-2">PaLM 2</SelectItem>
-            <SelectItem value="llama-2">LLaMA 2</SelectItem>
-          </SelectContent>
-        </Select>
-      }
-    />
-    <SettingsGroup
-      icon={<Sliders className="mr-2 h-4 w-4" />}
-      title="Temperature"
-      control={
-        <div className="w-full">
-          <Slider
-            value={[config?.llmTemperature || 0.7]}
-            onValueChange={(value) => handleChange('llmTemperature', value[0])}
-            max={1}
-            step={0.1}
-            className="w-full"
-          />
-          <div className="flex justify-between text-xs mt-1">
-            <span>0 (Deterministic)</span>
-            <span>1 (Creative)</span>
-          </div>
-        </div>
-      }
-    />
-    <SettingsGroup
-      icon={<MessageSquare className="mr-2 h-4 w-4" />}
-      title="Max Tokens"
-      control={
-        <Input
-          type="number"
-          value={config?.maxTokens || 2048}
-          onChange={(e) => handleChange('maxTokens', parseInt(e.target.value))}
-          className={`w-[100px] ${config?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}
-        />
-      }
-    />
-  </>
-);
 
 export default SettingsModal;
