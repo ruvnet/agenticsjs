@@ -228,6 +228,7 @@ const SettingsModal = ({ isOpen, onClose }) => {
                 testOpenAiApi={testOpenAiApi}
                 jiraTestResponse={jiraTestResponse}
                 openAiTestResponse={openAiTestResponse}
+                theme={tempConfig?.theme}
               />
             </TabsContent>
             <TabsContent value="llm">
@@ -389,7 +390,7 @@ const AccessibilitySettings = ({ config, handleChange }) => (
   </>
 );
 
-const ApiSettings = ({ jiraApiKey, openAiApiKey, handleApiKeyChange, testJiraApi, testOpenAiApi, jiraTestResponse, openAiTestResponse }) => (
+const ApiSettings = ({ jiraApiKey, openAiApiKey, handleApiKeyChange, testJiraApi, testOpenAiApi, jiraTestResponse, openAiTestResponse, theme }) => (
   <>
     <SettingsGroup
       icon={<Key className="mr-2 h-4 w-4" />}
@@ -400,7 +401,7 @@ const ApiSettings = ({ jiraApiKey, openAiApiKey, handleApiKeyChange, testJiraApi
             type="password"
             value={jiraApiKey}
             onChange={(e) => handleApiKeyChange('jiraApiKey', e.target.value)}
-            className="w-full"
+            className={`w-full ${theme === 'dark' ? 'bg-gray-800 text-gray-200' : 'bg-white text-gray-800'}`}
             placeholder="Enter Jira.ai API Key"
           />
           <Button onClick={testJiraApi} className="w-full">
@@ -410,7 +411,7 @@ const ApiSettings = ({ jiraApiKey, openAiApiKey, handleApiKeyChange, testJiraApi
             <Textarea
               value={jiraTestResponse}
               readOnly
-              className="w-full h-32 mt-2"
+              className={`w-full h-32 mt-2 ${theme === 'dark' ? 'bg-gray-800 text-gray-200' : 'bg-white text-gray-800'}`}
             />
           )}
         </div>
@@ -425,7 +426,7 @@ const ApiSettings = ({ jiraApiKey, openAiApiKey, handleApiKeyChange, testJiraApi
             type="password"
             value={openAiApiKey}
             onChange={(e) => handleApiKeyChange('openAiApiKey', e.target.value)}
-            className="w-full"
+            className={`w-full ${theme === 'dark' ? 'bg-gray-800 text-gray-200' : 'bg-white text-gray-800'}`}
             placeholder="Enter OpenAI API Key"
           />
           <Button onClick={testOpenAiApi} className="w-full">
@@ -435,7 +436,7 @@ const ApiSettings = ({ jiraApiKey, openAiApiKey, handleApiKeyChange, testJiraApi
             <Textarea
               value={openAiTestResponse}
               readOnly
-              className="w-full h-32 mt-2"
+              className={`w-full h-32 mt-2 ${theme === 'dark' ? 'bg-gray-800 text-gray-200' : 'bg-white text-gray-800'}`}
             />
           )}
         </div>
