@@ -57,7 +57,7 @@ const ApiKeyInput = ({ label, value, onChange, onTest, isValid, showResponse, re
         <Textarea
           value={response}
           readOnly
-          className={`mt-2 h-32 ${inputClass}`}
+          className={`mt-2 h-32 ${inputClass} ${response.startsWith('Error') ? 'text-red-500' : 'text-green-500'}`}
         />
       )}
     </div>

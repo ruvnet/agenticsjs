@@ -43,6 +43,9 @@ export const testOpenAiApi = async (apiKey) => {
     const data = await response.json();
     return 'API key is valid. Successfully connected to OpenAI API.';
   } catch (error) {
+    if (error.message.includes('Failed to fetch')) {
+      return 'Error: Unable to connect to the OpenAI API. Please check your internet connection and try again.';
+    }
     return `Error: ${error.message}`;
   }
 };
