@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Moon, Sun, Globe, Zap, Palette, Layout, Type, Volume2, Search, Clock, List, MessageSquare, Mic, Puzzle, Key, Brain, Sliders, Save, Play } from 'lucide-react';
+import { X, Moon, Sun, Globe, Zap, Palette, Layout, Type, Volume2, Search, Clock, List, MessageSquare, Mic, Puzzle, Key, Brain, Sliders, Save, Play, Check, Eye, EyeOff } from 'lucide-react';
 import { useUIConfig } from '../config/uiConfig';
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -12,7 +12,9 @@ import { Textarea } from "@/components/ui/textarea";
 import SettingsGroup from './SettingsGroup';
 import { toast } from "sonner";
 import GeneralSettings from './GeneralSettings';
+import ApiSettings from './ApiSettings';
 
+const PluginsTab = ({ config, updateConfig }) => {
 const PluginsTab = ({ config, updateConfig }) => {
   const { registerPlugin, unregisterPlugin, listPlugins } = useUIConfig();
   const [newPluginName, setNewPluginName] = useState('');
@@ -116,18 +118,13 @@ const PluginsTab = ({ config, updateConfig }) => {
     </div>
   );
 };
+};
 
 const SettingsModal = ({ isOpen, onClose }) => {
   const { config, updateUIConfig } = useUIConfig();
-  const [jinaApiKey, setJinaApiKey] = useState('');
-  const [openAiApiKey, setOpenAiApiKey] = useState('');
   const [tempConfig, setTempConfig] = useState(config);
-  const [jinaTestResponse, setJinaTestResponse] = useState('');
-  const [openAiTestResponse, setOpenAiTestResponse] = useState('');
 
   useEffect(() => {
-    setJinaApiKey(localStorage.getItem('jinaApiKey') || '');
-    setOpenAiApiKey(localStorage.getItem('openAiApiKey') || '');
     setTempConfig(config);
   }, [config, isOpen]);
 
@@ -135,53 +132,10 @@ const SettingsModal = ({ isOpen, onClose }) => {
     setTempConfig(prev => ({ ...prev, [key]: value }));
   };
 
-  const handleApiKeyChange = (key, value) => {
-    if (key === 'jinaApiKey') {
-      setJinaApiKey(value);
-    } else if (key === 'openAiApiKey') {
-      setOpenAiApiKey(value);
-    }
-  };
-
   const handleSave = () => {
     updateUIConfig(tempConfig);
-    localStorage.setItem('jinaApiKey', jinaApiKey);
-    localStorage.setItem('openAiApiKey', openAiApiKey);
     toast.success("Settings saved successfully!");
     onClose();
-  };
-
-  const testJinaApi = async () => {
-    try {
-      const response = await fetch('https://s.jina.ai/When%20was%20Jina%20AI%20founded%3F', {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-          'Authorization': `Bearer ${jinaApiKey}`,
-          'X-Return-Format': 'markdown'
-        }
-      });
-      const data = await response.json();
-      setJinaTestResponse(JSON.stringify(data, null, 2));
-    } catch (error) {
-      setJinaTestResponse(`Error: ${error.message}`);
-    }
-  };
-
-  const testOpenAiApi = async () => {
-    try {
-      const response = await fetch('https://api.openai.com/v1/engines', {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${openAiApiKey}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      const data = await response.json();
-      setOpenAiTestResponse(JSON.stringify(data, null, 2));
-    } catch (error) {
-      setOpenAiTestResponse(`Error: ${error.message}`);
-    }
   };
 
   const bgColor = tempConfig?.theme === 'dark' ? 'bg-gray-900' : 'bg-white';
@@ -221,16 +175,7 @@ const SettingsModal = ({ isOpen, onClose }) => {
               <AccessibilitySettings config={tempConfig} handleChange={handleChange} />
             </TabsContent>
             <TabsContent value="api">
-              <ApiSettings
-                jinaApiKey={jinaApiKey}
-                openAiApiKey={openAiApiKey}
-                handleApiKeyChange={handleApiKeyChange}
-                testJinaApi={testJinaApi}
-                testOpenAiApi={testOpenAiApi}
-                jinaTestResponse={jinaTestResponse}
-                openAiTestResponse={openAiTestResponse}
-                theme={tempConfig?.theme}
-              />
+              <ApiSettings config={tempConfig} handleChange={handleChange} />
             </TabsContent>
             <TabsContent value="llm">
               <LLMSettings config={tempConfig} handleChange={handleChange} />
@@ -388,61 +333,6 @@ const AccessibilitySettings = ({ config, handleChange }) => (
         </div>
       </div>
     )}
-  </>
-);
-
-const ApiSettings = ({ jinaApiKey, openAiApiKey, handleApiKeyChange, testJinaApi, testOpenAiApi, jinaTestResponse, openAiTestResponse, theme }) => (
-  <>
-    <SettingsGroup
-      icon={<Key className="mr-2 h-4 w-4" />}
-      title="Jina.ai API Key"
-      control={
-        <div className="space-y-2 w-full">
-          <Input
-            type="password"
-            value={jinaApiKey}
-            onChange={(e) => handleApiKeyChange('jinaApiKey', e.target.value)}
-            className={`w-full ${theme === 'dark' ? 'bg-gray-800 text-gray-200' : 'bg-white text-gray-800'}`}
-            placeholder="Enter Jina.ai API Key"
-          />
-          <Button onClick={testJinaApi} className="w-full">
-            <Play className="mr-2 h-4 w-4" /> Test Jina.ai API
-          </Button>
-          {jinaTestResponse && (
-            <Textarea
-              value={jinaTestResponse}
-              readOnly
-              className={`w-full h-32 mt-2 ${theme === 'dark' ? 'bg-gray-800 text-gray-200' : 'bg-white text-gray-800'}`}
-            />
-          )}
-        </div>
-      }
-    />
-    <SettingsGroup
-      icon={<Key className="mr-2 h-4 w-4" />}
-      title="OpenAI API Key"
-      control={
-        <div className="space-y-2 w-full">
-          <Input
-            type="password"
-            value={openAiApiKey}
-            onChange={(e) => handleApiKeyChange('openAiApiKey', e.target.value)}
-            className={`w-full ${theme === 'dark' ? 'bg-gray-800 text-gray-200' : 'bg-white text-gray-800'}`}
-            placeholder="Enter OpenAI API Key"
-          />
-          <Button onClick={testOpenAiApi} className="w-full">
-            <Play className="mr-2 h-4 w-4" /> Test OpenAI API
-          </Button>
-          {openAiTestResponse && (
-            <Textarea
-              value={openAiTestResponse}
-              readOnly
-              className={`w-full h-32 mt-2 ${theme === 'dark' ? 'bg-gray-800 text-gray-200' : 'bg-white text-gray-800'}`}
-            />
-          )}
-        </div>
-      }
-    />
   </>
 );
 
