@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Moon, Sun, Globe, Zap, Palette, Layout, Type, Volume2, Search, Clock, List, MessageSquare, Mic, Puzzle, Key, Brain, Sliders, Save } from 'lucide-react';
+import { X, Moon, Sun, Globe, Zap, Palette, Layout, Type, Volume2, Search, Clock, List, MessageSquare, Mic, Puzzle, Key, Brain, Sliders, Save, Play } from 'lucide-react';
 import { useUIConfig } from '../config/uiConfig';
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -8,6 +8,7 @@ import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
 import SettingsGroup from './SettingsGroup';
 import { toast } from "sonner";
 
@@ -16,6 +17,8 @@ const SettingsModal = ({ isOpen, onClose }) => {
   const [jiraApiKey, setJiraApiKey] = useState('');
   const [openAiApiKey, setOpenAiApiKey] = useState('');
   const [tempConfig, setTempConfig] = useState(config);
+  const [jiraTestResponse, setJiraTestResponse] = useState('');
+  const [openAiTestResponse, setOpenAiTestResponse] = useState('');
 
   useEffect(() => {
     setJiraApiKey(localStorage.getItem('jiraApiKey') || '');
@@ -43,13 +46,45 @@ const SettingsModal = ({ isOpen, onClose }) => {
     onClose();
   };
 
+  const testJiraApi = async () => {
+    try {
+      const response = await fetch('https://your-jira-api-endpoint.com', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${jiraApiKey}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      const data = await response.json();
+      setJiraTestResponse(JSON.stringify(data, null, 2));
+    } catch (error) {
+      setJiraTestResponse(`Error: ${error.message}`);
+    }
+  };
+
+  const testOpenAiApi = async () => {
+    try {
+      const response = await fetch('https://api.openai.com/v1/engines', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${openAiApiKey}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      const data = await response.json();
+      setOpenAiTestResponse(JSON.stringify(data, null, 2));
+    } catch (error) {
+      setOpenAiTestResponse(`Error: ${error.message}`);
+    }
+  };
+
   const bgColor = tempConfig?.theme === 'dark' ? 'bg-gray-900' : 'bg-white';
   const textColor = tempConfig?.theme === 'dark' ? 'text-white' : 'text-gray-800';
   const borderColor = tempConfig?.theme === 'dark' ? 'border-gray-700' : 'border-gray-200';
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className={`sm:max-w-[425px] max-h-[80vh] overflow-y-auto ${bgColor} ${textColor} rounded-xl`}>
+      <DialogContent className={`sm:max-w-[600px] max-h-[90vh] overflow-y-auto ${bgColor} ${textColor} rounded-xl`}>
         <DialogHeader className={`flex justify-between items-center p-4 border-b ${borderColor}`}>
           <DialogTitle className="text-2xl font-bold">Settings</DialogTitle>
           <Button variant="ghost" onClick={onClose} className={`p-1 ${tempConfig?.theme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`}>
@@ -79,7 +114,15 @@ const SettingsModal = ({ isOpen, onClose }) => {
               <AccessibilitySettings config={tempConfig} handleChange={handleChange} />
             </TabsContent>
             <TabsContent value="api">
-              <ApiSettings jiraApiKey={jiraApiKey} openAiApiKey={openAiApiKey} handleApiKeyChange={handleApiKeyChange} />
+              <ApiSettings
+                jiraApiKey={jiraApiKey}
+                openAiApiKey={openAiApiKey}
+                handleApiKeyChange={handleApiKeyChange}
+                testJiraApi={testJiraApi}
+                testOpenAiApi={testOpenAiApi}
+                jiraTestResponse={jiraTestResponse}
+                openAiTestResponse={openAiTestResponse}
+              />
             </TabsContent>
             <TabsContent value="llm">
               <LLMSettings config={tempConfig} handleChange={handleChange} />
@@ -275,32 +318,56 @@ const AccessibilitySettings = ({ config, handleChange }) => (
   </>
 );
 
-const ApiSettings = ({ jiraApiKey, openAiApiKey, handleApiKeyChange }) => (
+const ApiSettings = ({ jiraApiKey, openAiApiKey, handleApiKeyChange, testJiraApi, testOpenAiApi, jiraTestResponse, openAiTestResponse }) => (
   <>
     <SettingsGroup
       icon={<Key className="mr-2 h-4 w-4" />}
       title="Jira.ai API Key"
       control={
-        <Input
-          type="password"
-          value={jiraApiKey}
-          onChange={(e) => handleApiKeyChange('jiraApiKey', e.target.value)}
-          className="w-full"
-          placeholder="Enter Jira.ai API Key"
-        />
+        <div className="space-y-2 w-full">
+          <Input
+            type="password"
+            value={jiraApiKey}
+            onChange={(e) => handleApiKeyChange('jiraApiKey', e.target.value)}
+            className="w-full"
+            placeholder="Enter Jira.ai API Key"
+          />
+          <Button onClick={testJiraApi} className="w-full">
+            <Play className="mr-2 h-4 w-4" /> Test Jira.ai API
+          </Button>
+          {jiraTestResponse && (
+            <Textarea
+              value={jiraTestResponse}
+              readOnly
+              className="w-full h-32 mt-2"
+            />
+          )}
+        </div>
       }
     />
     <SettingsGroup
       icon={<Key className="mr-2 h-4 w-4" />}
       title="OpenAI API Key"
       control={
-        <Input
-          type="password"
-          value={openAiApiKey}
-          onChange={(e) => handleApiKeyChange('openAiApiKey', e.target.value)}
-          className="w-full"
-          placeholder="Enter OpenAI API Key"
-        />
+        <div className="space-y-2 w-full">
+          <Input
+            type="password"
+            value={openAiApiKey}
+            onChange={(e) => handleApiKeyChange('openAiApiKey', e.target.value)}
+            className="w-full"
+            placeholder="Enter OpenAI API Key"
+          />
+          <Button onClick={testOpenAiApi} className="w-full">
+            <Play className="mr-2 h-4 w-4" /> Test OpenAI API
+          </Button>
+          {openAiTestResponse && (
+            <Textarea
+              value={openAiTestResponse}
+              readOnly
+              className="w-full h-32 mt-2"
+            />
+          )}
+        </div>
       }
     />
   </>
@@ -313,13 +380,15 @@ const LLMSettings = ({ config, handleChange }) => (
       title="LLM Model"
       control={
         <Select value={config?.llmModel} onValueChange={(value) => handleChange('llmModel', value)}>
-          <SelectTrigger className={`w-[130px] ${config?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}>
+          <SelectTrigger className={`w-[200px] ${config?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}>
             <SelectValue placeholder="Select model" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="gpt-3.5-turbo">GPT-3.5 Turbo</SelectItem>
             <SelectItem value="gpt-4">GPT-4</SelectItem>
             <SelectItem value="claude-v1">Claude v1</SelectItem>
+            <SelectItem value="palm-2">PaLM 2</SelectItem>
+            <SelectItem value="llama-2">LLaMA 2</SelectItem>
           </SelectContent>
         </Select>
       }
@@ -328,12 +397,30 @@ const LLMSettings = ({ config, handleChange }) => (
       icon={<Sliders className="mr-2 h-4 w-4" />}
       title="Temperature"
       control={
-        <Slider
-          value={[config?.llmTemperature || 0.7]}
-          onValueChange={(value) => handleChange('llmTemperature', value[0])}
-          max={1}
-          step={0.1}
-          className="w-full"
+        <div className="w-full">
+          <Slider
+            value={[config?.llmTemperature || 0.7]}
+            onValueChange={(value) => handleChange('llmTemperature', value[0])}
+            max={1}
+            step={0.1}
+            className="w-full"
+          />
+          <div className="flex justify-between text-xs mt-1">
+            <span>0 (Deterministic)</span>
+            <span>1 (Creative)</span>
+          </div>
+        </div>
+      }
+    />
+    <SettingsGroup
+      icon={<MessageSquare className="mr-2 h-4 w-4" />}
+      title="Max Tokens"
+      control={
+        <Input
+          type="number"
+          value={config?.maxTokens || 2048}
+          onChange={(e) => handleChange('maxTokens', parseInt(e.target.value))}
+          className={`w-[100px] ${config?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}
         />
       }
     />

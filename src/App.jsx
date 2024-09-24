@@ -12,6 +12,8 @@ import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 import { Helmet } from 'react-helmet';
 import wordCountPlugin from './plugins/wordCountPlugin';
+import { Settings } from 'lucide-react';
+import { Button } from "@/components/ui/button";
 
 const queryClient = new QueryClient();
 
@@ -153,6 +155,13 @@ const AppContent = () => {
           )}
         </div>
       )}
+      <Button
+        variant="ghost"
+        onClick={() => setIsSettingsOpen(true)}
+        className={`fixed top-4 right-4 p-2 ${config.theme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`}
+      >
+        <Settings className="h-6 w-6" />
+      </Button>
       <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
       <DocumentationModal isOpen={isDocumentationOpen} onClose={() => setIsDocumentationOpen(false)} />
       <style jsx global>{`
