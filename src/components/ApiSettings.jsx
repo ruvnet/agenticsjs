@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Key, Check, Eye, EyeOff, Play } from 'lucide-react';
+import { Key, Check, Eye, EyeOff, Play, Loader, X } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import SettingsGroup from './SettingsGroup';
 import { testJinaApi, testOpenAiApi } from '../utils/apiUtils';
 
-const ApiKeyInput = ({ label, value, onChange, onTest, isValid, showResponse, response }) => {
+const ApiKeyInput = ({ label, value, onChange, onTest, isValid, showResponse, response, isLoading, inputClass, buttonClass }) => {
   const [showKey, setShowKey] = useState(false);
   const [showTestResponse, setShowTestResponse] = useState(false);
 
@@ -21,24 +21,33 @@ const ApiKeyInput = ({ label, value, onChange, onTest, isValid, showResponse, re
           type={showKey ? "text" : "password"}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="flex-grow"
+          className={`flex-grow ${inputClass}`}
         />
         <Button
           variant="outline"
           size="icon"
           onClick={() => setShowKey(!showKey)}
+          className={buttonClass}
         >
           {showKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
         </Button>
       </div>
       <div className="flex items-center space-x-2">
-        <Button onClick={onTest} className="flex-grow">
-          <Play className="mr-2 h-4 w-4" /> Test API
+        <Button onClick={onTest} className={`flex-grow ${buttonClass}`} disabled={isLoading}>
+          {isLoading ? (
+            <Loader className="mr-2 h-4 w-4 animate-spin" />
+          ) : isValid ? (
+            <Check className="mr-2 h-4 w-4 text-green-500" />
+          ) : (
+            <Play className="mr-2 h-4 w-4" />
+          )}
+          {isLoading ? 'Testing...' : 'Test API'}
         </Button>
         {showResponse && (
           <Button
             variant="outline"
             onClick={() => setShowTestResponse(!showTestResponse)}
+            className={buttonClass}
           >
             {showTestResponse ? "Hide Response" : "Show Response"}
           </Button>
@@ -48,20 +57,22 @@ const ApiKeyInput = ({ label, value, onChange, onTest, isValid, showResponse, re
         <Textarea
           value={response}
           readOnly
-          className="mt-2 h-32"
+          className={`mt-2 h-32 ${inputClass}`}
         />
       )}
     </div>
   );
 };
 
-const ApiSettings = ({ config, handleChange }) => {
+const ApiSettings = ({ config, handleChange, inputClass, buttonClass }) => {
   const [jinaApiKey, setJinaApiKey] = useState(localStorage.getItem('jinaApiKey') || '');
   const [openAiApiKey, setOpenAiApiKey] = useState(localStorage.getItem('openAiApiKey') || '');
   const [jinaTestResponse, setJinaTestResponse] = useState('');
   const [openAiTestResponse, setOpenAiTestResponse] = useState('');
   const [isJinaValid, setIsJinaValid] = useState(false);
   const [isOpenAiValid, setIsOpenAiValid] = useState(false);
+  const [isJinaLoading, setIsJinaLoading] = useState(false);
+  const [isOpenAiLoading, setIsOpenAiLoading] = useState(false);
 
   const handleApiKeyChange = (key, value) => {
     if (key === 'jinaApiKey') {
@@ -74,15 +85,19 @@ const ApiSettings = ({ config, handleChange }) => {
   };
 
   const handleTestJinaApi = async () => {
+    setIsJinaLoading(true);
     const response = await testJinaApi(jinaApiKey);
     setJinaTestResponse(response);
     setIsJinaValid(response.startsWith('{"tokens":'));
+    setIsJinaLoading(false);
   };
 
   const handleTestOpenAiApi = async () => {
+    setIsOpenAiLoading(true);
     const response = await testOpenAiApi(openAiApiKey);
     setOpenAiTestResponse(response);
     setIsOpenAiValid(!response.startsWith('Error:'));
+    setIsOpenAiLoading(false);
   };
 
   return (
@@ -100,6 +115,9 @@ const ApiSettings = ({ config, handleChange }) => {
               isValid={isJinaValid}
               showResponse={!!jinaTestResponse}
               response={jinaTestResponse}
+              isLoading={isJinaLoading}
+              inputClass={inputClass}
+              buttonClass={buttonClass}
             />
             <ApiKeyInput
               label="OpenAI API Key"
@@ -109,6 +127,9 @@ const ApiSettings = ({ config, handleChange }) => {
               isValid={isOpenAiValid}
               showResponse={!!openAiTestResponse}
               response={openAiTestResponse}
+              isLoading={isOpenAiLoading}
+              inputClass={inputClass}
+              buttonClass={buttonClass}
             />
           </div>
         }

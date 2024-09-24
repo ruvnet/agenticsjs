@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Moon, Sun, Globe, Zap, Palette, Layout, Type, Volume2, Search, Clock, List, MessageSquare, Mic, Puzzle, Key, Brain, Sliders, Save, Play, Check, Eye, EyeOff } from 'lucide-react';
+import { X, Moon, Sun, Globe, Zap, Palette, Layout, Type, Volume2, Search, Clock, List, MessageSquare, Mic, Puzzle, Key, Brain, Sliders, Save } from 'lucide-react';
 import { useUIConfig } from '../config/uiConfig';
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -8,117 +8,9 @@ import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Textarea } from "@/components/ui/textarea";
-import SettingsGroup from './SettingsGroup';
 import { toast } from "sonner";
 import GeneralSettings from './GeneralSettings';
 import ApiSettings from './ApiSettings';
-
-const PluginsTab = ({ config, updateConfig }) => {
-const PluginsTab = ({ config, updateConfig }) => {
-  const { registerPlugin, unregisterPlugin, listPlugins } = useUIConfig();
-  const [newPluginName, setNewPluginName] = useState('');
-  const [newPluginCode, setNewPluginCode] = useState('');
-
-  const handleInstallPlugin = (pluginName) => {
-    // Simulated plugin installation
-    const newPlugin = {
-      id: pluginName,
-      version: '1.0.0',
-      setup: (config) => {
-        console.log(`Setting up ${pluginName}`);
-        return config;
-      }
-    };
-    registerPlugin(newPlugin);
-    updateConfig('plugins', [...new Set([...(config.plugins || []), pluginName])]);
-  };
-
-  const handleRemovePlugin = (pluginName) => {
-    unregisterPlugin(pluginName);
-    updateConfig('plugins', (config.plugins || []).filter(p => p !== pluginName));
-  };
-
-  const handleCreatePlugin = () => {
-    if (newPluginName && newPluginCode) {
-      try {
-        const pluginFunction = new Function('config', newPluginCode);
-        const newPlugin = {
-          id: newPluginName,
-          version: '1.0.0',
-          setup: pluginFunction
-        };
-        registerPlugin(newPlugin);
-        updateConfig('plugins', [...new Set([...(config.plugins || []), newPluginName])]);
-        setNewPluginName('');
-        setNewPluginCode('');
-      } catch (error) {
-        console.error('Error creating plugin:', error);
-        // Handle error (e.g., show an error message to the user)
-      }
-    }
-  };
-
-  const availablePlugins = [
-    'WordCount',
-    'SentimentAnalysis',
-    'LanguageDetection',
-    'TextSummarization',
-    'KeywordExtraction'
-  ];
-
-  const installedPlugins = [...new Set(config.plugins || [])];
-
-  return (
-    <div className="space-y-4">
-      <h3 className="text-lg font-semibold">Installed Plugins</h3>
-      <ul className="space-y-2">
-        {installedPlugins.map((plugin) => (
-          <li key={plugin} className="flex justify-between items-center">
-            <span>{plugin}</span>
-            <Button variant="destructive" size="sm" onClick={() => handleRemovePlugin(plugin)}>
-              <X className="h-4 w-4" />
-            </Button>
-          </li>
-        ))}
-      </ul>
-
-      <h3 className="text-lg font-semibold mt-6">Available Plugins</h3>
-      <ul className="space-y-2">
-        {availablePlugins.filter(plugin => !installedPlugins.includes(plugin)).map((plugin) => (
-          <li key={plugin} className="flex justify-between items-center">
-            <span>{plugin}</span>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={() => handleInstallPlugin(plugin)}
-              className="bg-green-500 hover:bg-green-600 text-white"
-            >
-              <Play className="h-4 w-4 mr-2" /> Install
-            </Button>
-          </li>
-        ))}
-      </ul>
-
-      <h3 className="text-lg font-semibold mt-6">Create Custom Plugin</h3>
-      <div className="space-y-2">
-        <Input
-          placeholder="Plugin Name"
-          value={newPluginName}
-          onChange={(e) => setNewPluginName(e.target.value)}
-        />
-        <textarea
-          className="w-full h-32 p-2 border rounded"
-          placeholder="Plugin Code (JavaScript function that takes 'config' as parameter and returns modified config)"
-          value={newPluginCode}
-          onChange={(e) => setNewPluginCode(e.target.value)}
-        />
-        <Button onClick={handleCreatePlugin}>Create Plugin</Button>
-      </div>
-    </div>
-  );
-};
-};
 
 const SettingsModal = ({ isOpen, onClose }) => {
   const { config, updateUIConfig } = useUIConfig();
@@ -141,6 +33,8 @@ const SettingsModal = ({ isOpen, onClose }) => {
   const bgColor = tempConfig?.theme === 'dark' ? 'bg-gray-900' : 'bg-white';
   const textColor = tempConfig?.theme === 'dark' ? 'text-white' : 'text-gray-800';
   const borderColor = tempConfig?.theme === 'dark' ? 'border-gray-700' : 'border-gray-200';
+  const inputClass = tempConfig?.theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-gray-800';
+  const buttonClass = tempConfig?.theme === 'dark' ? 'bg-gray-700 hover:bg-gray-600 text-white' : 'bg-gray-200 hover:bg-gray-300 text-gray-800';
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -166,27 +60,27 @@ const SettingsModal = ({ isOpen, onClose }) => {
               <GeneralSettings config={tempConfig} handleChange={handleChange} />
             </TabsContent>
             <TabsContent value="appearance">
-              <AppearanceSettings config={tempConfig} handleChange={handleChange} />
+              <AppearanceSettings config={tempConfig} handleChange={handleChange} inputClass={inputClass} buttonClass={buttonClass} />
             </TabsContent>
             <TabsContent value="search">
-              <SearchSettings config={tempConfig} handleChange={handleChange} />
+              <SearchSettings config={tempConfig} handleChange={handleChange} inputClass={inputClass} />
             </TabsContent>
             <TabsContent value="accessibility">
               <AccessibilitySettings config={tempConfig} handleChange={handleChange} />
             </TabsContent>
             <TabsContent value="api">
-              <ApiSettings config={tempConfig} handleChange={handleChange} />
+              <ApiSettings config={tempConfig} handleChange={handleChange} inputClass={inputClass} buttonClass={buttonClass} />
             </TabsContent>
             <TabsContent value="llm">
-              <LLMSettings config={tempConfig} handleChange={handleChange} />
+              <LLMSettings config={tempConfig} handleChange={handleChange} inputClass={inputClass} />
             </TabsContent>
             <TabsContent value="plugins">
-              <PluginsTab config={tempConfig} updateConfig={handleChange} />
+              <PluginsTab config={tempConfig} updateConfig={handleChange} inputClass={inputClass} buttonClass={buttonClass} />
             </TabsContent>
           </div>
         </Tabs>
         <div className="mt-6 flex justify-end">
-          <Button onClick={handleSave} className="bg-accent hover:bg-accent/90">
+          <Button onClick={handleSave} className={`${buttonClass} bg-accent hover:bg-accent/90`}>
             <Save className="mr-2 h-4 w-4" /> Save Settings
           </Button>
         </div>
@@ -195,7 +89,7 @@ const SettingsModal = ({ isOpen, onClose }) => {
   );
 };
 
-const AppearanceSettings = ({ config, handleChange }) => (
+const AppearanceSettings = ({ config, handleChange, inputClass, buttonClass }) => (
   <>
     <SettingsGroup
       icon={config?.theme === 'dark' ? <Moon className="mr-2 h-4 w-4" /> : <Sun className="mr-2 h-4 w-4" />}
@@ -212,7 +106,7 @@ const AppearanceSettings = ({ config, handleChange }) => (
       title="Font Size"
       control={
         <Select value={config?.fontSize} onValueChange={(value) => handleChange('fontSize', value)}>
-          <SelectTrigger className={`w-[130px] ${config?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}>
+          <SelectTrigger className={`w-[130px] ${inputClass}`}>
             <SelectValue placeholder="Select size" />
           </SelectTrigger>
           <SelectContent>
@@ -228,7 +122,7 @@ const AppearanceSettings = ({ config, handleChange }) => (
       title="Accent Color"
       control={
         <Select value={config?.accentColor} onValueChange={(value) => handleChange('accentColor', value)}>
-          <SelectTrigger className={`w-[130px] ${config?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}>
+          <SelectTrigger className={`w-[130px] ${inputClass}`}>
             <SelectValue placeholder="Select color" />
           </SelectTrigger>
           <SelectContent>
@@ -244,7 +138,7 @@ const AppearanceSettings = ({ config, handleChange }) => (
   </>
 );
 
-const SearchSettings = ({ config, handleChange }) => (
+const SearchSettings = ({ config, handleChange, inputClass }) => (
   <>
     <SettingsGroup
       icon={<Clock className="mr-2 h-4 w-4" />}
@@ -254,7 +148,7 @@ const SearchSettings = ({ config, handleChange }) => (
           type="number"
           value={config?.searchDelay}
           onChange={(e) => handleChange('searchDelay', parseInt(e.target.value))}
-          className={`w-[100px] ${config?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}
+          className={`w-[100px] ${inputClass}`}
         />
       }
     />
@@ -266,7 +160,7 @@ const SearchSettings = ({ config, handleChange }) => (
           type="number"
           value={config?.resultAnimationDuration}
           onChange={(e) => handleChange('resultAnimationDuration', parseInt(e.target.value))}
-          className={`w-[100px] ${config?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}
+          className={`w-[100px] ${inputClass}`}
         />
       }
     />
@@ -278,7 +172,7 @@ const SearchSettings = ({ config, handleChange }) => (
           type="number"
           value={config?.maxResults}
           onChange={(e) => handleChange('maxResults', parseInt(e.target.value))}
-          className={`w-[100px] ${config?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}
+          className={`w-[100px] ${inputClass}`}
         />
       }
     />
@@ -336,14 +230,14 @@ const AccessibilitySettings = ({ config, handleChange }) => (
   </>
 );
 
-const LLMSettings = ({ config, handleChange }) => (
+const LLMSettings = ({ config, handleChange, inputClass }) => (
   <>
     <SettingsGroup
       icon={<Brain className="mr-2 h-4 w-4" />}
       title="LLM Model"
       control={
         <Select value={config?.llmModel} onValueChange={(value) => handleChange('llmModel', value)}>
-          <SelectTrigger className={`w-[200px] ${config?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}>
+          <SelectTrigger className={`w-[200px] ${inputClass}`}>
             <SelectValue placeholder="Select model" />
           </SelectTrigger>
           <SelectContent>
@@ -383,11 +277,92 @@ const LLMSettings = ({ config, handleChange }) => (
           type="number"
           value={config?.maxTokens || 2048}
           onChange={(e) => handleChange('maxTokens', parseInt(e.target.value))}
-          className={`w-[100px] ${config?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}
+          className={`w-[100px] ${inputClass}`}
         />
       }
     />
   </>
 );
+
+const PluginsTab = ({ config, updateConfig, inputClass, buttonClass }) => {
+  const [newPluginName, setNewPluginName] = useState('');
+  const [newPluginCode, setNewPluginCode] = useState('');
+
+  const handleInstallPlugin = (pluginName) => {
+    updateConfig('plugins', [...new Set([...(config.plugins || []), pluginName])]);
+  };
+
+  const handleRemovePlugin = (pluginName) => {
+    updateConfig('plugins', (config.plugins || []).filter(p => p !== pluginName));
+  };
+
+  const handleCreatePlugin = () => {
+    if (newPluginName && newPluginCode) {
+      updateConfig('plugins', [...new Set([...(config.plugins || []), newPluginName])]);
+      setNewPluginName('');
+      setNewPluginCode('');
+    }
+  };
+
+  const availablePlugins = [
+    'WordCount',
+    'SentimentAnalysis',
+    'LanguageDetection',
+    'TextSummarization',
+    'KeywordExtraction'
+  ];
+
+  const installedPlugins = [...new Set(config.plugins || [])];
+
+  return (
+    <div className="space-y-4">
+      <h3 className="text-lg font-semibold">Installed Plugins</h3>
+      <ul className="space-y-2">
+        {installedPlugins.map((plugin) => (
+          <li key={plugin} className="flex justify-between items-center">
+            <span>{plugin}</span>
+            <Button variant="destructive" size="sm" onClick={() => handleRemovePlugin(plugin)} className={buttonClass}>
+              <X className="h-4 w-4" />
+            </Button>
+          </li>
+        ))}
+      </ul>
+
+      <h3 className="text-lg font-semibold mt-6">Available Plugins</h3>
+      <ul className="space-y-2">
+        {availablePlugins.filter(plugin => !installedPlugins.includes(plugin)).map((plugin) => (
+          <li key={plugin} className="flex justify-between items-center">
+            <span>{plugin}</span>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => handleInstallPlugin(plugin)}
+              className={`${buttonClass} bg-green-500 hover:bg-green-600 text-white`}
+            >
+              Install
+            </Button>
+          </li>
+        ))}
+      </ul>
+
+      <h3 className="text-lg font-semibold mt-6">Create Custom Plugin</h3>
+      <div className="space-y-2">
+        <Input
+          placeholder="Plugin Name"
+          value={newPluginName}
+          onChange={(e) => setNewPluginName(e.target.value)}
+          className={inputClass}
+        />
+        <textarea
+          className={`w-full h-32 p-2 border rounded ${inputClass}`}
+          placeholder="Plugin Code (JavaScript function that takes 'config' as parameter and returns modified config)"
+          value={newPluginCode}
+          onChange={(e) => setNewPluginCode(e.target.value)}
+        />
+        <Button onClick={handleCreatePlugin} className={buttonClass}>Create Plugin</Button>
+      </div>
+    </div>
+  );
+};
 
 export default SettingsModal;
