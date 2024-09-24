@@ -31,11 +31,17 @@ export const testOpenAiApi = async (apiKey) => {
     });
 
     if (!response.ok) {
+      if (response.status === 401) {
+        const errorData = await response.json();
+        if (errorData.error && errorData.error.code === 'invalid_api_key') {
+          return 'Error: Invalid API key. Please check your OpenAI API key and try again.';
+        }
+      }
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     const data = await response.json();
-    return JSON.stringify(data, null, 2);
+    return 'API key is valid. Successfully connected to OpenAI API.';
   } catch (error) {
     return `Error: ${error.message}`;
   }

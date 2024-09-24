@@ -88,7 +88,7 @@ const ApiSettings = ({ config, handleChange, inputClass, buttonClass }) => {
     setIsJinaLoading(true);
     const response = await testJinaApi(jinaApiKey);
     setJinaTestResponse(response);
-    setIsJinaValid(response.startsWith('{"tokens":'));
+    setIsJinaValid(!response.startsWith('Error:'));
     setIsJinaLoading(false);
   };
 
