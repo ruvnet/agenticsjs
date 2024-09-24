@@ -1,35 +1,23 @@
-import https from 'https';
-
-export const testJinaApi = (apiKey) => {
-  return new Promise((resolve, reject) => {
-    const options = {
-      hostname: 's.jina.ai',
-      path: '/When%20was%20Jina%20AI%20founded%3F',
+export const testJinaApi = async (apiKey) => {
+  try {
+    const response = await fetch('https://s.jina.ai/When%20was%20Jina%20AI%20founded%3F', {
+      method: 'GET',
       headers: {
         'Accept': 'application/json',
         'Authorization': `Bearer ${apiKey}`,
         'X-Return-Format': 'markdown'
       }
-    };
-
-    const req = https.get(options, (res) => {
-      let data = '';
-
-      res.on('data', (chunk) => {
-        data += chunk;
-      });
-
-      res.on('end', () => {
-        resolve(data);
-      });
     });
 
-    req.on('error', (error) => {
-      reject(`Error: ${error.message}`);
-    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
 
-    req.end();
-  });
+    const data = await response.text();
+    return data;
+  } catch (error) {
+    return `Error: ${error.message}`;
+  }
 };
 
 export const testOpenAiApi = async (apiKey) => {
@@ -41,6 +29,11 @@ export const testOpenAiApi = async (apiKey) => {
         'Content-Type': 'application/json'
       }
     });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
     const data = await response.json();
     return JSON.stringify(data, null, 2);
   } catch (error) {
