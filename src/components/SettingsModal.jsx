@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import SettingsGroup from './SettingsGroup';
 import { toast } from "sonner";
+import PluginsTab from './PluginsTab';
 
 const SettingsModal = ({ isOpen, onClose }) => {
   const { config, updateUIConfig } = useUIConfig();
@@ -84,7 +85,7 @@ const SettingsModal = ({ isOpen, onClose }) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className={`sm:max-w-[600px] max-h-[90vh] overflow-y-auto ${bgColor} ${textColor} rounded-xl`}>
+      <DialogContent className={`sm:max-w-[700px] max-h-[90vh] overflow-y-auto ${bgColor} ${textColor} rounded-xl`}>
         <DialogHeader className={`flex justify-between items-center p-4 border-b ${borderColor}`}>
           <DialogTitle className="text-2xl font-bold">Settings</DialogTitle>
           <Button variant="ghost" onClick={onClose} className={`p-1 ${tempConfig?.theme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`}>
@@ -92,13 +93,14 @@ const SettingsModal = ({ isOpen, onClose }) => {
           </Button>
         </DialogHeader>
         <Tabs defaultValue="general" className="w-full">
-          <TabsList className={`grid w-full grid-cols-6 p-2 ${tempConfig?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'} rounded-lg`}>
+          <TabsList className={`grid w-full grid-cols-7 p-2 ${tempConfig?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'} rounded-lg`}>
             <TabsTrigger value="general"><Globe className="h-5 w-5" /></TabsTrigger>
             <TabsTrigger value="appearance"><Palette className="h-5 w-5" /></TabsTrigger>
             <TabsTrigger value="search"><Search className="h-5 w-5" /></TabsTrigger>
             <TabsTrigger value="accessibility"><Volume2 className="h-5 w-5" /></TabsTrigger>
             <TabsTrigger value="api"><Key className="h-5 w-5" /></TabsTrigger>
             <TabsTrigger value="llm"><Brain className="h-5 w-5" /></TabsTrigger>
+            <TabsTrigger value="plugins"><Puzzle className="h-5 w-5" /></TabsTrigger>
           </TabsList>
           <div className="p-4 space-y-6">
             <TabsContent value="general">
@@ -126,6 +128,9 @@ const SettingsModal = ({ isOpen, onClose }) => {
             </TabsContent>
             <TabsContent value="llm">
               <LLMSettings config={tempConfig} handleChange={handleChange} />
+            </TabsContent>
+            <TabsContent value="plugins">
+              <PluginsTab config={tempConfig} updateConfig={handleChange} />
             </TabsContent>
           </div>
         </Tabs>
