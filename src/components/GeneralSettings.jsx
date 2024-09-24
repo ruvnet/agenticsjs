@@ -1,9 +1,8 @@
 import React from 'react';
-import { useUIConfig } from '../config/uiConfig';
+import { Globe, Moon, Sun } from 'lucide-react';
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import SettingsGroup from './SettingsGroup';
-import { Globe, Moon, Sun } from 'lucide-react';
 
 const GeneralSettings = ({ config, handleChange }) => {
   return (
