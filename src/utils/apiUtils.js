@@ -22,30 +22,33 @@ export const testJinaApi = async (apiKey) => {
 
 export const testOpenAiApi = async (apiKey) => {
   try {
-    const response = await fetch('https://api.openai.com/v1/engines', {
-      method: 'GET',
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
       headers: {
         'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json'
-      }
+      },
+      body: JSON.stringify({
+        model: "gpt-4",
+        messages: [{ role: "user", content: "Hello, can you hear me?" }],
+        max_tokens: 50
+      })
     });
 
     if (!response.ok) {
-      if (response.status === 401) {
-        const errorData = await response.json();
-        if (errorData.error && errorData.error.code === 'invalid_api_key') {
-          return 'Error: Invalid API key. Please check your OpenAI API key and try again.';
-        }
+      const errorData = await response.json();
+      if (errorData.error && errorData.error.code === 'invalid_api_key') {
+        return { success: false, message: 'Error: Invalid API key. Please check your OpenAI API key and try again.' };
       }
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     const data = await response.json();
-    return 'API key is valid. Successfully connected to OpenAI API.';
+    return { success: true, message: 'API key is valid. Successfully connected to OpenAI API.', response: data.choices[0].message.content };
   } catch (error) {
     if (error.message.includes('Failed to fetch')) {
-      return 'Error: Unable to connect to the OpenAI API. Please check your internet connection and try again.';
+      return { success: false, message: 'Error: Unable to connect to the OpenAI API. Please check your internet connection and try again.' };
     }
-    return `Error: ${error.message}`;
+    return { success: false, message: `Error: ${error.message}` };
   }
 };

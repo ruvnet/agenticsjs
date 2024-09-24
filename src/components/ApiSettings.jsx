@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Key, Check, Eye, EyeOff, Play, Loader, X } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -74,6 +74,19 @@ const ApiSettings = ({ config, handleChange, inputClass, buttonClass }) => {
   const [isJinaLoading, setIsJinaLoading] = useState(false);
   const [isOpenAiLoading, setIsOpenAiLoading] = useState(false);
 
+  useEffect(() => {
+    const savedJinaResponse = localStorage.getItem('jinaTestResponse');
+    const savedOpenAiResponse = localStorage.getItem('openAiTestResponse');
+    if (savedJinaResponse) {
+      setJinaTestResponse(savedJinaResponse);
+      setIsJinaValid(true);
+    }
+    if (savedOpenAiResponse) {
+      setOpenAiTestResponse(savedOpenAiResponse);
+      setIsOpenAiValid(true);
+    }
+  }, []);
+
   const handleApiKeyChange = (key, value) => {
     if (key === 'jinaApiKey') {
       setJinaApiKey(value);
@@ -89,14 +102,16 @@ const ApiSettings = ({ config, handleChange, inputClass, buttonClass }) => {
     const response = await testJinaApi(jinaApiKey);
     setJinaTestResponse(response);
     setIsJinaValid(!response.startsWith('Error:'));
+    localStorage.setItem('jinaTestResponse', response);
     setIsJinaLoading(false);
   };
 
   const handleTestOpenAiApi = async () => {
     setIsOpenAiLoading(true);
-    const response = await testOpenAiApi(openAiApiKey);
-    setOpenAiTestResponse(response);
-    setIsOpenAiValid(!response.startsWith('Error:'));
+    const result = await testOpenAiApi(openAiApiKey);
+    setIsOpenAiValid(result.success);
+    setOpenAiTestResponse(result.success ? result.response : result.message);
+    localStorage.setItem('openAiTestResponse', result.success ? result.response : result.message);
     setIsOpenAiLoading(false);
   };
 
