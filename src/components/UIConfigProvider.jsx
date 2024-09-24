@@ -8,7 +8,12 @@ const UIConfigProvider = ({ children, initialConfig = {} }) => {
     if (savedConfig) {
       return JSON.parse(savedConfig);
     }
-    return { ...defaultConfig, ...initialConfig };
+    return { 
+      ...defaultConfig, 
+      ...initialConfig,
+      llmModel: 'gpt-3.5-turbo',
+      llmTemperature: 0.7,
+    };
   });
 
   useEffect(() => {

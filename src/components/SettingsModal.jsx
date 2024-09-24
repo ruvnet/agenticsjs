@@ -1,5 +1,5 @@
-import React from 'react';
-import { X, Moon, Sun, Globe, Zap, Palette, Layout, Type, Volume2, Search, Clock, List, MessageSquare, Mic, Puzzle } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, Moon, Sun, Globe, Zap, Palette, Layout, Type, Volume2, Search, Clock, List, MessageSquare, Mic, Puzzle, Key, Brain, Sliders } from 'lucide-react';
 import { useUIConfig } from '../config/uiConfig';
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -12,9 +12,26 @@ import SettingsGroup from './SettingsGroup';
 
 const SettingsModal = ({ isOpen, onClose }) => {
   const { config, updateUIConfig } = useUIConfig();
+  const [jiraApiKey, setJiraApiKey] = useState('');
+  const [openAiApiKey, setOpenAiApiKey] = useState('');
+
+  useEffect(() => {
+    setJiraApiKey(localStorage.getItem('jiraApiKey') || '');
+    setOpenAiApiKey(localStorage.getItem('openAiApiKey') || '');
+  }, []);
 
   const handleChange = (key, value) => {
     updateUIConfig({ [key]: value });
+  };
+
+  const handleApiKeyChange = (key, value) => {
+    if (key === 'jiraApiKey') {
+      setJiraApiKey(value);
+      localStorage.setItem('jiraApiKey', value);
+    } else if (key === 'openAiApiKey') {
+      setOpenAiApiKey(value);
+      localStorage.setItem('openAiApiKey', value);
+    }
   };
 
   const bgColor = config?.theme === 'dark' ? 'bg-gray-900' : 'bg-white';
@@ -31,12 +48,13 @@ const SettingsModal = ({ isOpen, onClose }) => {
           </Button>
         </DialogHeader>
         <Tabs defaultValue="general" className="w-full">
-          <TabsList className={`grid w-full grid-cols-5 p-2 ${config?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'} rounded-lg`}>
-            <TabsTrigger value="general">General</TabsTrigger>
-            <TabsTrigger value="appearance">Appearance</TabsTrigger>
-            <TabsTrigger value="search">Search</TabsTrigger>
-            <TabsTrigger value="accessibility">Accessibility</TabsTrigger>
-            <TabsTrigger value="plugins">Plugins</TabsTrigger>
+          <TabsList className={`grid w-full grid-cols-6 p-2 ${config?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'} rounded-lg`}>
+            <TabsTrigger value="general"><Globe className="h-5 w-5" /></TabsTrigger>
+            <TabsTrigger value="appearance"><Palette className="h-5 w-5" /></TabsTrigger>
+            <TabsTrigger value="search"><Search className="h-5 w-5" /></TabsTrigger>
+            <TabsTrigger value="accessibility"><Volume2 className="h-5 w-5" /></TabsTrigger>
+            <TabsTrigger value="api"><Key className="h-5 w-5" /></TabsTrigger>
+            <TabsTrigger value="llm"><Brain className="h-5 w-5" /></TabsTrigger>
           </TabsList>
           <div className="p-4 space-y-6">
             <TabsContent value="general">
@@ -51,8 +69,11 @@ const SettingsModal = ({ isOpen, onClose }) => {
             <TabsContent value="accessibility">
               <AccessibilitySettings config={config} handleChange={handleChange} />
             </TabsContent>
-            <TabsContent value="plugins">
-              <PluginsSettings config={config} />
+            <TabsContent value="api">
+              <ApiSettings jiraApiKey={jiraApiKey} openAiApiKey={openAiApiKey} handleApiKeyChange={handleApiKeyChange} />
+            </TabsContent>
+            <TabsContent value="llm">
+              <LLMSettings config={config} handleChange={handleChange} />
             </TabsContent>
           </div>
         </Tabs>
@@ -240,30 +261,69 @@ const AccessibilitySettings = ({ config, handleChange }) => (
   </>
 );
 
-const PluginsSettings = ({ config }) => (
-  <div className="space-y-4">
-    <h3 className="text-lg font-semibold">Installed Plugins</h3>
-    {config.plugins && config.plugins.length > 0 ? (
-      <ul className="list-disc pl-5">
-        {config.plugins.map((plugin, index) => (
-          <li key={index} className="mb-2">
-            <span className="font-medium">{plugin}</span>
-          </li>
-        ))}
-      </ul>
-    ) : (
-      <p>No plugins installed.</p>
-    )}
-    <div className="mt-4">
-      <h4 className="text-md font-semibold mb-2">Add a New Plugin</h4>
-      <p className="text-sm mb-2">To add a new plugin, use the following steps:</p>
-      <ol className="list-decimal pl-5 text-sm">
-        <li>Create a new plugin file in the <code>src/plugins</code> directory</li>
-        <li>Import the plugin in your main application file</li>
-        <li>Use the <code>registerPlugin</code> function to add the plugin</li>
-      </ol>
-    </div>
-  </div>
+const ApiSettings = ({ jiraApiKey, openAiApiKey, handleApiKeyChange }) => (
+  <>
+    <SettingsGroup
+      icon={<Key className="mr-2 h-4 w-4" />}
+      title="Jira.ai API Key"
+      control={
+        <Input
+          type="password"
+          value={jiraApiKey}
+          onChange={(e) => handleApiKeyChange('jiraApiKey', e.target.value)}
+          className="w-full"
+          placeholder="Enter Jira.ai API Key"
+        />
+      }
+    />
+    <SettingsGroup
+      icon={<Key className="mr-2 h-4 w-4" />}
+      title="OpenAI API Key"
+      control={
+        <Input
+          type="password"
+          value={openAiApiKey}
+          onChange={(e) => handleApiKeyChange('openAiApiKey', e.target.value)}
+          className="w-full"
+          placeholder="Enter OpenAI API Key"
+        />
+      }
+    />
+  </>
+);
+
+const LLMSettings = ({ config, handleChange }) => (
+  <>
+    <SettingsGroup
+      icon={<Brain className="mr-2 h-4 w-4" />}
+      title="LLM Model"
+      control={
+        <Select value={config?.llmModel} onValueChange={(value) => handleChange('llmModel', value)}>
+          <SelectTrigger className={`w-[130px] ${config?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}>
+            <SelectValue placeholder="Select model" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="gpt-3.5-turbo">GPT-3.5 Turbo</SelectItem>
+            <SelectItem value="gpt-4">GPT-4</SelectItem>
+            <SelectItem value="claude-v1">Claude v1</SelectItem>
+          </SelectContent>
+        </Select>
+      }
+    />
+    <SettingsGroup
+      icon={<Sliders className="mr-2 h-4 w-4" />}
+      title="Temperature"
+      control={
+        <Slider
+          value={[config?.llmTemperature || 0.7]}
+          onValueChange={(value) => handleChange('llmTemperature', value[0])}
+          max={1}
+          step={0.1}
+          className="w-full"
+        />
+      }
+    />
+  </>
 );
 
 export default SettingsModal;

@@ -3,6 +3,7 @@ import { X, Settings, HelpCircle } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { useUIConfig } from '../config/uiConfig';
 import GeometricIcon from './GeometricIcon';
+import HamburgerMenu from './HamburgerMenu';
 
 const TopNavigation = ({ onClose, onOpenSettings, onOpenDocumentation }) => {
   const { config } = useUIConfig();
@@ -12,6 +13,7 @@ const TopNavigation = ({ onClose, onOpenSettings, onOpenDocumentation }) => {
   return (
     <div className={`sticky top-0 z-10 ${config.theme === 'dark' ? 'bg-gray-900' : 'bg-white'} p-4 flex justify-between items-center shadow-md`}>
       <div className="flex items-center space-x-2">
+        <HamburgerMenu onOpenSettings={onOpenSettings} />
         <GeometricIcon size={24} />
         <h1 className={`text-xl font-bold ${config.theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>Agentics.js</h1>
       </div>
