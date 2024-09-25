@@ -4,7 +4,9 @@
   "version": "1.0.5",
   "description": "AgenticJS is a powerful and flexible JavaScript library designed to provide an intelligent and interactive search experience with real-time results and advanced visualization.",
   "main": "dist/index.js",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -19,7 +21,10 @@
     "type": "git",
     "url": "git+https://github.com/ruvnet/agenticjs.git"
   },
-  "keywords": ["vite", "tailwindcss"],
+  "keywords": [
+    "vite",
+    "tailwindcss"
+  ],
   "author": "Your Name",
   "license": "MIT",
   "bugs": {
@@ -66,6 +71,7 @@
     "input-otp": "^1.2.4",
     "lucide-react": "^0.417.0",
     "next-themes": "^0.3.0",
+    "openai": "^4.63.0",
     "react": "^18.2.0",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18.2.0",
