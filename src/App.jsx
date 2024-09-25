@@ -53,43 +53,26 @@ const AppContent = () => {
     contentRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleSearch = async (searchQuery, secondarySearches, rawApiResponse) => {
+  const handleSearch = async (searchQuery, definition, rawApiResponse, secondarySearches) => {
     setIsSearching(true);
     setShowInitialScreen(false);
     setRawResponse(rawApiResponse);
 
     const newQuery = {
       query: searchQuery,
-      results: null,
+      results: {
+        answer: definition,
+        proSearch: secondarySearches.relatedSearches || [],
+        sources: [
+          { title: searchQuery + " - Comprehensive Guide", source: "example.com" },
+          { title: "Latest Research on " + searchQuery, source: "research.org" }
+        ]
+      },
     };
 
     setQueries(prevQueries => [...prevQueries, newQuery]);
-
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      setQueries(prevQueries => {
-        const updatedQueries = [...prevQueries];
-        const lastQueryIndex = updatedQueries.length - 1;
-        if (lastQueryIndex >= 0) {
-          updatedQueries[lastQueryIndex].results = {
-            answer: "Here's a simulated answer to your query about " + searchQuery,
-            proSearch: secondarySearches?.relatedSearches || [],
-            sources: [
-              { title: searchQuery + " - Comprehensive Guide", source: "example.com" },
-              { title: "Latest Research on " + searchQuery, source: "research.org" }
-            ]
-          };
-        }
-        return updatedQueries;
-      });
-    } catch (error) {
-      toast.error("An error occurred while fetching results. Please try again.");
-    } finally {
-      setIsSearching(false);
-      scrollToTop();
-    }
+    setIsSearching(false);
+    scrollToTop();
   };
 
   const handleProSearchClick = (item) => {
