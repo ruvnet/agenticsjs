@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ChevronDown, ChevronUp, ExternalLink } from 'lucide-react';
+import { ChevronDown, ChevronUp, ExternalLink, Search } from 'lucide-react';
 import { useUIConfig } from '../config/uiConfig';
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
@@ -138,50 +138,20 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
             </div>
             {isProSearchExpanded && (
               <div>
-                <ul className="list-none pl-0">
+                <ul className="list-none pl-0 space-y-2">
                   {previousQueries.map((prevQuery, index) => (
-                    <li key={index} className="mb-2">
+                    <li key={index} className="flex items-center">
+                      <Search className="h-4 w-4 mr-2 text-accent" />
                       <Button
                         variant="link"
                         className={`text-accent hover:text-accent/80 p-0 h-auto font-normal text-left break-words whitespace-normal`}
                         onClick={() => onProSearchClick(prevQuery.query)}
                       >
-                        <span className="mr-2 inline-block">✓</span>
-                        <span className="inline">{prevQuery.query}</span>
-                      </Button>
-                    </li>
-                  ))}
-                  {processedResults && processedResults.proSearch && processedResults.proSearch.map((item, index) => (
-                    <li key={`pro-${index}`} className="mb-2">
-                      <Button
-                        variant="link"
-                        className={`text-accent hover:text-accent/80 p-0 h-auto font-normal text-left break-words whitespace-normal`}
-                        onClick={() => onProSearchClick(item)}
-                      >
-                        <span className="mr-2 inline-block">✓</span>
-                        <span className="inline">{item}</span>
+                        {prevQuery.query}
                       </Button>
                     </li>
                   ))}
                 </ul>
-                {processedResults && processedResults.relatedSearches && processedResults.relatedSearches.length > 0 && (
-                  <div className="mt-4">
-                    <h4 className="text-sm font-semibold mb-2">Related Searches:</h4>
-                    <ul className="list-disc pl-5">
-                      {processedResults.relatedSearches.slice(0, processedResults.numberOfSearches || 5).map((search, index) => (
-                        <li key={index} className="mb-1">
-                          <Button
-                            variant="link"
-                            className={`text-accent hover:text-accent/80 p-0 h-auto font-normal text-left break-words whitespace-normal`}
-                            onClick={() => onProSearchClick(search)}
-                          >
-                            {search}
-                          </Button>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
                 <div className={`mt-4 p-4 ${rawResponseBgColor} rounded-lg`}>
                   <h4 className={`text-sm font-semibold mb-2 ${rawResponseTextColor}`}>Raw API Response:</h4>
                   <pre className={`text-xs overflow-x-auto whitespace-pre-wrap ${rawResponseTextColor}`}>
