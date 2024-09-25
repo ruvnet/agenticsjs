@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import GeneralSettings from './GeneralSettings';
 import ApiSettings from './ApiSettings';
+import SettingsGroup from './SettingsGroup';
 
 const SettingsModal = ({ isOpen, onClose }) => {
   const { config, updateUIConfig } = useUIConfig();
