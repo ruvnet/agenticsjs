@@ -4,7 +4,7 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import SettingsGroup from './SettingsGroup';
 
-const GeneralSettings = ({ config, handleChange }) => {
+const GeneralSettings = ({ config, handleChange, inputClass, buttonClass }) => {
   return (
     <div className="space-y-4">
       <SettingsGroup
@@ -15,7 +15,7 @@ const GeneralSettings = ({ config, handleChange }) => {
             value={config.language}
             onValueChange={(value) => handleChange('language', value)}
           >
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className={`w-[180px] ${inputClass}`}>
               <SelectValue placeholder="Select language" />
             </SelectTrigger>
             <SelectContent>
@@ -33,6 +33,7 @@ const GeneralSettings = ({ config, handleChange }) => {
           <Switch
             checked={config.theme === 'dark'}
             onCheckedChange={(checked) => handleChange('theme', checked ? 'dark' : 'light')}
+            className={buttonClass}
           />
         }
       />

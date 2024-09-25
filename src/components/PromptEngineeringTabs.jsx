@@ -2,14 +2,14 @@ import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 
-const PromptEngineeringTabs = ({ config, handleChange, inputClass }) => {
+const PromptEngineeringTabs = ({ config, handleChange, inputClass, buttonClass }) => {
   return (
     <div className="mt-6">
       <h3 className="text-lg font-semibold mb-4">Prompt Engineering</h3>
       <Tabs defaultValue="system" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="system">System Prompt</TabsTrigger>
-          <TabsTrigger value="guidance">Guidance Prompt</TabsTrigger>
+        <TabsList className={`grid w-full grid-cols-2 ${buttonClass}`}>
+          <TabsTrigger value="system" className={buttonClass}>System Prompt</TabsTrigger>
+          <TabsTrigger value="guidance" className={buttonClass}>Guidance Prompt</TabsTrigger>
         </TabsList>
         <TabsContent value="system">
           <Textarea

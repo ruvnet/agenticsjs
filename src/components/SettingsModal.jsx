@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Moon, Sun, Globe, Zap, Palette, Layout, Type, Volume2, Search, Clock, List, MessageSquare, Mic, Puzzle, Key, Brain, Sliders, Save } from 'lucide-react';
+import { Moon, Sun, Globe, Zap, Palette, Type, Volume2, Key, Brain, Puzzle } from 'lucide-react';
 import { useUIConfig } from '../config/uiConfig';
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -41,7 +41,6 @@ const SettingsModal = ({ isOpen, onClose }) => {
     switch (tab) {
       case "general": return "General Settings";
       case "appearance": return "Appearance";
-      case "search": return "Search Settings";
       case "accessibility": return "Accessibility";
       case "api": return "API Settings";
       case "llm": return "LLM Settings";
@@ -50,11 +49,12 @@ const SettingsModal = ({ isOpen, onClose }) => {
     }
   };
 
-  const bgColor = tempConfig?.theme === 'dark' ? 'bg-gray-900' : 'bg-white';
-  const textColor = tempConfig?.theme === 'dark' ? 'text-white' : 'text-gray-800';
-  const borderColor = tempConfig?.theme === 'dark' ? 'border-gray-700' : 'border-gray-200';
-  const inputClass = tempConfig?.theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-gray-800';
-  const buttonClass = tempConfig?.theme === 'dark' ? 'bg-gray-700 hover:bg-gray-600 text-white' : 'bg-gray-200 hover:bg-gray-300 text-gray-800';
+  const isDarkMode = tempConfig?.theme === 'dark';
+  const bgColor = isDarkMode ? 'bg-gray-900' : 'bg-white';
+  const textColor = isDarkMode ? 'text-white' : 'text-gray-800';
+  const borderColor = isDarkMode ? 'border-gray-700' : 'border-gray-200';
+  const inputClass = isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-800';
+  const buttonClass = isDarkMode ? 'bg-gray-700 hover:bg-gray-600 text-white' : 'bg-gray-200 hover:bg-gray-300 text-gray-800';
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -63,10 +63,9 @@ const SettingsModal = ({ isOpen, onClose }) => {
           <DialogTitle className="text-2xl font-bold">{getTabTitle(activeTab)}</DialogTitle>
         </DialogHeader>
         <Tabs defaultValue="general" className="w-full" onValueChange={handleTabChange}>
-          <TabsList className={`grid w-full grid-cols-7 p-2 ${tempConfig?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'} rounded-lg`}>
+          <TabsList className={`grid w-full grid-cols-6 p-2 ${isDarkMode ? 'bg-gray-800' : 'bg-gray-100'} rounded-lg`}>
             <TabsTrigger value="general"><Globe className="h-5 w-5" /></TabsTrigger>
             <TabsTrigger value="appearance"><Palette className="h-5 w-5" /></TabsTrigger>
-            <TabsTrigger value="search"><Search className="h-5 w-5" /></TabsTrigger>
             <TabsTrigger value="accessibility"><Volume2 className="h-5 w-5" /></TabsTrigger>
             <TabsTrigger value="api"><Key className="h-5 w-5" /></TabsTrigger>
             <TabsTrigger value="llm"><Brain className="h-5 w-5" /></TabsTrigger>
@@ -74,22 +73,19 @@ const SettingsModal = ({ isOpen, onClose }) => {
           </TabsList>
           <div className="p-4 space-y-6">
             <TabsContent value="general">
-              <GeneralSettings config={tempConfig} handleChange={handleChange} />
+              <GeneralSettings config={tempConfig} handleChange={handleChange} inputClass={inputClass} buttonClass={buttonClass} />
             </TabsContent>
             <TabsContent value="appearance">
               <AppearanceSettings config={tempConfig} handleChange={handleChange} inputClass={inputClass} buttonClass={buttonClass} />
             </TabsContent>
-            <TabsContent value="search">
-              <SearchSettings config={tempConfig} handleChange={handleChange} inputClass={inputClass} />
-            </TabsContent>
             <TabsContent value="accessibility">
-              <AccessibilitySettings config={tempConfig} handleChange={handleChange} />
+              <AccessibilitySettings config={tempConfig} handleChange={handleChange} inputClass={inputClass} buttonClass={buttonClass} />
             </TabsContent>
             <TabsContent value="api">
               <ApiSettings config={tempConfig} handleChange={handleChange} inputClass={inputClass} buttonClass={buttonClass} />
             </TabsContent>
             <TabsContent value="llm">
-              <LLMSettings config={tempConfig} handleChange={handleChange} inputClass={inputClass} />
+              <LLMSettings config={tempConfig} handleChange={handleChange} inputClass={inputClass} buttonClass={buttonClass} />
             </TabsContent>
             <TabsContent value="plugins">
               <PluginsTab config={tempConfig} updateConfig={handleChange} inputClass={inputClass} buttonClass={buttonClass} />
@@ -98,7 +94,7 @@ const SettingsModal = ({ isOpen, onClose }) => {
         </Tabs>
         <div className="mt-6 flex justify-end">
           <Button onClick={handleSave} className={`${buttonClass} bg-accent hover:bg-accent/90`}>
-            <Save className="mr-2 h-4 w-4" /> Save Settings
+            Save Settings
           </Button>
         </div>
       </DialogContent>
@@ -108,16 +104,6 @@ const SettingsModal = ({ isOpen, onClose }) => {
 
 const AppearanceSettings = ({ config, handleChange, inputClass, buttonClass }) => (
   <>
-    <SettingsGroup
-      icon={config?.theme === 'dark' ? <Moon className="mr-2 h-4 w-4" /> : <Sun className="mr-2 h-4 w-4" />}
-      title="Theme"
-      control={
-        <Switch
-          checked={config?.theme === 'dark'}
-          onCheckedChange={(checked) => handleChange('theme', checked ? 'dark' : 'light')}
-        />
-      }
-    />
     <SettingsGroup
       icon={<Type className="mr-2 h-4 w-4" />}
       title="Font Size"
@@ -155,68 +141,7 @@ const AppearanceSettings = ({ config, handleChange, inputClass, buttonClass }) =
   </>
 );
 
-const SearchSettings = ({ config, handleChange, inputClass }) => (
-  <>
-    <SettingsGroup
-      icon={<Clock className="mr-2 h-4 w-4" />}
-      title="Search Delay (ms)"
-      control={
-        <Input
-          type="number"
-          value={config?.searchDelay}
-          onChange={(e) => handleChange('searchDelay', parseInt(e.target.value))}
-          className={`w-[100px] ${inputClass}`}
-        />
-      }
-    />
-    <SettingsGroup
-      icon={<Zap className="mr-2 h-4 w-4" />}
-      title="Result Animation Duration (ms)"
-      control={
-        <Input
-          type="number"
-          value={config?.resultAnimationDuration}
-          onChange={(e) => handleChange('resultAnimationDuration', parseInt(e.target.value))}
-          className={`w-[100px] ${inputClass}`}
-        />
-      }
-    />
-    <SettingsGroup
-      icon={<List className="mr-2 h-4 w-4" />}
-      title="Max Results"
-      control={
-        <Input
-          type="number"
-          value={config?.maxResults}
-          onChange={(e) => handleChange('maxResults', parseInt(e.target.value))}
-          className={`w-[100px] ${inputClass}`}
-        />
-      }
-    />
-    <SettingsGroup
-      icon={<MessageSquare className="mr-2 h-4 w-4" />}
-      title="Auto Suggest"
-      control={
-        <Switch
-          checked={config?.autoSuggest}
-          onCheckedChange={(checked) => handleChange('autoSuggest', checked)}
-        />
-      }
-    />
-    <SettingsGroup
-      icon={<Mic className="mr-2 h-4 w-4" />}
-      title="Voice Search"
-      control={
-        <Switch
-          checked={config?.voiceSearch}
-          onCheckedChange={(checked) => handleChange('voiceSearch', checked)}
-        />
-      }
-    />
-  </>
-);
-
-const AccessibilitySettings = ({ config, handleChange }) => (
+const AccessibilitySettings = ({ config, handleChange, inputClass, buttonClass }) => (
   <>
     <SettingsGroup
       icon={<Zap className="mr-2 h-4 w-4" />}
@@ -225,6 +150,7 @@ const AccessibilitySettings = ({ config, handleChange }) => (
         <Switch
           checked={config?.animations?.enabled}
           onCheckedChange={(checked) => handleChange('animations', { ...config.animations, enabled: checked })}
+          className={buttonClass}
         />
       }
     />
@@ -247,7 +173,7 @@ const AccessibilitySettings = ({ config, handleChange }) => (
   </>
 );
 
-const LLMSettings = ({ config, handleChange, inputClass }) => (
+const LLMSettings = ({ config, handleChange, inputClass, buttonClass }) => (
   <div className="space-y-6">
     <SettingsGroup
       icon={<Brain className="mr-2 h-4 w-4" />}
@@ -268,7 +194,7 @@ const LLMSettings = ({ config, handleChange, inputClass }) => (
       }
     />
     <SettingsGroup
-      icon={<Sliders className="mr-2 h-4 w-4" />}
+      icon={<Zap className="mr-2 h-4 w-4" />}
       title="Temperature"
       control={
         <div className="w-full">
@@ -287,7 +213,7 @@ const LLMSettings = ({ config, handleChange, inputClass }) => (
       }
     />
     <SettingsGroup
-      icon={<MessageSquare className="mr-2 h-4 w-4" />}
+      icon={<Zap className="mr-2 h-4 w-4" />}
       title="Max Tokens"
       control={
         <Input
@@ -298,7 +224,7 @@ const LLMSettings = ({ config, handleChange, inputClass }) => (
         />
       }
     />
-    <PromptEngineeringTabs config={config} handleChange={handleChange} inputClass={inputClass} />
+    <PromptEngineeringTabs config={config} handleChange={handleChange} inputClass={inputClass} buttonClass={buttonClass} />
   </div>
 );
 
