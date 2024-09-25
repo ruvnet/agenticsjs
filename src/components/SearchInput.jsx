@@ -22,7 +22,7 @@ const SearchInput = ({ onSearch, isSearching }) => {
         numberOfSearches: result.numberOfSearches
       };
       rawResponse = result.rawResponse;
-      console.log('Raw API Response:', rawResponse); // Log the raw response
+      console.log('Raw API Response:', rawResponse);
     } catch (error) {
       console.error("Error generating secondary searches:", error);
       secondarySearches = { relatedSearches: [], numberOfSearches: 0 };

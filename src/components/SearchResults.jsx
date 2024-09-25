@@ -110,6 +110,8 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
   const borderColor = config.theme === 'dark' ? 'border-gray-700' : 'border-gray-300';
   const buttonBgColor = config.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-200';
   const buttonHoverColor = config.theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-300';
+  const rawResponseBgColor = config.theme === 'dark' ? 'bg-gray-900' : 'bg-gray-100';
+  const rawResponseTextColor = config.theme === 'dark' ? 'text-gray-300' : 'text-gray-700';
 
   return (
     <div className={`space-y-4 ${textColor} mb-8`}>
@@ -148,9 +150,11 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
                     </li>
                   ))}
                 </ul>
-                <div className="mt-4 p-4 bg-gray-100 rounded-lg">
-                  <h4 className="text-sm font-semibold mb-2">Raw API Response:</h4>
-                  <pre className="text-xs overflow-x-auto whitespace-pre-wrap">{rawResponse || 'No raw response available'}</pre>
+                <div className={`mt-4 p-4 ${rawResponseBgColor} rounded-lg`}>
+                  <h4 className={`text-sm font-semibold mb-2 ${rawResponseTextColor}`}>Raw API Response:</h4>
+                  <pre className={`text-xs overflow-x-auto whitespace-pre-wrap ${rawResponseTextColor}`}>
+                    {rawResponse || 'No raw response available'}
+                  </pre>
                 </div>
               </div>
             )}
