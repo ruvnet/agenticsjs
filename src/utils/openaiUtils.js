@@ -28,7 +28,7 @@ export const defineRequest = async (query) => {
     }
 
     // Retrieve LLM settings from localStorage
-    const llmModel = localStorage.getItem('llmModel') || 'gpt-3.5-turbo';
+    const llmModel = localStorage.getItem('llmModel') || 'gpt-4-turbo-preview';
     const llmTemperature = parseFloat(localStorage.getItem('llmTemperature') || '0.7');
     const maxTokens = parseInt(localStorage.getItem('maxTokens') || '150', 10);
     const systemPrompt = localStorage.getItem('systemPrompt') || 'You are a helpful assistant that generates related search terms based on an initial query. Provide a JSON response with an array of related searches and the number of searches to perform.';

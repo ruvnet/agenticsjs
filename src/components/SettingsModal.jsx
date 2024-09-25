@@ -29,7 +29,6 @@ const SettingsModal = ({ isOpen, onClose }) => {
 
   const handleSave = () => {
     updateUIConfig(tempConfig);
-    // Save LLM settings to localStorage
     localStorage.setItem('llmModel', tempConfig.llmModel);
     localStorage.setItem('llmTemperature', tempConfig.llmTemperature);
     localStorage.setItem('maxTokens', tempConfig.maxTokens);
@@ -190,6 +189,7 @@ const LLMSettings = ({ config, handleChange, inputClass, buttonClass }) => (
             <SelectValue placeholder="Select model" />
           </SelectTrigger>
           <SelectContent>
+            <SelectItem value="gpt-4-turbo-preview">GPT-4 Turbo Preview</SelectItem>
             <SelectItem value="gpt-3.5-turbo">GPT-3.5 Turbo</SelectItem>
             <SelectItem value="gpt-4">GPT-4</SelectItem>
             <SelectItem value="claude-v1">Claude v1</SelectItem>
