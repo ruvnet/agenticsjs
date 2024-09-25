@@ -23,6 +23,8 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
   const answerRef = useRef(null);
 
   useEffect(() => {
+    console.log("SearchResults received new results:", results);
+    console.log("Raw response:", rawResponse);
     if (isLatestQuery) {
       const stepDuration = 2000;
       const initialDelay = 50;
@@ -52,7 +54,7 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
       setShowAnswer(true);
       setIsGeneratingComplete(true);
     }
-  }, [isLatestQuery]);
+  }, [isLatestQuery, results, rawResponse]);
 
   useEffect(() => {
     if (currentStep === 1) {

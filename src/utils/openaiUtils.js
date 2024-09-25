@@ -2,8 +2,10 @@ import OpenAI from 'openai';
 
 export const generateSecondarySearches = async (query) => {
   try {
+    console.log("Starting generateSecondarySearches for query:", query);
     const apiKey = localStorage.getItem('openAiApiKey');
     if (!apiKey) {
+      console.error("OpenAI API key not found in local storage");
       return { success: false, message: 'Error: OpenAI API key not found in local storage.' };
     }
 
@@ -12,6 +14,8 @@ export const generateSecondarySearches = async (query) => {
     const llmTemperature = parseFloat(localStorage.getItem('llmTemperature') || '0.7');
     const systemPrompt = localStorage.getItem('systemPrompt') || '';
     const guidancePrompt = localStorage.getItem('guidancePrompt') || '';
+
+    console.log("LLM Settings:", { llmModel, llmTemperature, systemPrompt, guidancePrompt });
 
     // WARNING: This option is not secure for production use.
     // Only use for development/testing purposes.
@@ -25,6 +29,8 @@ export const generateSecondarySearches = async (query) => {
       { role: 'user', content: guidancePrompt + `Generate related search terms for the query: "${query}". Respond with a JSON object containing an array of related searches and the number of searches to perform.` }
     ].filter(msg => msg.content);
 
+    console.log("Sending request to OpenAI API with messages:", messages);
+
     const completion = await openai.chat.completions.create({
       model: llmModel,
       messages: messages,
@@ -32,7 +38,11 @@ export const generateSecondarySearches = async (query) => {
       max_tokens: 150
     });
 
+    console.log("Received response from OpenAI API:", completion);
+
     const response = JSON.parse(completion.choices[0].message.content);
+    console.log("Parsed response:", response);
+
     return {
       success: true,
       relatedSearches: response.relatedSearches || [],
