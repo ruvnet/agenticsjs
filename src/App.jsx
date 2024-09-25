@@ -53,7 +53,7 @@ const AppContent = () => {
     contentRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleSearch = async (searchQuery, definition, rawApiResponse) => {
+  const handleSearch = async (searchQuery, definition, rawApiResponse, relatedSearches, numberOfSearches) => {
     setIsSearching(true);
     setShowInitialScreen(false);
     setRawResponse(rawApiResponse);
@@ -62,6 +62,8 @@ const AppContent = () => {
       query: searchQuery,
       results: {
         answer: definition,
+        relatedSearches: relatedSearches,
+        numberOfSearches: numberOfSearches,
         sources: [
           { title: searchQuery + " - Comprehensive Guide", source: "example.com" },
           { title: "Latest Research on " + searchQuery, source: "research.org" }

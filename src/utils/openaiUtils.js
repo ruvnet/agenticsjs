@@ -29,10 +29,8 @@ export const defineRequest = async (query) => {
 
     const llmModel = localStorage.getItem('llmModel') || 'gpt-3.5-turbo';
     const llmTemperature = parseFloat(localStorage.getItem('llmTemperature') || '0.7');
-    const systemPrompt = localStorage.getItem('systemPrompt') || '';
-    const guidancePrompt = localStorage.getItem('guidancePrompt') || '';
 
-    console.log("LLM Settings for defineRequest:", { llmModel, llmTemperature, systemPrompt, guidancePrompt });
+    console.log("LLM Settings for defineRequest:", { llmModel, llmTemperature });
 
     const openai = new OpenAI({ 
       apiKey: apiKey, 
@@ -40,9 +38,15 @@ export const defineRequest = async (query) => {
     });
 
     const messages = [
-      { role: 'system', content: systemPrompt || 'You are a helpful assistant that defines search requests.' },
-      { role: 'user', content: guidancePrompt + `Define the search request: "${query}"` }
-    ].filter(msg => msg.content);
+      { 
+        role: 'system', 
+        content: 'You are a helpful assistant that generates related search terms based on an initial query. Provide a JSON response with an array of related searches and the number of searches to perform.'
+      },
+      { 
+        role: 'user', 
+        content: `Generate related search terms for the query: "${query}". Respond with a JSON object containing an array of related searches and the number of searches to perform.`
+      }
+    ];
 
     console.log("Sending request to OpenAI API for defineRequest with messages:", JSON.stringify(messages, null, 2));
 
@@ -57,9 +61,20 @@ export const defineRequest = async (query) => {
 
     console.log("Received raw response from OpenAI API for defineRequest:", JSON.stringify(completion, null, 2));
 
+    const assistantMessage = completion.choices[0].message.content;
+    let parsedResponse;
+    try {
+      parsedResponse = JSON.parse(assistantMessage);
+    } catch (error) {
+      console.error("Error parsing assistant message:", error);
+      parsedResponse = { relatedSearches: [], numberOfSearches: 0 };
+    }
+
     return {
       success: true,
-      definition: completion.choices[0].message.content,
+      definition: query,
+      relatedSearches: parsedResponse.relatedSearches || [],
+      numberOfSearches: parsedResponse.numberOfSearches || 0,
       rawResponse: JSON.stringify(completion, null, 2)
     };
   } catch (error) {
@@ -68,6 +83,8 @@ export const defineRequest = async (query) => {
       success: false, 
       message: `Error: ${error.message}`,
       definition: '', 
+      relatedSearches: [],
+      numberOfSearches: 0,
       rawResponse: JSON.stringify({ error: error.message }, null, 2)
     };
   }

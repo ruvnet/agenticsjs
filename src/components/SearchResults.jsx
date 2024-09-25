@@ -137,11 +137,28 @@ const SearchResults = ({ query, results, onSourceClick, isLatestQuery, rawRespon
               </Button>
             </div>
             {isProSearchExpanded && (
-              <div className={`mt-4 p-4 ${rawResponseBgColor} rounded-lg`}>
-                <h4 className={`text-sm font-semibold mb-2 ${rawResponseTextColor}`}>Raw API Response:</h4>
-                <pre className={`text-xs overflow-x-auto whitespace-pre-wrap ${rawResponseTextColor}`}>
-                  {rawResponse || 'No raw response available'}
-                </pre>
+              <div className="mt-4 space-y-4">
+                <div className={`p-4 ${rawResponseBgColor} rounded-lg`}>
+                  <h4 className={`text-sm font-semibold mb-2 ${rawResponseTextColor}`}>Raw API Response:</h4>
+                  <pre className={`text-xs overflow-x-auto whitespace-pre-wrap ${rawResponseTextColor}`}>
+                    {rawResponse || 'No raw response available'}
+                  </pre>
+                </div>
+                {processedResults && processedResults.relatedSearches && (
+                  <div>
+                    <h4 className={`text-sm font-semibold mb-2 ${rawResponseTextColor}`}>Related Searches:</h4>
+                    <ul className="list-disc pl-5">
+                      {processedResults.relatedSearches.map((search, index) => (
+                        <li key={index} className={rawResponseTextColor}>{search}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {processedResults && processedResults.numberOfSearches && (
+                  <div className={rawResponseTextColor}>
+                    <strong>Number of Searches:</strong> {processedResults.numberOfSearches}
+                  </div>
+                )}
               </div>
             )}
           </motion.div>

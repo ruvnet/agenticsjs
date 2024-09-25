@@ -21,7 +21,7 @@ const SearchInput = ({ onSearch, isSearching }) => {
       console.log("OpenAI request completed:", result);
       
       if (result.success) {
-        onSearch(query, result.definition, result.rawResponse);
+        onSearch(query, result.definition, result.rawResponse, result.relatedSearches, result.numberOfSearches);
       } else {
         console.error("Error in defineRequest:", result.message);
         toast.error(result.message || "An error occurred while defining the search request.");
