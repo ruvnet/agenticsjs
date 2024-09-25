@@ -62,7 +62,7 @@ const AppContent = () => {
       query: searchQuery,
       results: {
         answer: definition,
-        proSearch: secondarySearches.relatedSearches || [],
+        proSearch: secondarySearches?.relatedSearches || [],
         sources: [
           { title: searchQuery + " - Comprehensive Guide", source: "example.com" },
           { title: "Latest Research on " + searchQuery, source: "research.org" }

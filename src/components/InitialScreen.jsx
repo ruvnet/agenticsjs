@@ -30,9 +30,9 @@ const InitialScreen = ({ onSearch, scrollToTop, onOpenSettings }) => {
     onSearch(query);
   };
 
-  const handleSearch = (query) => {
+  const handleSearch = (query, definition, rawApiResponse, secondarySearches) => {
     scrollToTop();
-    onSearch(query);
+    onSearch(query, definition, rawApiResponse, secondarySearches);
   };
 
   return (
