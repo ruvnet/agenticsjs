@@ -4,21 +4,23 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Mic, Plus } from "lucide-react";
 import SpeechModal from './SpeechModal';
+import { generateSecondarySearches } from '../utils/openaiUtils';
 
 const SearchInput = ({ onSearch, isSearching }) => {
   const { config } = useUIConfig();
   const [query, setQuery] = useState('');
   const [isSpeechModalOpen, setIsSpeechModalOpen] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSearch(query);
+    const secondarySearches = await generateSecondarySearches(query);
+    onSearch(query, secondarySearches);
   };
 
   const handleSpeechResult = (result) => {
     setQuery(result);
     setIsSpeechModalOpen(false);
-    onSearch(result);
+    handleSubmit({ preventDefault: () => {} });
   };
 
   return (
