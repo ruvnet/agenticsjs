@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ChevronDown, ChevronUp, ExternalLink } from 'lucide-react';
+import { ChevronDown, ChevronUp, ExternalLink, Bug } from 'lucide-react';
 import { useUIConfig } from '../config/uiConfig';
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
@@ -17,6 +17,7 @@ const SearchResults = ({ query, results, onSourceClick, isLatestQuery, rawRespon
   const [showAnswer, setShowAnswer] = useState(false);
   const [isGeneratingComplete, setIsGeneratingComplete] = useState(false);
   const [processedResults, setProcessedResults] = useState(results);
+  const [showRawResponse, setShowRawResponse] = useState(false);
 
   const proSearchRef = useRef(null);
   const sourcesRef = useRef(null);
@@ -101,6 +102,10 @@ const SearchResults = ({ query, results, onSourceClick, isLatestQuery, rawRespon
     setIsGeneratingComplete(true);
   };
 
+  const toggleRawResponse = () => {
+    setShowRawResponse(!showRawResponse);
+  };
+
   const animationProps = {
     initial: { opacity: 0, height: 0 },
     animate: { opacity: 1, height: "auto" },
@@ -127,23 +132,35 @@ const SearchResults = ({ query, results, onSourceClick, isLatestQuery, rawRespon
               <h3 className="text-lg font-semibold flex items-center">
                 <span className="mr-2">{config.components.proSearch.icon}</span> {config.components.proSearch.title}
               </h3>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsProSearchExpanded(!isProSearchExpanded)}
-                className={`${buttonBgColor} ${buttonHoverColor}`}
-              >
-                {isProSearchExpanded ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
-              </Button>
+              <div className="flex items-center">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={toggleRawResponse}
+                  className={`${buttonBgColor} ${buttonHoverColor} mr-2`}
+                >
+                  <Bug className="h-5 w-5" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsProSearchExpanded(!isProSearchExpanded)}
+                  className={`${buttonBgColor} ${buttonHoverColor}`}
+                >
+                  {isProSearchExpanded ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
+                </Button>
+              </div>
             </div>
             {isProSearchExpanded && (
               <div className="mt-4 space-y-4">
-                <div className={`p-4 ${rawResponseBgColor} rounded-lg`}>
-                  <h4 className={`text-sm font-semibold mb-2 ${rawResponseTextColor}`}>Raw API Response:</h4>
-                  <pre className={`text-xs overflow-x-auto whitespace-pre-wrap ${rawResponseTextColor}`}>
-                    {rawResponse || 'No raw response available'}
-                  </pre>
-                </div>
+                {showRawResponse && (
+                  <div className={`p-4 ${rawResponseBgColor} rounded-lg`}>
+                    <h4 className={`text-sm font-semibold mb-2 ${rawResponseTextColor}`}>Raw API Response:</h4>
+                    <pre className={`text-xs overflow-x-auto whitespace-pre-wrap ${rawResponseTextColor}`}>
+                      {rawResponse || 'No raw response available'}
+                    </pre>
+                  </div>
+                )}
                 {processedResults && processedResults.relatedSearches && (
                   <div>
                     <h4 className={`text-sm font-semibold mb-2 ${rawResponseTextColor}`}>Related Searches:</h4>
