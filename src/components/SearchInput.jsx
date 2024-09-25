@@ -15,10 +15,15 @@ const SearchInput = ({ onSearch, isSearching }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log("Generating secondary searches for query:", query);
+      console.log("Starting search process for query:", query);
+      console.log("Generating secondary searches...");
       const result = await generateSecondarySearches(query);
       console.log("Secondary searches result:", result);
       if (result.success) {
+        console.log("Secondary searches generated successfully");
+        console.log("Related searches:", result.relatedSearches);
+        console.log("Number of searches:", result.numberOfSearches);
+        console.log("Raw API response:", result.rawResponse);
         onSearch(query, {
           relatedSearches: result.relatedSearches,
           numberOfSearches: result.numberOfSearches
