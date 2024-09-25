@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import GeneralSettings from './GeneralSettings';
 import ApiSettings from './ApiSettings';
 import SettingsGroup from './SettingsGroup';
+import PromptEngineeringTabs from './PromptEngineeringTabs';
 
 const SettingsModal = ({ isOpen, onClose }) => {
   const { config, updateUIConfig } = useUIConfig();
@@ -247,7 +248,7 @@ const AccessibilitySettings = ({ config, handleChange }) => (
 );
 
 const LLMSettings = ({ config, handleChange, inputClass }) => (
-  <>
+  <div className="space-y-6">
     <SettingsGroup
       icon={<Brain className="mr-2 h-4 w-4" />}
       title="LLM Model"
@@ -297,7 +298,8 @@ const LLMSettings = ({ config, handleChange, inputClass }) => (
         />
       }
     />
-  </>
+    <PromptEngineeringTabs config={config} handleChange={handleChange} inputClass={inputClass} />
+  </div>
 );
 
 const PluginsTab = ({ config, updateConfig, inputClass, buttonClass }) => {
