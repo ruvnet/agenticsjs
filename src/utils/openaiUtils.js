@@ -24,7 +24,10 @@ export const generateSecondarySearches = async (query) => {
     });
 
     const response = JSON.parse(completion.choices[0].message.content);
-    return response;
+    return {
+      relatedSearches: response.relatedSearches || [],
+      numberOfSearches: response.numberOfSearches || 0
+    };
   } catch (error) {
     console.error("Error generating secondary searches:", error);
     return { relatedSearches: [], numberOfSearches: 0 };

@@ -73,7 +73,7 @@ const AppContent = () => {
         if (lastQueryIndex >= 0) {
           updatedQueries[lastQueryIndex].results = {
             answer: "Here's a simulated answer to your query about " + searchQuery,
-            proSearch: secondarySearches.relatedSearches,
+            proSearch: secondarySearches?.relatedSearches || [],
             sources: [
               { title: searchQuery + " - Comprehensive Guide", source: "example.com" },
               { title: "Latest Research on " + searchQuery, source: "research.org" }

@@ -13,7 +13,13 @@ const SearchInput = ({ onSearch, isSearching }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const secondarySearches = await generateSecondarySearches(query);
+    let secondarySearches;
+    try {
+      secondarySearches = await generateSecondarySearches(query);
+    } catch (error) {
+      console.error("Error generating secondary searches:", error);
+      secondarySearches = { relatedSearches: [], numberOfSearches: 0 };
+    }
     onSearch(query, secondarySearches);
   };
 
