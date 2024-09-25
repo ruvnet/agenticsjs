@@ -29,6 +29,12 @@ const SettingsModal = ({ isOpen, onClose }) => {
 
   const handleSave = () => {
     updateUIConfig(tempConfig);
+    // Save LLM settings to localStorage
+    localStorage.setItem('llmModel', tempConfig.llmModel);
+    localStorage.setItem('llmTemperature', tempConfig.llmTemperature);
+    localStorage.setItem('maxTokens', tempConfig.maxTokens);
+    localStorage.setItem('systemPrompt', tempConfig.systemPrompt);
+    localStorage.setItem('guidancePrompt', tempConfig.guidancePrompt);
     toast.success("Settings saved successfully!");
     onClose();
   };

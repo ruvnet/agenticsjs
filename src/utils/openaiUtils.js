@@ -27,10 +27,14 @@ export const defineRequest = async (query) => {
       return { success: false, message: 'Error: OpenAI API key not found in local storage.' };
     }
 
+    // Retrieve LLM settings from localStorage
     const llmModel = localStorage.getItem('llmModel') || 'gpt-3.5-turbo';
     const llmTemperature = parseFloat(localStorage.getItem('llmTemperature') || '0.7');
+    const maxTokens = parseInt(localStorage.getItem('maxTokens') || '150', 10);
+    const systemPrompt = localStorage.getItem('systemPrompt') || 'You are a helpful assistant that generates related search terms based on an initial query. Provide a JSON response with an array of related searches and the number of searches to perform.';
+    const guidancePrompt = localStorage.getItem('guidancePrompt') || '';
 
-    console.log("LLM Settings for defineRequest:", { llmModel, llmTemperature });
+    console.log("LLM Settings for defineRequest:", { llmModel, llmTemperature, maxTokens, systemPrompt, guidancePrompt });
 
     const openai = new OpenAI({ 
       apiKey: apiKey, 
@@ -38,14 +42,8 @@ export const defineRequest = async (query) => {
     });
 
     const messages = [
-      { 
-        role: 'system', 
-        content: 'You are a helpful assistant that generates related search terms based on an initial query. Provide a JSON response with an array of related searches and the number of searches to perform.'
-      },
-      { 
-        role: 'user', 
-        content: `Generate related search terms for the query: "${query}". Respond with a JSON object containing an array of related searches and the number of searches to perform.`
-      }
+      { role: 'system', content: systemPrompt },
+      { role: 'user', content: `${guidancePrompt}Generate related search terms for the query: "${query}". Respond with a JSON object containing an array of related searches and the number of searches to perform.` }
     ];
 
     console.log("Sending request to OpenAI API for defineRequest with messages:", JSON.stringify(messages, null, 2));
@@ -55,7 +53,7 @@ export const defineRequest = async (query) => {
         model: llmModel,
         messages: messages,
         temperature: llmTemperature,
-        max_tokens: 150
+        max_tokens: maxTokens
       })
     );
 
