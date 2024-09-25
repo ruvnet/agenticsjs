@@ -10,18 +10,19 @@ const SearchInput = ({ onSearch, isSearching }) => {
   const { config } = useUIConfig();
   const [query, setQuery] = useState('');
   const [isSpeechModalOpen, setIsSpeechModalOpen] = useState(false);
-  const [rawResponse, setRawResponse] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     let secondarySearches;
+    let rawResponse = '';
     try {
       secondarySearches = await generateSecondarySearches(query);
-      setRawResponse(JSON.stringify(secondarySearches, null, 2));
+      rawResponse = JSON.stringify(secondarySearches, null, 2);
+      console.log('Raw API Response:', rawResponse); // Log the raw response
     } catch (error) {
       console.error("Error generating secondary searches:", error);
       secondarySearches = { relatedSearches: [], numberOfSearches: 0 };
-      setRawResponse(JSON.stringify({ error: error.message }, null, 2));
+      rawResponse = JSON.stringify({ error: error.message }, null, 2);
     }
     onSearch(query, secondarySearches, rawResponse);
   };

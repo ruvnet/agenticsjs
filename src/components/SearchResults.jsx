@@ -150,7 +150,7 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
                 </ul>
                 <div className="mt-4 p-4 bg-gray-100 rounded-lg">
                   <h4 className="text-sm font-semibold mb-2">Raw API Response:</h4>
-                  <pre className="text-xs overflow-x-auto">{rawResponse}</pre>
+                  <pre className="text-xs overflow-x-auto whitespace-pre-wrap">{rawResponse || 'No raw response available'}</pre>
                 </div>
               </div>
             )}
