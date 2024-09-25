@@ -47,7 +47,7 @@ export const generateSecondarySearches = async (query) => {
       { role: 'user', content: guidancePrompt + `Generate related search terms for the query: "${query}". Respond with a JSON object containing an array of related searches and the number of searches to perform.` }
     ].filter(msg => msg.content);
 
-    console.log("Sending request to OpenAI API with messages:", messages);
+    console.log("Sending request to OpenAI API with messages:", JSON.stringify(messages, null, 2));
 
     const completion = await makeRequestWithRetry(() => 
       openai.chat.completions.create({
@@ -58,7 +58,7 @@ export const generateSecondarySearches = async (query) => {
       })
     );
 
-    console.log("Received response from OpenAI API:", completion);
+    console.log("Received raw response from OpenAI API:", JSON.stringify(completion, null, 2));
 
     const response = JSON.parse(completion.choices[0].message.content);
     console.log("Parsed response:", response);
@@ -83,6 +83,7 @@ export const generateSecondarySearches = async (query) => {
 
 export const defineRequest = async (query) => {
   try {
+    console.log("Starting defineRequest for query:", query);
     const apiKey = localStorage.getItem('openAiApiKey');
     if (!apiKey) {
       console.error("OpenAI API key not found in local storage");
@@ -109,7 +110,7 @@ export const defineRequest = async (query) => {
       { role: 'user', content: guidancePrompt + `Define the search request: "${query}"` }
     ].filter(msg => msg.content);
 
-    console.log("Sending request to OpenAI API for defineRequest with messages:", messages);
+    console.log("Sending request to OpenAI API for defineRequest with messages:", JSON.stringify(messages, null, 2));
 
     const completion = await makeRequestWithRetry(() => 
       openai.chat.completions.create({
@@ -120,7 +121,7 @@ export const defineRequest = async (query) => {
       })
     );
 
-    console.log("Received response from OpenAI API for defineRequest:", completion);
+    console.log("Received raw response from OpenAI API for defineRequest:", JSON.stringify(completion, null, 2));
 
     return {
       success: true,
