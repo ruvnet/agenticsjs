@@ -1,5 +1,23 @@
 import OpenAI from 'openai';
 
+const MAX_RETRIES = 3;
+const RETRY_DELAY = 1000; // 1 second
+
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+const makeRequestWithRetry = async (apiCall, retries = MAX_RETRIES) => {
+  try {
+    return await apiCall();
+  } catch (error) {
+    if (retries > 0) {
+      console.log(`Request failed, retrying... (${MAX_RETRIES - retries + 1}/${MAX_RETRIES})`);
+      await sleep(RETRY_DELAY);
+      return makeRequestWithRetry(apiCall, retries - 1);
+    }
+    throw error;
+  }
+};
+
 export const generateSecondarySearches = async (query) => {
   try {
     console.log("Starting generateSecondarySearches for query:", query);
@@ -31,12 +49,14 @@ export const generateSecondarySearches = async (query) => {
 
     console.log("Sending request to OpenAI API with messages:", messages);
 
-    const completion = await openai.chat.completions.create({
-      model: llmModel,
-      messages: messages,
-      temperature: llmTemperature,
-      max_tokens: 150
-    });
+    const completion = await makeRequestWithRetry(() => 
+      openai.chat.completions.create({
+        model: llmModel,
+        messages: messages,
+        temperature: llmTemperature,
+        max_tokens: 150
+      })
+    );
 
     console.log("Received response from OpenAI API:", completion);
 
