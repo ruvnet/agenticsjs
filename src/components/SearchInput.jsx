@@ -16,8 +16,12 @@ const SearchInput = ({ onSearch, isSearching }) => {
     let secondarySearches;
     let rawResponse = '';
     try {
-      secondarySearches = await generateSecondarySearches(query);
-      rawResponse = JSON.stringify(secondarySearches, null, 2);
+      const result = await generateSecondarySearches(query);
+      secondarySearches = {
+        relatedSearches: result.relatedSearches,
+        numberOfSearches: result.numberOfSearches
+      };
+      rawResponse = result.rawResponse;
       console.log('Raw API Response:', rawResponse); // Log the raw response
     } catch (error) {
       console.error("Error generating secondary searches:", error);
