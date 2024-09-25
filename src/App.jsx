@@ -14,6 +14,7 @@ import { Helmet } from 'react-helmet';
 import wordCountPlugin from './plugins/wordCountPlugin';
 import { Settings } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import { defineRequest } from './utils/openaiUtils';
 
 const queryClient = new QueryClient();
 
@@ -53,27 +54,43 @@ const AppContent = () => {
     contentRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleSearch = async (searchQuery, definition, rawApiResponse, relatedSearches, numberOfSearches) => {
+  const handleSearch = async (searchQuery) => {
     setIsSearching(true);
     setShowInitialScreen(false);
-    setRawResponse(rawApiResponse);
+    
+    try {
+      console.log("Starting search process for query:", searchQuery);
+      console.log("Initiating OpenAI request...");
+      const result = await defineRequest(searchQuery);
+      console.log("OpenAI request completed:", result);
+      
+      if (result.success) {
+        const newQuery = {
+          query: searchQuery,
+          results: {
+            answer: result.definition,
+            relatedSearches: result.relatedSearches,
+            numberOfSearches: result.numberOfSearches,
+            sources: [
+              { title: searchQuery + " - Comprehensive Guide", source: "example.com" },
+              { title: "Latest Research on " + searchQuery, source: "research.org" }
+            ]
+          },
+        };
 
-    const newQuery = {
-      query: searchQuery,
-      results: {
-        answer: definition,
-        relatedSearches: relatedSearches,
-        numberOfSearches: numberOfSearches,
-        sources: [
-          { title: searchQuery + " - Comprehensive Guide", source: "example.com" },
-          { title: "Latest Research on " + searchQuery, source: "research.org" }
-        ]
-      },
-    };
-
-    setQueries(prevQueries => [...prevQueries, newQuery]);
-    setIsSearching(false);
-    scrollToTop();
+        setQueries(prevQueries => [...prevQueries, newQuery]);
+        setRawResponse(result.rawResponse);
+      } else {
+        console.error("Error in defineRequest:", result.message);
+        toast.error(result.message || "An error occurred while defining the search request.");
+      }
+    } catch (error) {
+      console.error("Error in handleSearch:", error);
+      toast.error("An unexpected error occurred. Please try again.");
+    } finally {
+      setIsSearching(false);
+      scrollToTop();
+    }
   };
 
   const handleSourceClick = (source) => {

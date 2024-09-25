@@ -30,11 +30,6 @@ const InitialScreen = ({ onSearch, scrollToTop, onOpenSettings }) => {
     onSearch(query);
   };
 
-  const handleSearch = (query, definition, rawApiResponse, secondarySearches) => {
-    scrollToTop();
-    onSearch(query, definition, rawApiResponse, secondarySearches);
-  };
-
   return (
     <div className={`fixed inset-0 flex items-center justify-center ${backgroundColor}`}>
       <Button
@@ -69,7 +64,7 @@ const InitialScreen = ({ onSearch, scrollToTop, onOpenSettings }) => {
           transition={{ duration: 0.5, delay: 2 }}
           className="w-full mb-8"
         >
-          <SearchInput onSearch={handleSearch} isSearching={false} />
+          <SearchInput onSearch={onSearch} isSearching={false} />
         </motion.div>
 
         <motion.div

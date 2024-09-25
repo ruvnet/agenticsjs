@@ -4,7 +4,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Mic, Plus } from "lucide-react";
 import SpeechModal from './SpeechModal';
-import { defineRequest } from '../utils/openaiUtils';
 import { toast } from "sonner";
 
 const SearchInput = ({ onSearch, isSearching }) => {
@@ -14,28 +13,15 @@ const SearchInput = ({ onSearch, isSearching }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      console.log("Starting search process for query:", query);
-      console.log("Initiating OpenAI request...");
-      const result = await defineRequest(query);
-      console.log("OpenAI request completed:", result);
-      
-      if (result.success) {
-        onSearch(query, result.definition, result.rawResponse, result.relatedSearches, result.numberOfSearches);
-      } else {
-        console.error("Error in defineRequest:", result.message);
-        toast.error(result.message || "An error occurred while defining the search request.");
-      }
-    } catch (error) {
-      console.error("Error in handleSubmit:", error);
-      toast.error("An unexpected error occurred. Please try again.");
+    if (query.trim()) {
+      onSearch(query);
     }
   };
 
   const handleSpeechResult = (result) => {
     setQuery(result);
     setIsSpeechModalOpen(false);
-    handleSubmit({ preventDefault: () => {} });
+    onSearch(result);
   };
 
   return (
