@@ -13,14 +13,6 @@ const UIConfigProvider = ({ children, initialConfig = {} }) => {
       ...initialConfig,
       llmModel: 'gpt-3.5-turbo',
       llmTemperature: 0.7,
-      searchEngine: 'google',
-      resultsPerPage: '20',
-      saveSearchHistory: true,
-      safeSearchLevel: 1,
-      doNotTrack: false,
-      pushNotifications: true,
-      emailNotifications: false,
-      inAppNotifications: true,
     };
   });
 
