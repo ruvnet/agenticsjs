@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Mic, Plus } from "lucide-react";
 import SpeechModal from './SpeechModal';
-import { defineRequest } from '../utils/openaiUtils';
+import { defineRequest, generateSecondarySearches } from '../utils/openaiUtils';
 import { toast } from "sonner";
 
 const SearchInput = ({ onSearch, isSearching }) => {
@@ -21,7 +21,9 @@ const SearchInput = ({ onSearch, isSearching }) => {
       console.log("OpenAI request completed:", result);
       
       if (result.success) {
-        onSearch(query, result.definition, result.rawResponse);
+        const secondarySearches = await generateSecondarySearches(query);
+        console.log("Secondary searches generated:", secondarySearches);
+        onSearch(query, result.definition, result.rawResponse, secondarySearches);
       } else {
         console.error("Error in defineRequest:", result.message);
         toast.error(result.message || "An error occurred while defining the search request.");

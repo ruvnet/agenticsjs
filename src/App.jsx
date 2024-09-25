@@ -26,6 +26,7 @@ const AppContent = () => {
   const [isDocumentationOpen, setIsDocumentationOpen] = useState(false);
   const contentRef = useRef(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [rawResponse, setRawResponse] = useState('');
 
   useEffect(() => {
     const checkFullscreen = () => {
@@ -52,20 +53,21 @@ const AppContent = () => {
     contentRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleSearch = async (searchQuery, definition, rawApiResponse) => {
+  const handleSearch = async (searchQuery, definition, rawApiResponse, secondarySearches) => {
     setIsSearching(true);
     setShowInitialScreen(false);
+    setRawResponse(rawApiResponse);
 
     const newQuery = {
       query: searchQuery,
       results: {
         answer: definition,
+        proSearch: secondarySearches?.relatedSearches || [],
         sources: [
           { title: searchQuery + " - Comprehensive Guide", source: "example.com" },
           { title: "Latest Research on " + searchQuery, source: "research.org" }
         ]
       },
-      rawResponse: rawApiResponse
     };
 
     setQueries(prevQueries => [...prevQueries, newQuery]);
@@ -75,7 +77,7 @@ const AppContent = () => {
 
   const handleProSearchClick = (item) => {
     toast.info(`Searching for: ${item}`);
-    handleSearch(item, "This is a simulated answer for the pro search query: " + item, "Simulated raw API response");
+    handleSearch(item, { relatedSearches: [] });
   };
 
   const handleSourceClick = (source) => {
@@ -125,7 +127,7 @@ const AppContent = () => {
                 onProSearchClick={handleProSearchClick}
                 onSourceClick={handleSourceClick}
                 isLatestQuery={index === queries.length - 1}
-                rawResponse={queryItem.rawResponse}
+                rawResponse={rawResponse}
                 previousQueries={queries.slice(0, index)}
               />
             ))}
