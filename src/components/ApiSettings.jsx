@@ -108,7 +108,7 @@ const ApiSettings = ({ config, handleChange, inputClass, buttonClass }) => {
 
   const handleTestOpenAiApi = async () => {
     setIsOpenAiLoading(true);
-    const result = await testOpenAiApi(openAiApiKey);
+    const result = await testOpenAiApi();
     setIsOpenAiValid(result.success);
     setOpenAiTestResponse(result.message);
     localStorage.setItem('openAiTestResponse', result.message);

@@ -20,8 +20,13 @@ export const testJinaApi = async (apiKey) => {
   }
 };
 
-export const testOpenAiApi = async (apiKey) => {
+export const testOpenAiApi = async () => {
   try {
+    const apiKey = localStorage.getItem('openAiApiKey');
+    if (!apiKey) {
+      return { success: false, message: 'Error: OpenAI API key not found in local storage.' };
+    }
+
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -29,7 +34,7 @@ export const testOpenAiApi = async (apiKey) => {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: "gpt-4",
+        model: "gpt-3.5-turbo",
         messages: [{ role: "user", content: "Hello, can you hear me?" }],
         max_tokens: 50
       })
