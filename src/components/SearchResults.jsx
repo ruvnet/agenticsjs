@@ -138,17 +138,16 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
             </div>
             {isProSearchExpanded && (
               <div>
-                <h4 className="text-md font-semibold mb-2">Related Searches:</h4>
                 <ul className="list-none pl-0 space-y-2">
-                  {processedResults && processedResults.related_searches && processedResults.related_searches.map((search, index) => (
+                  {previousQueries.map((prevQuery, index) => (
                     <li key={index} className="flex items-center">
                       <Search className="h-4 w-4 mr-2 text-accent" />
                       <Button
                         variant="link"
                         className={`text-accent hover:text-accent/80 p-0 h-auto font-normal text-left break-words whitespace-normal`}
-                        onClick={() => onProSearchClick(search)}
+                        onClick={() => onProSearchClick(prevQuery.query)}
                       >
-                        {search}
+                        {prevQuery.query}
                       </Button>
                     </li>
                   ))}
