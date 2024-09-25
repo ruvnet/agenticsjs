@@ -23,6 +23,8 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
   const answerRef = useRef(null);
 
   useEffect(() => {
+    console.log("SearchResults received new results:", results);
+    console.log("Raw response:", rawResponse);
     if (isLatestQuery) {
       const stepDuration = 2000;
       const initialDelay = 50;
@@ -136,12 +138,20 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
             </div>
             {isProSearchExpanded && (
               <div>
-                <div className={`mt-4 p-4 ${rawResponseBgColor} rounded-lg`}>
-                  <h4 className={`text-sm font-semibold mb-2 ${rawResponseTextColor}`}>LLM Settings:</h4>
-                  <pre className={`text-xs overflow-x-auto whitespace-pre-wrap ${rawResponseTextColor}`}>
-                    {JSON.stringify(config, null, 2)}
-                  </pre>
-                </div>
+                <ul className="list-none pl-0 space-y-2">
+                  {previousQueries.map((prevQuery, index) => (
+                    <li key={index} className="flex items-center">
+                      <Search className="h-4 w-4 mr-2 text-accent" />
+                      <Button
+                        variant="link"
+                        className={`text-accent hover:text-accent/80 p-0 h-auto font-normal text-left break-words whitespace-normal`}
+                        onClick={() => onProSearchClick(prevQuery.query)}
+                      >
+                        {prevQuery.query}
+                      </Button>
+                    </li>
+                  ))}
+                </ul>
                 <div className={`mt-4 p-4 ${rawResponseBgColor} rounded-lg`}>
                   <h4 className={`text-sm font-semibold mb-2 ${rawResponseTextColor}`}>Raw API Response:</h4>
                   <pre className={`text-xs overflow-x-auto whitespace-pre-wrap ${rawResponseTextColor}`}>
