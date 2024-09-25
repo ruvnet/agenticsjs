@@ -7,7 +7,7 @@ import SearchSteps from './SearchSteps';
 import StreamingText from './StreamingText';
 import { scrollToElement } from '../utils/scrollUtils';
 
-const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLatestQuery, rawResponse }) => {
+const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLatestQuery, rawResponse, proSearchSuggestions }) => {
   const { config } = useUIConfig();
   const [isProSearchExpanded, setIsProSearchExpanded] = useState(true);
   const [isSourcesExpanded, setIsSourcesExpanded] = useState(true);
@@ -25,6 +25,7 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
   useEffect(() => {
     console.log("SearchResults received new results:", results);
     console.log("Raw response:", rawResponse);
+    console.log("Pro search suggestions:", proSearchSuggestions);
     if (isLatestQuery) {
       const stepDuration = 2000;
       const initialDelay = 50;
@@ -54,7 +55,7 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
       setShowAnswer(true);
       setIsGeneratingComplete(true);
     }
-  }, [isLatestQuery, results, rawResponse]);
+  }, [isLatestQuery, results, rawResponse, proSearchSuggestions]);
 
   useEffect(() => {
     if (currentStep === 1) {
@@ -121,7 +122,7 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
       {isLatestQuery && <SearchSteps currentStep={currentStep} isGeneratingComplete={isGeneratingComplete} />}
 
       <AnimatePresence>
-        {showProSearch && processedResults && processedResults.proSearch && (
+        {showProSearch && proSearchSuggestions && proSearchSuggestions.length > 0 && (
           <motion.div {...animationProps} className={`border ${borderColor} rounded-lg p-4`} ref={proSearchRef}>
             <div className="flex justify-between items-center mb-2">
               <h3 className="text-lg font-semibold flex items-center">
@@ -139,7 +140,7 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
             {isProSearchExpanded && (
               <div>
                 <ul className="list-none pl-0">
-                  {processedResults.proSearch.map((item, index) => (
+                  {proSearchSuggestions.map((item, index) => (
                     <li key={index} className="mb-2">
                       <Button
                         variant="link"
