@@ -126,12 +126,14 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
 
   const getRelatedSearches = () => {
     if (parsedRawResponse && parsedRawResponse.choices && parsedRawResponse.choices[0] && parsedRawResponse.choices[0].message) {
+      const content = parsedRawResponse.choices[0].message.content;
       try {
-        const content = JSON.parse(parsedRawResponse.choices[0].message.content);
-        return content.relatedSearches || [];
+        // First, try to parse the content as JSON
+        const jsonContent = JSON.parse(content);
+        return jsonContent.relatedSearches || [];
       } catch (error) {
-        console.error('Error parsing related searches:', error);
-        return [];
+        // If parsing fails, split the content by newlines and return as an array
+        return content.split('\n').filter(line => line.trim() !== '');
       }
     }
     return [];
