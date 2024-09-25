@@ -35,7 +35,12 @@ export const testOpenAiApi = async () => {
     const systemPrompt = localStorage.getItem('systemPrompt') || '';
     const guidancePrompt = localStorage.getItem('guidancePrompt') || '';
 
-    const openai = new OpenAI({ apiKey });
+    // WARNING: This option is not secure for production use.
+    // Only use for development/testing purposes.
+    const openai = new OpenAI({ 
+      apiKey: apiKey, 
+      dangerouslyAllowBrowser: true 
+    });
 
     const messages = [
       { role: 'system', content: systemPrompt },
