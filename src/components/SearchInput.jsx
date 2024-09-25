@@ -5,6 +5,7 @@ import { Mic, Plus } from "lucide-react";
 import SpeechModal from './SpeechModal';
 import { defineRequest } from '../utils/openaiApi';
 import { toast } from "sonner";
+import { useUIConfig } from '../config/uiConfig';
 
 const SearchInput = ({ onSearch, isSearching }) => {
   const { config } = useUIConfig();

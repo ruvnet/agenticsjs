@@ -7,7 +7,6 @@ import TopNavigation from './components/TopNavigation';
 import SettingsModal from './components/SettingsModal';
 import DocumentationModal from './components/DocumentationModal';
 import UIConfigProvider from './components/UIConfigProvider';
-import { useUIConfig } from './config/uiConfig';
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 import { Helmet } from 'react-helmet';
