@@ -7,7 +7,7 @@ import SearchSteps from './SearchSteps';
 import StreamingText from './StreamingText';
 import { scrollToElement } from '../utils/scrollUtils';
 
-const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLatestQuery, secondarySearches }) => {
+const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLatestQuery }) => {
   const { config } = useUIConfig();
   const [isProSearchExpanded, setIsProSearchExpanded] = useState(true);
   const [isSourcesExpanded, setIsSourcesExpanded] = useState(true);
@@ -117,11 +117,11 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
       {isLatestQuery && <SearchSteps currentStep={currentStep} isGeneratingComplete={isGeneratingComplete} />}
 
       <AnimatePresence>
-        {showProSearch && secondarySearches && secondarySearches.relatedSearches && (
+        {showProSearch && processedResults && processedResults.proSearch && (
           <motion.div {...animationProps} className={`border ${borderColor} rounded-lg p-4`} ref={proSearchRef}>
             <div className="flex justify-between items-center mb-2">
               <h3 className="text-lg font-semibold flex items-center">
-                <span className="mr-2">{config.components.proSearch.icon}</span> Secondary Searches
+                <span className="mr-2">{config.components.proSearch.icon}</span> {config.components.proSearch.title}
               </h3>
               <Button
                 variant="ghost"
@@ -134,7 +134,7 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
             </div>
             {isProSearchExpanded && (
               <ul className="list-none pl-0">
-                {secondarySearches.relatedSearches.map((item, index) => (
+                {processedResults.proSearch.map((item, index) => (
                   <li key={index} className="mb-2">
                     <Button
                       variant="link"

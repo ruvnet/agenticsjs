@@ -52,14 +52,13 @@ const AppContent = () => {
     contentRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleSearch = async (searchQuery, secondarySearches) => {
+  const handleSearch = async (searchQuery) => {
     setIsSearching(true);
     setShowInitialScreen(false);
 
     const newQuery = {
       query: searchQuery,
       results: null,
-      secondarySearches: secondarySearches,
     };
 
     setQueries(prevQueries => [...prevQueries, newQuery]);
@@ -74,7 +73,10 @@ const AppContent = () => {
         if (lastQueryIndex >= 0) {
           updatedQueries[lastQueryIndex].results = {
             answer: "Here's a simulated answer to your query about " + searchQuery,
-            proSearch: secondarySearches.relatedSearches,
+            proSearch: [
+              "Search for " + searchQuery + " using advanced techniques",
+              "Analyze " + searchQuery + " in various contexts"
+            ],
             sources: [
               { title: searchQuery + " - Comprehensive Guide", source: "example.com" },
               { title: "Latest Research on " + searchQuery, source: "research.org" }
@@ -93,7 +95,7 @@ const AppContent = () => {
 
   const handleProSearchClick = (item) => {
     toast.info(`Searching for: ${item}`);
-    handleSearch(item, { relatedSearches: [], numberOfSearches: 0 });
+    handleSearch(item);
   };
 
   const handleSourceClick = (source) => {
@@ -140,7 +142,6 @@ const AppContent = () => {
                 key={index}
                 query={queryItem.query}
                 results={queryItem.results}
-                secondarySearches={queryItem.secondarySearches}
                 onProSearchClick={handleProSearchClick}
                 onSourceClick={handleSourceClick}
                 isLatestQuery={index === queries.length - 1}
