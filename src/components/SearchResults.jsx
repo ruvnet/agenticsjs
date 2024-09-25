@@ -125,16 +125,8 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
   const buttonHoverColor = config.theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-300';
 
   const getRelatedSearches = () => {
-    if (parsedRawResponse && parsedRawResponse.choices && parsedRawResponse.choices[0] && parsedRawResponse.choices[0].message) {
-      const content = parsedRawResponse.choices[0].message.content;
-      try {
-        // First, try to parse the content as JSON
-        const jsonContent = JSON.parse(content);
-        return jsonContent.relatedSearches || [];
-      } catch (error) {
-        // If parsing fails, split the content by newlines and return as an array
-        return content.split('\n').filter(line => line.trim() !== '');
-      }
+    if (processedResults && processedResults.relatedSearches) {
+      return processedResults.relatedSearches;
     }
     return [];
   };
