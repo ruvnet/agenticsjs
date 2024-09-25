@@ -7,7 +7,7 @@ import SearchSteps from './SearchSteps';
 import StreamingText from './StreamingText';
 import { scrollToElement } from '../utils/scrollUtils';
 
-const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLatestQuery, rawResponse }) => {
+const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLatestQuery, rawResponse, previousQueries }) => {
   const { config } = useUIConfig();
   const [isProSearchExpanded, setIsProSearchExpanded] = useState(true);
   const [isSourcesExpanded, setIsSourcesExpanded] = useState(true);
@@ -121,7 +121,7 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
       {isLatestQuery && <SearchSteps currentStep={currentStep} isGeneratingComplete={isGeneratingComplete} />}
 
       <AnimatePresence>
-        {showProSearch && processedResults && processedResults.proSearch && (
+        {showProSearch && (
           <motion.div {...animationProps} className={`border ${borderColor} rounded-lg p-4`} ref={proSearchRef}>
             <div className="flex justify-between items-center mb-2">
               <h3 className="text-lg font-semibold flex items-center">
@@ -139,8 +139,20 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
             {isProSearchExpanded && (
               <div>
                 <ul className="list-none pl-0">
-                  {processedResults.proSearch.map((item, index) => (
+                  {previousQueries.map((prevQuery, index) => (
                     <li key={index} className="mb-2">
+                      <Button
+                        variant="link"
+                        className={`text-accent hover:text-accent/80 p-0 h-auto font-normal text-left break-words whitespace-normal`}
+                        onClick={() => onProSearchClick(prevQuery.query)}
+                      >
+                        <span className="mr-2 inline-block">✓</span>
+                        <span className="inline">{prevQuery.query}</span>
+                      </Button>
+                    </li>
+                  ))}
+                  {processedResults && processedResults.proSearch && processedResults.proSearch.map((item, index) => (
+                    <li key={`pro-${index}`} className="mb-2">
                       <Button
                         variant="link"
                         className={`text-accent hover:text-accent/80 p-0 h-auto font-normal text-left break-words whitespace-normal`}

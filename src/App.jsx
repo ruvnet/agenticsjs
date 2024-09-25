@@ -145,6 +145,7 @@ const AppContent = () => {
                 onSourceClick={handleSourceClick}
                 isLatestQuery={index === queries.length - 1}
                 rawResponse={rawResponse}
+                previousQueries={queries.slice(0, index)}
               />
             ))}
           </div>
