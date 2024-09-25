@@ -67,14 +67,14 @@ export const defineRequest = async (query) => {
       parsedResponse = JSON.parse(assistantMessage);
     } catch (error) {
       console.error("Error parsing assistant message:", error);
-      parsedResponse = { relatedSearches: [], numberOfSearches: 0 };
+      parsedResponse = { related_searches: [], num_searches: 0 };
     }
 
     return {
       success: true,
       definition: query,
-      relatedSearches: parsedResponse.relatedSearches || [],
-      numberOfSearches: parsedResponse.numberOfSearches || 0,
+      relatedSearches: parsedResponse.related_searches || [],
+      numberOfSearches: parsedResponse.num_searches || 0,
       rawResponse: JSON.stringify(completion, null, 2)
     };
   } catch (error) {

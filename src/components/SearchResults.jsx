@@ -154,7 +154,7 @@ const SearchResults = ({ query, results, onSourceClick, isLatestQuery, rawRespon
                     </ul>
                   </div>
                 )}
-                {processedResults && processedResults.numberOfSearches && (
+                {processedResults && processedResults.numberOfSearches !== undefined && (
                   <div className={rawResponseTextColor}>
                     <strong>Number of Searches:</strong> {processedResults.numberOfSearches}
                   </div>
