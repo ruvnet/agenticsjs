@@ -87,7 +87,6 @@ export const defineRequest = async (query) => {
 };
 
 export const generateSecondarySearches = async (query) => {
-export const generateSecondarySearches = async (query) => {
   try {
     console.log("Starting generateSecondarySearches for query:", query);
     const apiKey = localStorage.getItem('openAiApiKey');
