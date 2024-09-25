@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ChevronDown, ChevronUp, ExternalLink, Search } from 'lucide-react';
+import { ChevronDown, ChevronUp, ExternalLink } from 'lucide-react';
 import { useUIConfig } from '../config/uiConfig';
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
@@ -7,7 +7,7 @@ import SearchSteps from './SearchSteps';
 import StreamingText from './StreamingText';
 import { scrollToElement } from '../utils/scrollUtils';
 
-const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLatestQuery, rawResponse, previousQueries }) => {
+const SearchResults = ({ query, results, onSourceClick, isLatestQuery, rawResponse }) => {
   const { config } = useUIConfig();
   const [isProSearchExpanded, setIsProSearchExpanded] = useState(true);
   const [isSourcesExpanded, setIsSourcesExpanded] = useState(true);
@@ -137,27 +137,11 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
               </Button>
             </div>
             {isProSearchExpanded && (
-              <div>
-                <ul className="list-none pl-0 space-y-2">
-                  {previousQueries.map((prevQuery, index) => (
-                    <li key={index} className="flex items-center">
-                      <Search className="h-4 w-4 mr-2 text-accent" />
-                      <Button
-                        variant="link"
-                        className={`text-accent hover:text-accent/80 p-0 h-auto font-normal text-left break-words whitespace-normal`}
-                        onClick={() => onProSearchClick(prevQuery.query)}
-                      >
-                        {prevQuery.query}
-                      </Button>
-                    </li>
-                  ))}
-                </ul>
-                <div className={`mt-4 p-4 ${rawResponseBgColor} rounded-lg`}>
-                  <h4 className={`text-sm font-semibold mb-2 ${rawResponseTextColor}`}>Raw API Response:</h4>
-                  <pre className={`text-xs overflow-x-auto whitespace-pre-wrap ${rawResponseTextColor}`}>
-                    {rawResponse || 'No raw response available'}
-                  </pre>
-                </div>
+              <div className={`mt-4 p-4 ${rawResponseBgColor} rounded-lg`}>
+                <h4 className={`text-sm font-semibold mb-2 ${rawResponseTextColor}`}>Raw API Response:</h4>
+                <pre className={`text-xs overflow-x-auto whitespace-pre-wrap ${rawResponseTextColor}`}>
+                  {rawResponse || 'No raw response available'}
+                </pre>
               </div>
             )}
           </motion.div>
