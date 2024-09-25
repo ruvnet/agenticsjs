@@ -33,15 +33,6 @@ export const defaultConfig = {
   hooks: {
     afterSearch: [],
   },
-  // New settings
-  searchEngine: 'google',
-  resultsPerPage: '20',
-  saveSearchHistory: true,
-  safeSearchLevel: 1,
-  doNotTrack: false,
-  pushNotifications: true,
-  emailNotifications: false,
-  inAppNotifications: true,
 };
 
 export const UIConfigContext = createContext(defaultConfig);
