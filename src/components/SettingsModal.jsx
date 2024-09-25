@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Moon, Sun, Globe, Zap, Palette, Layout, Type, Volume2, Search, Clock, List, MessageSquare, Mic, Puzzle, Key, Brain, Sliders, Save } from 'lucide-react';
+import { Moon, Sun, Globe, Zap, Palette, Layout, Type, Volume2, Search, Clock, List, MessageSquare, Mic, Puzzle, Key, Brain, Sliders, Save } from 'lucide-react';
 import { useUIConfig } from '../config/uiConfig';
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -16,6 +16,7 @@ import SettingsGroup from './SettingsGroup';
 const SettingsModal = ({ isOpen, onClose }) => {
   const { config, updateUIConfig } = useUIConfig();
   const [tempConfig, setTempConfig] = useState(config);
+  const [activeTab, setActiveTab] = useState("general");
 
   useEffect(() => {
     setTempConfig(config);
@@ -31,6 +32,23 @@ const SettingsModal = ({ isOpen, onClose }) => {
     onClose();
   };
 
+  const handleTabChange = (value) => {
+    setActiveTab(value);
+  };
+
+  const getTabTitle = (tab) => {
+    switch (tab) {
+      case "general": return "General Settings";
+      case "appearance": return "Appearance";
+      case "search": return "Search Settings";
+      case "accessibility": return "Accessibility";
+      case "api": return "API Settings";
+      case "llm": return "LLM Settings";
+      case "plugins": return "Plugins";
+      default: return "Settings";
+    }
+  };
+
   const bgColor = tempConfig?.theme === 'dark' ? 'bg-gray-900' : 'bg-white';
   const textColor = tempConfig?.theme === 'dark' ? 'text-white' : 'text-gray-800';
   const borderColor = tempConfig?.theme === 'dark' ? 'border-gray-700' : 'border-gray-200';
@@ -41,12 +59,9 @@ const SettingsModal = ({ isOpen, onClose }) => {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className={`sm:max-w-[700px] max-h-[90vh] overflow-y-auto ${bgColor} ${textColor} rounded-xl`}>
         <DialogHeader className={`flex justify-between items-center p-4 border-b ${borderColor}`}>
-          <DialogTitle className="text-2xl font-bold">Settings</DialogTitle>
-          <Button variant="ghost" onClick={onClose} className={`p-1 ${tempConfig?.theme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'}`}>
-            <X className="h-6 w-6" />
-          </Button>
+          <DialogTitle className="text-2xl font-bold">{getTabTitle(activeTab)}</DialogTitle>
         </DialogHeader>
-        <Tabs defaultValue="general" className="w-full">
+        <Tabs defaultValue="general" className="w-full" onValueChange={handleTabChange}>
           <TabsList className={`grid w-full grid-cols-7 p-2 ${tempConfig?.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'} rounded-lg`}>
             <TabsTrigger value="general"><Globe className="h-5 w-5" /></TabsTrigger>
             <TabsTrigger value="appearance"><Palette className="h-5 w-5" /></TabsTrigger>
@@ -323,7 +338,7 @@ const PluginsTab = ({ config, updateConfig, inputClass, buttonClass }) => {
           <li key={plugin} className="flex justify-between items-center">
             <span>{plugin}</span>
             <Button variant="destructive" size="sm" onClick={() => handleRemovePlugin(plugin)} className={buttonClass}>
-              <X className="h-4 w-4" />
+              Remove
             </Button>
           </li>
         ))}
