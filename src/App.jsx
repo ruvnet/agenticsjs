@@ -45,7 +45,6 @@ const AppContent = () => {
   }, []);
 
   useEffect(() => {
-    // Register the wordCountPlugin
     updateUIConfig(wordCountPlugin.setup(config));
   }, []);
 
@@ -53,10 +52,10 @@ const AppContent = () => {
     contentRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleSearch = async (searchQuery, secondarySearches, rawApiResponse) => {
+  const handleSearch = async (searchQuery, { definedRequest }) => {
     setIsSearching(true);
     setShowInitialScreen(false);
-    setRawResponse(rawApiResponse);
+    setRawResponse(definedRequest);
 
     const newQuery = {
       query: searchQuery,
@@ -66,7 +65,6 @@ const AppContent = () => {
     setQueries(prevQueries => [...prevQueries, newQuery]);
 
     try {
-      // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 2000));
       
       setQueries(prevQueries => {
@@ -75,7 +73,7 @@ const AppContent = () => {
         if (lastQueryIndex >= 0) {
           updatedQueries[lastQueryIndex].results = {
             answer: "Here's a simulated answer to your query about " + searchQuery,
-            proSearch: secondarySearches?.relatedSearches || [],
+            proSearch: ["Related search 1", "Related search 2"],
             sources: [
               { title: searchQuery + " - Comprehensive Guide", source: "example.com" },
               { title: "Latest Research on " + searchQuery, source: "research.org" }
@@ -94,12 +92,11 @@ const AppContent = () => {
 
   const handleProSearchClick = (item) => {
     toast.info(`Searching for: ${item}`);
-    handleSearch(item, { relatedSearches: [] });
+    handleSearch(item, { definedRequest: `Defined request for: ${item}` });
   };
 
   const handleSourceClick = (source) => {
     toast.info(`Opening source: ${source.title}`);
-    // Here you would typically open the source in a new tab or modal
   };
 
   const handleCloseSearch = () => {

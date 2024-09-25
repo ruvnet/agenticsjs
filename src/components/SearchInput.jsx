@@ -1,10 +1,9 @@
-import { useState } from 'react';
-import { useUIConfig } from '../config/uiConfig';
+import React, { useState } from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Mic, Plus } from "lucide-react";
 import SpeechModal from './SpeechModal';
-import { generateSecondarySearches } from '../utils/openaiUtils';
+import { defineRequest } from '../utils/openaiApi';
 import { toast } from "sonner";
 
 const SearchInput = ({ onSearch, isSearching }) => {
@@ -16,22 +15,10 @@ const SearchInput = ({ onSearch, isSearching }) => {
     e.preventDefault();
     try {
       console.log("Starting search process for query:", query);
-      console.log("Generating secondary searches...");
-      const result = await generateSecondarySearches(query);
-      console.log("Secondary searches result:", result);
-      if (result.success) {
-        console.log("Secondary searches generated successfully");
-        console.log("Related searches:", result.relatedSearches);
-        console.log("Number of searches:", result.numberOfSearches);
-        console.log("Raw API response:", result.rawResponse);
-        onSearch(query, {
-          relatedSearches: result.relatedSearches,
-          numberOfSearches: result.numberOfSearches
-        }, result.rawResponse);
-      } else {
-        console.error("Error in generateSecondarySearches:", result.message);
-        toast.error(result.message || "An error occurred while generating search results.");
-      }
+      console.log("Defining request...");
+      const definedRequest = await defineRequest(query);
+      console.log("Defined request:", definedRequest);
+      onSearch(query, { definedRequest });
     } catch (error) {
       console.error("Error in handleSubmit:", error);
       toast.error("An unexpected error occurred. Please try again.");
