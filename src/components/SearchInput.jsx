@@ -4,33 +4,30 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Mic, Plus } from "lucide-react";
 import SpeechModal from './SpeechModal';
-import { generateSecondarySearches } from '../utils/openaiUtils';
+import { defineRequest } from '../utils/openaiUtils';
 import { toast } from "sonner";
 
 const SearchInput = ({ onSearch, isSearching }) => {
   const { config } = useUIConfig();
   const [query, setQuery] = useState('');
   const [isSpeechModalOpen, setIsSpeechModalOpen] = useState(false);
+  const [definition, setDefinition] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       console.log("Starting search process for query:", query);
-      console.log("Generating secondary searches...");
-      const result = await generateSecondarySearches(query);
-      console.log("Secondary searches result:", result);
+      console.log("Defining request...");
+      const result = await defineRequest(query);
+      console.log("Define request result:", result);
       if (result.success) {
-        console.log("Secondary searches generated successfully");
-        console.log("Related searches:", result.relatedSearches);
-        console.log("Number of searches:", result.numberOfSearches);
+        console.log("Request defined successfully");
+        setDefinition(result.definition);
         console.log("Raw API response:", result.rawResponse);
-        onSearch(query, {
-          relatedSearches: result.relatedSearches,
-          numberOfSearches: result.numberOfSearches
-        }, result.rawResponse);
+        onSearch(query, result.definition, result.rawResponse);
       } else {
-        console.error("Error in generateSecondarySearches:", result.message);
-        toast.error(result.message || "An error occurred while generating search results.");
+        console.error("Error in defineRequest:", result.message);
+        toast.error(result.message || "An error occurred while defining the search request.");
       }
     } catch (error) {
       console.error("Error in handleSubmit:", error);
@@ -86,6 +83,12 @@ const SearchInput = ({ onSearch, isSearching }) => {
           </Button>
         )}
       </form>
+      {definition && (
+        <div className="mt-4 p-4 bg-gray-800 rounded-lg">
+          <h3 className="text-lg font-semibold mb-2">Defined Request:</h3>
+          <p>{definition}</p>
+        </div>
+      )}
       <SpeechModal
         isOpen={isSpeechModalOpen}
         onClose={() => setIsSpeechModalOpen(false)}

@@ -80,3 +80,60 @@ export const generateSecondarySearches = async (query) => {
     };
   }
 };
+
+export const defineRequest = async (query) => {
+  try {
+    const apiKey = localStorage.getItem('openAiApiKey');
+    if (!apiKey) {
+      console.error("OpenAI API key not found in local storage");
+      return { success: false, message: 'Error: OpenAI API key not found in local storage.' };
+    }
+
+    // Get LLM settings from local storage
+    const llmModel = localStorage.getItem('llmModel') || 'gpt-3.5-turbo';
+    const llmTemperature = parseFloat(localStorage.getItem('llmTemperature') || '0.7');
+    const systemPrompt = localStorage.getItem('systemPrompt') || '';
+    const guidancePrompt = localStorage.getItem('guidancePrompt') || '';
+
+    console.log("LLM Settings for defineRequest:", { llmModel, llmTemperature, systemPrompt, guidancePrompt });
+
+    // WARNING: This option is not secure for production use.
+    // Only use for development/testing purposes.
+    const openai = new OpenAI({ 
+      apiKey: apiKey, 
+      dangerouslyAllowBrowser: true 
+    });
+
+    const messages = [
+      { role: 'system', content: systemPrompt || 'You are a helpful assistant that defines search requests.' },
+      { role: 'user', content: guidancePrompt + `Define the search request: "${query}"` }
+    ].filter(msg => msg.content);
+
+    console.log("Sending request to OpenAI API for defineRequest with messages:", messages);
+
+    const completion = await makeRequestWithRetry(() => 
+      openai.chat.completions.create({
+        model: llmModel,
+        messages: messages,
+        temperature: llmTemperature,
+        max_tokens: 150
+      })
+    );
+
+    console.log("Received response from OpenAI API for defineRequest:", completion);
+
+    return {
+      success: true,
+      definition: completion.choices[0].message.content,
+      rawResponse: JSON.stringify(completion, null, 2)
+    };
+  } catch (error) {
+    console.error("Error defining request:", error);
+    return { 
+      success: false, 
+      message: `Error: ${error.message}`,
+      definition: '', 
+      rawResponse: JSON.stringify({ error: error.message }, null, 2)
+    };
+  }
+};
