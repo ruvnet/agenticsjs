@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import SearchInput from './components/SearchInput';
 import SearchResults from './components/SearchResults';
@@ -165,18 +165,20 @@ const AppContent = () => {
       </Button>
       <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
       <DocumentationModal isOpen={isDocumentationOpen} onClose={() => setIsDocumentationOpen(false)} />
-      <style jsx global>{`
-        :root {
-          --safe-area-inset-top: 0px;
-          --safe-area-inset-bottom: 0px;
-        }
-        .fullscreen-mode .sticky-top {
-          padding-top: calc(var(--safe-area-inset-top) + env(safe-area-inset-top));
-        }
-        .fullscreen-mode .sticky-bottom {
-          padding-bottom: calc(var(--safe-area-inset-bottom) + env(safe-area-inset-bottom));
-        }
-      `}</style>
+      <style>
+        {`
+          :root {
+            --safe-area-inset-top: 0px;
+            --safe-area-inset-bottom: 0px;
+          }
+          .fullscreen-mode .sticky-top {
+            padding-top: calc(var(--safe-area-inset-top) + env(safe-area-inset-top));
+          }
+          .fullscreen-mode .sticky-bottom {
+            padding-bottom: calc(var(--safe-area-inset-bottom) + env(safe-area-inset-bottom));
+          }
+        `}
+      </style>
     </div>
   );
 };
