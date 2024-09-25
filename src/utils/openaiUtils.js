@@ -32,7 +32,7 @@ export const defineRequest = async (query) => {
       return { success: false, message: 'Error: OpenAI API key not found in local storage.' };
     }
 
-    const llmModel = localStorage.getItem('llmModel') || 'gpt-4-turbo-preview';
+    const llmModel = localStorage.getItem('llmModel') || 'gpt-4o-mini';
     const llmTemperature = parseFloat(localStorage.getItem('llmTemperature') || '0.7');
     const maxTokens = parseInt(localStorage.getItem('maxTokens') || '150', 10);
     const systemPrompt = localStorage.getItem('systemPrompt') || 'You are a helpful assistant that generates related search terms based on an initial query. Provide a JSON response with an array of related searches and the number of searches to perform.';

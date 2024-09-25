@@ -11,7 +11,7 @@ const UIConfigProvider = ({ children, initialConfig = {} }) => {
     return { 
       ...defaultConfig, 
       ...initialConfig,
-      llmModel: localStorage.getItem('llmModel') || 'gpt-4-turbo-preview',
+      llmModel: localStorage.getItem('llmModel') || 'gpt-4o-mini',
       llmTemperature: parseFloat(localStorage.getItem('llmTemperature') || '0.7'),
       maxTokens: parseInt(localStorage.getItem('maxTokens') || '2048', 10),
       systemPrompt: localStorage.getItem('systemPrompt') || '',
