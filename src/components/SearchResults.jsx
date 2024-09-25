@@ -17,7 +17,6 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
   const [showAnswer, setShowAnswer] = useState(false);
   const [isGeneratingComplete, setIsGeneratingComplete] = useState(false);
   const [processedResults, setProcessedResults] = useState(results);
-  const [relatedSearches, setRelatedSearches] = useState([]);
 
   const proSearchRef = useRef(null);
   const sourcesRef = useRef(null);
@@ -98,20 +97,6 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
     processResults();
   }, [results, config.hooks]);
 
-  useEffect(() => {
-    if (rawResponse) {
-      try {
-        const parsedResponse = JSON.parse(rawResponse);
-        const content = parsedResponse.choices[0].message.content;
-        const parsedContent = JSON.parse(content);
-        setRelatedSearches(parsedContent.relatedSearches || []);
-      } catch (error) {
-        console.error('Error parsing raw response:', error);
-        setRelatedSearches([]);
-      }
-    }
-  }, [rawResponse]);
-
   const handleStreamingComplete = () => {
     setIsGeneratingComplete(true);
   };
@@ -127,6 +112,8 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
   const borderColor = config.theme === 'dark' ? 'border-gray-700' : 'border-gray-300';
   const buttonBgColor = config.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-200';
   const buttonHoverColor = config.theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-300';
+  const rawResponseBgColor = config.theme === 'dark' ? 'bg-gray-900' : 'bg-gray-100';
+  const rawResponseTextColor = config.theme === 'dark' ? 'text-gray-300' : 'text-gray-700';
 
   return (
     <div className={`space-y-4 ${textColor} mb-8`}>
@@ -152,19 +139,25 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
             {isProSearchExpanded && (
               <div>
                 <ul className="list-none pl-0 space-y-2">
-                  {relatedSearches.map((search, index) => (
+                  {previousQueries.map((prevQuery, index) => (
                     <li key={index} className="flex items-center">
                       <Search className="h-4 w-4 mr-2 text-accent" />
                       <Button
                         variant="link"
                         className={`text-accent hover:text-accent/80 p-0 h-auto font-normal text-left break-words whitespace-normal`}
-                        onClick={() => onProSearchClick(search)}
+                        onClick={() => onProSearchClick(prevQuery.query)}
                       >
-                        {search}
+                        {prevQuery.query}
                       </Button>
                     </li>
                   ))}
                 </ul>
+                <div className={`mt-4 p-4 ${rawResponseBgColor} rounded-lg`}>
+                  <h4 className={`text-sm font-semibold mb-2 ${rawResponseTextColor}`}>Raw API Response:</h4>
+                  <pre className={`text-xs overflow-x-auto whitespace-pre-wrap ${rawResponseTextColor}`}>
+                    {rawResponse || 'No raw response available'}
+                  </pre>
+                </div>
               </div>
             )}
           </motion.div>
