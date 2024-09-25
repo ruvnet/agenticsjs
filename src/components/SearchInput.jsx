@@ -11,19 +11,16 @@ const SearchInput = ({ onSearch, isSearching }) => {
   const { config } = useUIConfig();
   const [query, setQuery] = useState('');
   const [isSpeechModalOpen, setIsSpeechModalOpen] = useState(false);
-  const [definition, setDefinition] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       console.log("Starting search process for query:", query);
-      console.log("Defining request...");
+      console.log("Initiating OpenAI request...");
       const result = await defineRequest(query);
-      console.log("Define request result:", result);
+      console.log("OpenAI request completed:", result);
+      
       if (result.success) {
-        console.log("Request defined successfully");
-        setDefinition(result.definition);
-        console.log("Raw API response:", result.rawResponse);
         onSearch(query, result.definition, result.rawResponse);
       } else {
         console.error("Error in defineRequest:", result.message);
@@ -83,12 +80,6 @@ const SearchInput = ({ onSearch, isSearching }) => {
           </Button>
         )}
       </form>
-      {definition && (
-        <div className="mt-4 p-4 bg-gray-800 rounded-lg">
-          <h3 className="text-lg font-semibold mb-2">Defined Request:</h3>
-          <p>{definition}</p>
-        </div>
-      )}
       <SpeechModal
         isOpen={isSpeechModalOpen}
         onClose={() => setIsSpeechModalOpen(false)}
