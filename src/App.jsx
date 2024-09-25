@@ -26,6 +26,7 @@ const AppContent = () => {
   const [isDocumentationOpen, setIsDocumentationOpen] = useState(false);
   const contentRef = useRef(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [rawResponse, setRawResponse] = useState('');
 
   useEffect(() => {
     const checkFullscreen = () => {
@@ -52,9 +53,10 @@ const AppContent = () => {
     contentRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleSearch = async (searchQuery, secondarySearches) => {
+  const handleSearch = async (searchQuery, secondarySearches, rawApiResponse) => {
     setIsSearching(true);
     setShowInitialScreen(false);
+    setRawResponse(rawApiResponse);
 
     const newQuery = {
       query: searchQuery,
@@ -142,6 +144,7 @@ const AppContent = () => {
                 onProSearchClick={handleProSearchClick}
                 onSourceClick={handleSourceClick}
                 isLatestQuery={index === queries.length - 1}
+                rawResponse={rawResponse}
               />
             ))}
           </div>

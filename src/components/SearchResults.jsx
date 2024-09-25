@@ -7,7 +7,7 @@ import SearchSteps from './SearchSteps';
 import StreamingText from './StreamingText';
 import { scrollToElement } from '../utils/scrollUtils';
 
-const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLatestQuery }) => {
+const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLatestQuery, rawResponse }) => {
   const { config } = useUIConfig();
   const [isProSearchExpanded, setIsProSearchExpanded] = useState(true);
   const [isSourcesExpanded, setIsSourcesExpanded] = useState(true);
@@ -133,20 +133,26 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
               </Button>
             </div>
             {isProSearchExpanded && (
-              <ul className="list-none pl-0">
-                {processedResults.proSearch.map((item, index) => (
-                  <li key={index} className="mb-2">
-                    <Button
-                      variant="link"
-                      className={`text-accent hover:text-accent/80 p-0 h-auto font-normal text-left break-words whitespace-normal`}
-                      onClick={() => onProSearchClick(item)}
-                    >
-                      <span className="mr-2 inline-block">✓</span>
-                      <span className="inline">{item}</span>
-                    </Button>
-                  </li>
-                ))}
-              </ul>
+              <div>
+                <ul className="list-none pl-0">
+                  {processedResults.proSearch.map((item, index) => (
+                    <li key={index} className="mb-2">
+                      <Button
+                        variant="link"
+                        className={`text-accent hover:text-accent/80 p-0 h-auto font-normal text-left break-words whitespace-normal`}
+                        onClick={() => onProSearchClick(item)}
+                      >
+                        <span className="mr-2 inline-block">✓</span>
+                        <span className="inline">{item}</span>
+                      </Button>
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-4 p-4 bg-gray-100 rounded-lg">
+                  <h4 className="text-sm font-semibold mb-2">Raw API Response:</h4>
+                  <pre className="text-xs overflow-x-auto">{rawResponse}</pre>
+                </div>
+              </div>
             )}
           </motion.div>
         )}
