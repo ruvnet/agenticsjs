@@ -14,9 +14,9 @@ export const testJinaApi = async (apiKey) => {
     }
 
     const data = await response.text();
-    return data;
+    return { success: true, message: 'API key is valid. Successfully connected to Jina AI API.', response: data };
   } catch (error) {
-    return `Error: ${error.message}`;
+    return { success: false, message: `Error: ${error.message}` };
   }
 };
 
@@ -36,8 +36,7 @@ export const testOpenAiApi = async (apiKey) => {
     });
 
     if (!response.ok) {
-      const errorText = await response.text();
-      const errorData = JSON.parse(errorText);
+      const errorData = await response.json();
       if (errorData.error && errorData.error.code === 'invalid_api_key') {
         return { success: false, message: 'Error: Invalid API key. Please check your OpenAI API key and try again.' };
       }
@@ -46,6 +45,7 @@ export const testOpenAiApi = async (apiKey) => {
 
     const data = await response.json();
     localStorage.setItem('openAiApiResponse', JSON.stringify(data));
+
     return { success: true, message: 'API key is valid. Successfully connected to OpenAI API.', response: data.choices[0].message.content };
   } catch (error) {
     if (error.message.includes('Failed to fetch')) {

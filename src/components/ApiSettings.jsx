@@ -99,10 +99,10 @@ const ApiSettings = ({ config, handleChange, inputClass, buttonClass }) => {
 
   const handleTestJinaApi = async () => {
     setIsJinaLoading(true);
-    const response = await testJinaApi(jinaApiKey);
-    setJinaTestResponse(response);
-    setIsJinaValid(!response.startsWith('Error:'));
-    localStorage.setItem('jinaTestResponse', response);
+    const result = await testJinaApi(jinaApiKey);
+    setJinaTestResponse(result.message);
+    setIsJinaValid(result.success);
+    localStorage.setItem('jinaTestResponse', result.message);
     setIsJinaLoading(false);
   };
 
@@ -110,8 +110,8 @@ const ApiSettings = ({ config, handleChange, inputClass, buttonClass }) => {
     setIsOpenAiLoading(true);
     const result = await testOpenAiApi(openAiApiKey);
     setIsOpenAiValid(result.success);
-    setOpenAiTestResponse(result.success ? result.response : result.message);
-    localStorage.setItem('openAiTestResponse', result.success ? result.response : result.message);
+    setOpenAiTestResponse(result.message);
+    localStorage.setItem('openAiTestResponse', result.message);
     setIsOpenAiLoading(false);
   };
 
