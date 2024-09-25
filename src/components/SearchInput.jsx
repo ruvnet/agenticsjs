@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Mic, Plus } from "lucide-react";
 import SpeechModal from './SpeechModal';
 import { generateSecondarySearches } from '../utils/openaiUtils';
+import { toast } from "sonner";
 
 const SearchInput = ({ onSearch, isSearching }) => {
   const { config } = useUIConfig();
@@ -13,22 +14,20 @@ const SearchInput = ({ onSearch, isSearching }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    let secondarySearches;
-    let rawResponse = '';
     try {
       const result = await generateSecondarySearches(query);
-      secondarySearches = {
-        relatedSearches: result.relatedSearches,
-        numberOfSearches: result.numberOfSearches
-      };
-      rawResponse = result.rawResponse;
-      console.log('Raw API Response:', rawResponse);
+      if (result.success) {
+        onSearch(query, {
+          relatedSearches: result.relatedSearches,
+          numberOfSearches: result.numberOfSearches
+        }, result.rawResponse);
+      } else {
+        toast.error(result.message || "An error occurred while generating search results.");
+      }
     } catch (error) {
-      console.error("Error generating secondary searches:", error);
-      secondarySearches = { relatedSearches: [], numberOfSearches: 0 };
-      rawResponse = JSON.stringify({ error: error.message }, null, 2);
+      console.error("Error in handleSubmit:", error);
+      toast.error("An unexpected error occurred. Please try again.");
     }
-    onSearch(query, secondarySearches, rawResponse);
   };
 
   const handleSpeechResult = (result) => {

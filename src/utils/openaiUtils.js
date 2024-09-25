@@ -1,32 +1,40 @@
 import OpenAI from 'openai';
 
-const openai = new OpenAI({
-  apiKey: localStorage.getItem('openAiApiKey'),
-  dangerouslyAllowBrowser: true
-});
-
 export const generateSecondarySearches = async (query) => {
   try {
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4-1106-preview", // Updated to use GPT-4 Turbo
-      messages: [
-        {
-          role: "system",
-          content: "You are a helpful assistant that generates related search terms based on an initial query. Provide a JSON response with an array of related searches and the number of searches to perform."
-        },
-        {
-          role: "user",
-          content: `Generate related search terms for the query: "${query}". Respond with a JSON object containing an array of related searches and the number of searches to perform.`
-        }
-      ],
-      temperature: 0.7,
-      max_tokens: 150,
+    const apiKey = localStorage.getItem('openAiApiKey');
+    if (!apiKey) {
+      return { success: false, message: 'Error: OpenAI API key not found in local storage.' };
+    }
+
+    // Get LLM settings from local storage
+    const llmModel = localStorage.getItem('llmModel') || 'gpt-3.5-turbo';
+    const llmTemperature = parseFloat(localStorage.getItem('llmTemperature') || '0.7');
+    const systemPrompt = localStorage.getItem('systemPrompt') || '';
+    const guidancePrompt = localStorage.getItem('guidancePrompt') || '';
+
+    // WARNING: This option is not secure for production use.
+    // Only use for development/testing purposes.
+    const openai = new OpenAI({ 
+      apiKey: apiKey, 
+      dangerouslyAllowBrowser: true 
     });
 
-    console.log('Raw OpenAI API Response:', JSON.stringify(completion, null, 2));
+    const messages = [
+      { role: 'system', content: systemPrompt || 'You are a helpful assistant that generates related search terms based on an initial query. Provide a JSON response with an array of related searches and the number of searches to perform.' },
+      { role: 'user', content: guidancePrompt + `Generate related search terms for the query: "${query}". Respond with a JSON object containing an array of related searches and the number of searches to perform.` }
+    ].filter(msg => msg.content);
+
+    const completion = await openai.chat.completions.create({
+      model: llmModel,
+      messages: messages,
+      temperature: llmTemperature,
+      max_tokens: 150
+    });
 
     const response = JSON.parse(completion.choices[0].message.content);
     return {
+      success: true,
       relatedSearches: response.relatedSearches || [],
       numberOfSearches: response.numberOfSearches || 0,
       rawResponse: JSON.stringify(completion, null, 2)
@@ -34,6 +42,8 @@ export const generateSecondarySearches = async (query) => {
   } catch (error) {
     console.error("Error generating secondary searches:", error);
     return { 
+      success: false, 
+      message: `Error: ${error.message}`,
       relatedSearches: [], 
       numberOfSearches: 0, 
       rawResponse: JSON.stringify({ error: error.message }, null, 2)
