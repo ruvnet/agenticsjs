@@ -19,7 +19,10 @@ const SearchInput = ({ onSearch, isSearching }) => {
       const result = await generateSecondarySearches(query);
       console.log("Secondary searches result:", result);
       if (result.success) {
-        onSearch(query, result.relatedSearches, result.rawResponse);
+        onSearch(query, {
+          relatedSearches: result.relatedSearches,
+          numberOfSearches: result.numberOfSearches
+        }, result.rawResponse);
       } else {
         console.error("Error in generateSecondarySearches:", result.message);
         toast.error(result.message || "An error occurred while generating search results.");

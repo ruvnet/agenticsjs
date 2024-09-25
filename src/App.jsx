@@ -27,7 +27,6 @@ const AppContent = () => {
   const contentRef = useRef(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [rawResponse, setRawResponse] = useState('');
-  const [proSearchSuggestions, setProSearchSuggestions] = useState([]);
 
   useEffect(() => {
     const checkFullscreen = () => {
@@ -58,7 +57,6 @@ const AppContent = () => {
     setIsSearching(true);
     setShowInitialScreen(false);
     setRawResponse(rawApiResponse);
-    setProSearchSuggestions(secondarySearches);
 
     const newQuery = {
       query: searchQuery,
@@ -77,7 +75,7 @@ const AppContent = () => {
         if (lastQueryIndex >= 0) {
           updatedQueries[lastQueryIndex].results = {
             answer: "Here's a simulated answer to your query about " + searchQuery,
-            proSearch: secondarySearches || [],
+            proSearch: secondarySearches?.relatedSearches || [],
             sources: [
               { title: searchQuery + " - Comprehensive Guide", source: "example.com" },
               { title: "Latest Research on " + searchQuery, source: "research.org" }
@@ -96,7 +94,7 @@ const AppContent = () => {
 
   const handleProSearchClick = (item) => {
     toast.info(`Searching for: ${item}`);
-    handleSearch(item, [], '');
+    handleSearch(item, { relatedSearches: [] });
   };
 
   const handleSourceClick = (source) => {
@@ -147,7 +145,6 @@ const AppContent = () => {
                 onSourceClick={handleSourceClick}
                 isLatestQuery={index === queries.length - 1}
                 rawResponse={rawResponse}
-                proSearchSuggestions={proSearchSuggestions}
               />
             ))}
           </div>
