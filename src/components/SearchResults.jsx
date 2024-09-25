@@ -164,6 +164,24 @@ const SearchResults = ({ query, results, onProSearchClick, onSourceClick, isLate
                     </li>
                   ))}
                 </ul>
+                {processedResults && processedResults.relatedSearches && processedResults.relatedSearches.length > 0 && (
+                  <div className="mt-4">
+                    <h4 className="text-sm font-semibold mb-2">Related Searches:</h4>
+                    <ul className="list-disc pl-5">
+                      {processedResults.relatedSearches.slice(0, processedResults.numberOfSearches || 5).map((search, index) => (
+                        <li key={index} className="mb-1">
+                          <Button
+                            variant="link"
+                            className={`text-accent hover:text-accent/80 p-0 h-auto font-normal text-left break-words whitespace-normal`}
+                            onClick={() => onProSearchClick(search)}
+                          >
+                            {search}
+                          </Button>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
                 <div className={`mt-4 p-4 ${rawResponseBgColor} rounded-lg`}>
                   <h4 className={`text-sm font-semibold mb-2 ${rawResponseTextColor}`}>Raw API Response:</h4>
                   <pre className={`text-xs overflow-x-auto whitespace-pre-wrap ${rawResponseTextColor}`}>

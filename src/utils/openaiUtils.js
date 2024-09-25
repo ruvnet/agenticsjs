@@ -27,7 +27,6 @@ export const generateSecondarySearches = async (query) => {
       return { success: false, message: 'Error: OpenAI API key not found in local storage.' };
     }
 
-    // Get LLM settings from local storage
     const llmModel = localStorage.getItem('llmModel') || 'gpt-3.5-turbo';
     const llmTemperature = parseFloat(localStorage.getItem('llmTemperature') || '0.7');
     const systemPrompt = localStorage.getItem('systemPrompt') || '';
@@ -35,8 +34,6 @@ export const generateSecondarySearches = async (query) => {
 
     console.log("LLM Settings:", { llmModel, llmTemperature, systemPrompt, guidancePrompt });
 
-    // WARNING: This option is not secure for production use.
-    // Only use for development/testing purposes.
     const openai = new OpenAI({ 
       apiKey: apiKey, 
       dangerouslyAllowBrowser: true 
@@ -60,13 +57,14 @@ export const generateSecondarySearches = async (query) => {
 
     console.log("Received raw response from OpenAI API:", JSON.stringify(completion, null, 2));
 
-    const response = JSON.parse(completion.choices[0].message.content);
-    console.log("Parsed response:", response);
+    const responseContent = completion.choices[0].message.content;
+    const parsedResponse = JSON.parse(responseContent);
+    console.log("Parsed response:", parsedResponse);
 
     return {
       success: true,
-      relatedSearches: response.relatedSearches || [],
-      numberOfSearches: response.numberOfSearches || 0,
+      relatedSearches: parsedResponse.related_searches || [],
+      numberOfSearches: parsedResponse.num_searches || 0,
       rawResponse: JSON.stringify(completion, null, 2)
     };
   } catch (error) {
@@ -90,7 +88,6 @@ export const defineRequest = async (query) => {
       return { success: false, message: 'Error: OpenAI API key not found in local storage.' };
     }
 
-    // Get LLM settings from local storage
     const llmModel = localStorage.getItem('llmModel') || 'gpt-3.5-turbo';
     const llmTemperature = parseFloat(localStorage.getItem('llmTemperature') || '0.7');
     const systemPrompt = localStorage.getItem('systemPrompt') || '';
@@ -98,8 +95,6 @@ export const defineRequest = async (query) => {
 
     console.log("LLM Settings for defineRequest:", { llmModel, llmTemperature, systemPrompt, guidancePrompt });
 
-    // WARNING: This option is not secure for production use.
-    // Only use for development/testing purposes.
     const openai = new OpenAI({ 
       apiKey: apiKey, 
       dangerouslyAllowBrowser: true 
