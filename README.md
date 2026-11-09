@@ -1,13 +1,13 @@
 <a href="https://agenticjs.gptengineer.run/">
-  <img src="https://raw.githubusercontent.com/ruvnet/agenticsjs/main/assets/home2.png?token=GHSAT0AAAAAACIVHP5X2PW7VBMOODBMEHBEZXILJVA" alt="AgenticJS Home">
+  <img src="https://raw.githubusercontent.com/ruvnet/agenticsjs/main/assets/home2.png" alt="AgenticJS Home">
 </a>
 <a href="https://agenticjs.gptengineer.run/">
-  <img src="https://raw.githubusercontent.com/ruvnet/agenticsjs/main/assets/search.png?token=GHSAT0AAAAAACIVHP5XL6K4DR4RAHZOUZKSZXILKBA" alt="AgenticJS Home">
+  <img src="https://raw.githubusercontent.com/ruvnet/agenticsjs/main/assets/search.png" alt="AgenticJS Home">
 </a>
 
 # AgenticsJS
 
-AgenticsJS is a powerful and flexible JavaScript library designed to provide an intelligent and interactive search experience with real-time results, advanced visualization, and plugin capabilities. Built with Vite, React, and Tailwind CSS, AgenticsJS offers a seamless integration with modern web development workflows. It uses the same approach as Perplexity, the o1 for ChatGPT UI, and you.com style display of sequential queries and results.
+AgenticsJS is a React component library for building an AI search interface: a search box, step-by-step query progress and streamed answers with result panels. It is designed to provide an intelligent and interactive search experience with real-time results, advanced visualization, and plugin capabilities. Built with Vite, React, and Tailwind CSS, AgenticsJS offers a seamless integration with modern web development workflows. It uses the same approach as Perplexity, the o1 for ChatGPT UI, and you.com style display of sequential queries and results.
 
 ## Demo
 https://agenticjs.gptengineer.run
@@ -27,6 +27,20 @@ To install AgenticsJS, you can use npm:
 
 ```sh
 npm install agenticsjs
+```
+
+**Supported environments:** React 18 apps built with any bundler (Vite, Next.js, webpack). The package ships an ES module build (`import`), a CommonJS/UMD build (`require`), and `dist/agenticjs.umd.js` for script tags. Components use the DOM, so render them in a browser. Node.js 18+ can import the package, for example for SSR or tests.
+
+Check the install. This runs in Node from a clean `npm install agenticsjs`:
+
+```sh
+node --input-type=module -e "import('agenticsjs').then(m => console.log(Object.keys(m).length, typeof m.SearchInput))"
+```
+
+Output (agenticsjs 1.0.6, Node 22):
+
+```text
+67 function
 ```
 
 ## Usage

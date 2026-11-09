@@ -26,7 +26,8 @@ export default defineConfig({
     lib: {
       entry: 'src/index.js',
       name: 'AgenticJS',
-      fileName: (format) => `agenticjs.${format}.js`
+      // UMD gets .cjs so Node treats it as CommonJS inside this "type": "module" package
+      fileName: (format) => (format === 'umd' ? 'agenticjs.umd.cjs' : `agenticjs.${format}.js`)
     },
     rollupOptions: {
       external: ['react'],

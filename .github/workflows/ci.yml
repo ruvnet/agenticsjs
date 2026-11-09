@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: build + audit + import (Node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ['18', '20', '22']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - run: npm ci
+      - run: npm run build
+      - name: Audit production dependencies
+        run: npm audit --omit=dev --audit-level=high
+      - name: Pack and import from a clean install
+        run: |
+          npm pack
+          mkdir -p "$RUNNER_TEMP/smoke" && cd "$RUNNER_TEMP/smoke"
+          echo '{"name":"smoke","version":"1.0.0","private":true}' > package.json
+          npm install "$GITHUB_WORKSPACE"/agenticsjs-*.tgz
+          node --input-type=module -e "import('agenticsjs').then(m => { if (typeof m.SearchInput !== 'function') process.exit(1); console.log('esm', Object.keys(m).length) })"
+          node -e "const m = require('agenticsjs'); if (typeof m.SearchInput !== 'function') process.exit(1); console.log('cjs', Object.keys(m).length)"

@@ -1,16 +1,16 @@
 {
   "name": "agenticsjs",
   "private": false,
-  "version": "1.0.5",
-  "description": "AgenticJS is a powerful and flexible JavaScript library designed to provide an intelligent and interactive search experience with real-time results and advanced visualization.",
-  "main": "dist/index.js",
+  "version": "1.0.6",
+  "description": "React components for an AI search interface: streaming answers, step-by-step search progress, result panels and theme settings, bundled as ES and UMD builds.",
+  "main": "dist/agenticjs.umd.cjs",
   "files": [
     "dist"
   ],
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && node -e \"require('fs').copyFileSync('dist/agenticjs.umd.cjs','dist/agenticjs.umd.js')\"",
     "build:dev": "vite build --mode development",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
@@ -19,18 +19,28 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ruvnet/agenticjs.git"
+    "url": "git+https://github.com/ruvnet/agenticsjs.git"
   },
   "keywords": [
-    "vite",
-    "tailwindcss"
+    "react",
+    "react-components",
+    "ai-search",
+    "search-ui",
+    "streaming",
+    "openai",
+    "llm",
+    "perplexity-style",
+    "tailwindcss",
+    "radix-ui",
+    "ui-library",
+    "vite"
   ],
-  "author": "Your Name",
+  "author": "rUv",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ruvnet/agenticjs/issues"
+    "url": "https://github.com/ruvnet/agenticsjs/issues"
   },
-  "homepage": "https://github.com/ruvnet/agenticjs#readme",
+  "homepage": "https://ruv.io",
   "dependencies": {
     "@hookform/resolvers": "^3.6.0",
     "@radix-ui/react-accordion": "^1.2.0",
@@ -83,8 +93,7 @@
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",
-    "vaul": "^0.9.1",
-    "zod": "^3.23.8"
+    "vaul": "^0.9.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.56",
@@ -98,5 +107,13 @@
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.4",
     "vite": "^5.1.4"
+  },
+  "module": "dist/agenticjs.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/agenticjs.es.js",
+      "require": "./dist/agenticjs.umd.cjs"
+    },
+    "./package.json": "./package.json"
   }
 }
